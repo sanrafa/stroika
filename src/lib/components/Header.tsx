@@ -16,7 +16,9 @@ export default function Header() {
       </Link>
       {match ? (
         <>
-          <h1 className="text-4xl text-white">PROJECT NAME</h1>
+          <h1 className="text-4xl text-white font-josefin mt-2">
+            PROJECT NAME
+          </h1>
 
           <MenuIcon width={32} height={32} color="white" />
 

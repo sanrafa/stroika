@@ -11,6 +11,8 @@ module.exports = {
         categoryToggleChecked: "rgba(13, 65, 73, 1)",
         line: "rgba(130, 213, 232, 0.5)",
         project: "rgba(13, 65, 73, 0.3)",
+        column: "rgba(253, 253, 252, 0.1)",
+        columnBorder: "rgba(52, 190, 218, 0.3)",
       },
       fontFamily: {
         josefin: ["Josefin Sans", "sans-serif"],

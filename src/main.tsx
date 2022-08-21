@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import "@fontsource/josefin-sans";
 import "@fontsource/josefin-sans/200.css";
-import "@fontsource/manrope/variable.css";
+import "@fontsource/manrope";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

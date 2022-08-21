@@ -13,7 +13,7 @@ export default function ColumnDropdown() {
   return (
     <Dropdown>
       <DropdownTrigger asChild={true}>
-        <button type="button" className="">
+        <button type="button" className="hover:bg-gray-700">
           <MenuIcon />
         </button>
       </DropdownTrigger>

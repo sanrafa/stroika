@@ -5,7 +5,8 @@ import { Homepage, ProjectPage, ProjectsPage } from "./lib/pages";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import "@fontsource/josefin-sans";
-import "@fontsource/manrope";
+import "@fontsource/josefin-sans/200.css";
+import "@fontsource/manrope/variable.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

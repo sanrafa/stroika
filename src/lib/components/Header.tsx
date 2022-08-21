@@ -25,35 +25,37 @@ export default function Header() {
         </Link>
         {match ? (
           <>
-            <h1 className="text-4xl text-white font-josefin mt-2">
+            <h1 className="text-4xl text-white font-josefin mt-2 font-light">
               PROJECT NAME
             </h1>
-            <Dropdown>
-              <DropdownTrigger asChild={true}>
-                <button
-                  type="button"
-                  className="hover:bg-gray-800 p-2 rounded-full"
-                >
-                  <MenuIcon width={32} height={32} color="white" />
-                </button>
-              </DropdownTrigger>
-              <DropdownContent className="bg-white text-black font-manrope text-center p-0.5">
-                <DropdownItem className="p-1">Save Project</DropdownItem>
-                <DropdownSeparator asChild={true}>
-                  <hr className=" bg-black my-1" />
-                </DropdownSeparator>
-                <DropdownItem className="p-1">Export Project</DropdownItem>
-                <DropdownArrow fill="white" height={8} />
-              </DropdownContent>
-            </Dropdown>
+            <div className="flex space-x-4">
+              <Dropdown>
+                <DropdownTrigger asChild={true}>
+                  <button
+                    type="button"
+                    className="hover:bg-gray-800 p-4 rounded-full m-1"
+                  >
+                    <MenuIcon width={32} height={32} color="white" />
+                  </button>
+                </DropdownTrigger>
+                <DropdownContent className="bg-white text-black font-manrope text-center p-0.5">
+                  <DropdownItem className="p-1">Save Project</DropdownItem>
+                  <DropdownSeparator asChild={true}>
+                    <hr className=" bg-black my-1" />
+                  </DropdownSeparator>
+                  <DropdownItem className="p-1">Export Project</DropdownItem>
+                  <DropdownArrow fill="white" height={8} />
+                </DropdownContent>
+              </Dropdown>
 
-            <Link to="projects" className="text-xl p-4 hover:bg-gray-800">
-              <CloseIcon width={32} height={32} color="white" />
-            </Link>
+              <Link to="projects" className="text-xl p-5 hover:bg-gray-800">
+                <CloseIcon width={32} height={32} color="white" />
+              </Link>
+            </div>
           </>
         ) : null}
       </header>
-      <hr className="border-2 bg-line border-line" />
+      <hr className="border-1 bg-line border-line" />
     </>
   );
 }

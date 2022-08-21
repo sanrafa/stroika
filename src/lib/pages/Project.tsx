@@ -1,5 +1,10 @@
 function ProjectPage() {
-  return <h1>Project Page</h1>;
+  return (
+    <>
+      <hr />
+      <div className="bg-project p-4 m-4 h-5/6"></div>
+    </>
+  );
 }
 
 export default ProjectPage;

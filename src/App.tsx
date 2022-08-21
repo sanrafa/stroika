@@ -3,16 +3,11 @@ import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      {/* 
-          After user session flow is created, switch between basic header and project header using path match
-          Likely going to happen within the component
-      */}
+    <main className="bg-black text-compText h-screen">
       <Header />
-      <main className="bg-black text-compText h-screen">
-        <Outlet />
-      </main>
-    </>
+
+      <Outlet />
+    </main>
   );
 }
 

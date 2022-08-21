@@ -55,7 +55,7 @@ export default function Header() {
           </>
         ) : null}
       </header>
-      <hr className="border-1 bg-line border-line" />
+      <hr className=" bg-line p-0.25" />
     </>
   );
 }

@@ -9,7 +9,9 @@ function App() {
           Likely going to happen within the component
       */}
       <Header />
-      <Outlet />
+      <main className="bg-black text-compText h-screen">
+        <Outlet />
+      </main>
     </>
   );
 }

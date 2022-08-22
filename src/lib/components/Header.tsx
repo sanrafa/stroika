@@ -20,7 +20,7 @@ export default function Header() {
   return (
     <>
       <header className={match ? "project-header" : "header"}>
-        <Link to="/" className="block w-1/6 p-2">
+        <Link to="/" className="block w-1/6 p-2 ml-1">
           <img src={logo} alt="Stroika logo" className="" />
         </Link>
         {match ? (

@@ -18,6 +18,9 @@ module.exports = {
         josefin: ["Josefin Sans", "sans-serif"],
         manrope: ["Manrope", "sans-serif"],
       },
+      boxShadow: {
+        inset: "inset 0px 2px 4px rgba(0, 0, 0, 0.17)",
+      },
     },
   },
   plugins: [],

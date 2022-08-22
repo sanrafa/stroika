@@ -20,7 +20,7 @@ export default function Column({ name }: ColumnProps) {
         </div>
       </div>
       <hr className="w-[90%] bg-white" />
-      <div className="bg-column h-full w-full mt-2 rounded">
+      <div className="bg-column h-full w-full mt-2 rounded overflow-y-auto hide-scroll">
         {categories.map((cat) => (
           <Category name={cat.categoryName} key={cat.categoryId} />
         ))}

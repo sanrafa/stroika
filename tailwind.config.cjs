@@ -30,9 +30,23 @@ module.exports = {
         rotate180: {
           "0%, 100%": { transform: "rotate(180deg)" },
         },
+        slideDown: {
+          from: {
+            height: 0,
+          },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        slideUp: {
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: { height: 0 },
+        },
       },
       animation: {
         rotate180: "rotate180 500ms infinite",
+        slideDown: "slideDown 150ms linear",
+        slideUp: "slideUp 125ms linear",
       },
     },
   },

@@ -31,4 +31,10 @@
   [data-state="closed"] > #menu-icon {
     @apply transition duration-[125] ease-out;
   }
+  #category-slider[data-state="open"] {
+    @apply animate-slideDown;
+  }
+  #category-slider[data-state="closed"] {
+    @apply animate-slideUp;
+  }
 }

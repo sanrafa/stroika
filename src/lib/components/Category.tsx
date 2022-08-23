@@ -67,7 +67,7 @@ export default function CategoryBase({
                 </h3>
               </header>
             </Accordion.Header>
-            <Accordion.Content asChild={true}>
+            <Accordion.Content asChild={true} id="category-slider">
               <div className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm overflow-y-auto space-y-2 p-2 hide-scroll">
                 {features.map((feat) => (
                   <FeatureComponent

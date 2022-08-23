@@ -2,13 +2,21 @@ import { Checkbox, CheckboxIndicator } from "./index";
 import type { Feature } from "../mocks/features"; // TODO: put types in dedicated folder
 import { ChevronDownIcon as Chevron } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
+import React from "react";
 
 type CategoryProps = {
   name: string;
+  isSuspended: boolean;
   features: Feature[];
 };
 
-export default function CategoryBase({ name, features }: CategoryProps) {
+export default function CategoryBase({
+  name,
+  features,
+  isSuspended,
+}: CategoryProps) {
+  /* This and the checkbox are PURELY PRESENTATIONAL at this time */
+  const [suspended, setSuspended] = React.useState(isSuspended);
   return (
     <Accordion.Root type="single" asChild collapsible>
       <div className="flex flex-col bg-category justify-between m-1 font-manrope text-compText rounded-md shadow-md">
@@ -28,7 +36,11 @@ export default function CategoryBase({ name, features }: CategoryProps) {
                       </span>
                     </div>
                   ) : (
-                    <Checkbox className="bg-categoryToggleUnchecked w-7 h-7 flex justify-center items-center shadow-inset rounded mb-2">
+                    <Checkbox
+                      defaultChecked={suspended}
+                      onCheckedChange={() => setSuspended(!suspended)}
+                      className="bg-categoryToggleUnchecked w-7 h-7 flex justify-center items-center shadow-inset rounded mb-2"
+                    >
                       <CheckboxIndicator>
                         <div className="bg-categoryToggleChecked w-7 h-7 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
                       </CheckboxIndicator>

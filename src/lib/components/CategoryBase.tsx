@@ -19,7 +19,11 @@ export default function CategoryBase({
   const [suspended, setSuspended] = React.useState(isSuspended);
   return (
     <Accordion.Root type="single" asChild collapsible>
-      <div className="flex flex-col bg-category justify-between m-1 font-manrope text-compText rounded-md shadow-md">
+      <div
+        className={`flex flex-col bg-category justify-between m-1 font-manrope text-compText rounded-md shadow-md ${
+          suspended ? "opacity-50" : null
+        }`}
+      >
         <Accordion.Item value={name} asChild>
           <>
             <Accordion.Header asChild>

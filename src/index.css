@@ -2,11 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+.hide-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+.hide-scroll::-webkit-scrollbar {
+  /* WebKit */
+  width: 0;
+  height: 0;
+}
+
 @layer components {
   .project-header {
     @apply bg-black flex justify-between items-center;
   }
   .header {
     @apply bg-black flex justify-center;
+  }
+  [data-state="open"] > svg {
+    @apply rotate-180 transition duration-[125] ease-in-out;
+  }
+  [data-state="closed"] > svg {
+    @apply transition duration-[125] ease-in-out;
+  }
+  [data-state="open"] > #menu-icon {
+    @apply rotate-90 transition duration-[125] ease-in-out;
+  }
+  [data-state="closed"] > #menu-icon {
+    @apply transition duration-[125] ease-out;
   }
 }

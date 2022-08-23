@@ -20,7 +20,7 @@ export default function Header() {
   return (
     <>
       <header className={match ? "project-header" : "header"}>
-        <Link to="/" className="block w-1/6 p-2">
+        <Link to="/" className="block w-1/6 p-2 ml-1">
           <img src={logo} alt="Stroika logo" className="" />
         </Link>
         {match ? (
@@ -35,7 +35,12 @@ export default function Header() {
                     type="button"
                     className="hover:bg-gray-800 p-4 rounded-full m-1"
                   >
-                    <MenuIcon width={32} height={32} color="white" />
+                    <MenuIcon
+                      width={32}
+                      height={32}
+                      color="white"
+                      id="menu-icon"
+                    />
                   </button>
                 </DropdownTrigger>
                 <DropdownContent className="bg-white text-black font-manrope text-center p-0.5">

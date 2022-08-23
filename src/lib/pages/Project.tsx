@@ -7,7 +7,7 @@ function ProjectPage() {
       <hr />
       <div className="bg-project p-4 m-4 h-5/6 flex justify-between">
         {testColumns.map((col) => (
-          <Column name={col.columnName} />
+          <Column name={col.columnName} key={col.columnId} />
         ))}
       </div>
     </>

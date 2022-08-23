@@ -13,12 +13,28 @@ module.exports = {
         project: "rgba(13, 65, 73, 0.3)",
         column: "rgba(253, 253, 252, 0.1)",
         columnBorder: "rgba(52, 190, 218, 0.3)",
+        featureContainer: "rgba(4, 20, 22, 0.75)",
+      },
+      fontSize: {
+        xxs: "11px",
       },
       fontFamily: {
         josefin: ["Josefin Sans", "sans-serif"],
         manrope: ["Manrope", "sans-serif"],
       },
+      boxShadow: {
+        inset: "inset 0px 2px 4px rgba(0, 0, 0, 0.17)",
+        category: "inset 2px 4px 4px rgba(0, 0, 0, 0.25)",
+      },
+      keyframes: {
+        rotate180: {
+          "0%, 100%": { transform: "rotate(180deg)" },
+        },
+      },
+      animation: {
+        rotate180: "rotate180 500ms infinite",
+      },
     },
   },
-  plugins: [],
+  plugins: [require("./src/plugins/tailwindcss/scrollbar.cjs")],
 };

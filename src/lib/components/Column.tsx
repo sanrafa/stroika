@@ -1,4 +1,5 @@
-import { ColumnDropdown } from "./index";
+import { ColumnDropdown, Category } from "./index";
+import categories from "../mocks/categories";
 
 type ColumnProps = {
   name: string;
@@ -19,7 +20,18 @@ export default function Column({ name }: ColumnProps) {
         </div>
       </div>
       <hr className="w-[90%] bg-white" />
-      <div className="bg-column h-full w-full mt-2 rounded">CATEGORIES</div>
+      <div className="bg-column h-full w-full mt-2 rounded overflow-y-auto hide-scroll">
+        {categories
+          .sort((a, b) => Number(a.isSuspended) - Number(b.isSuspended))
+          .map((cat) => (
+            <Category
+              name={cat.categoryName}
+              features={cat.features}
+              isSuspended={cat.isSuspended}
+              key={cat.categoryId}
+            />
+          ))}
+      </div>
     </section>
   );
 }

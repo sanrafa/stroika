@@ -7,7 +7,7 @@ type ColumnProps = {
 
 export default function Column({ name }: ColumnProps) {
   return (
-    <section className="bg-black w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
+    <section className="bg-black md:w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
       <div className="flex items-center justify-center w-full">
         <h1
           className="font-manrope text-3xl tracking-widest p-1

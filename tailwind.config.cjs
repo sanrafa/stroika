@@ -15,6 +15,9 @@ module.exports = {
         columnBorder: "rgba(52, 190, 218, 0.3)",
         featureContainer: "rgba(4, 20, 22, 0.75)",
       },
+      fontSize: {
+        xxs: "11px",
+      },
       fontFamily: {
         josefin: ["Josefin Sans", "sans-serif"],
         manrope: ["Manrope", "sans-serif"],

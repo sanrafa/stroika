@@ -25,4 +25,10 @@
   [data-state="closed"] > svg {
     @apply transition duration-[125] ease-in-out;
   }
+  [data-state="open"] > #menu-icon {
+    @apply rotate-90 transition duration-[125] ease-in-out;
+  }
+  [data-state="closed"] > #menu-icon {
+    @apply transition duration-[125] ease-out;
+  }
 }

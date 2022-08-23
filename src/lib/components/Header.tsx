@@ -35,7 +35,12 @@ export default function Header() {
                     type="button"
                     className="hover:bg-gray-800 p-4 rounded-full m-1"
                   >
-                    <MenuIcon width={32} height={32} color="white" />
+                    <MenuIcon
+                      width={32}
+                      height={32}
+                      color="white"
+                      id="menu-icon"
+                    />
                   </button>
                 </DropdownTrigger>
                 <DropdownContent className="bg-white text-black font-manrope text-center p-0.5">

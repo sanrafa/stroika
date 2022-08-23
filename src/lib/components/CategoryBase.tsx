@@ -1,12 +1,14 @@
 import { Checkbox, CheckboxIndicator } from "./index";
+import type { Feature } from "../mocks/features"; // TODO: put types in dedicated folder
 import { ChevronDownIcon as Chevron } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 
 type CategoryProps = {
   name: string;
+  features: Feature[];
 };
 
-export default function CategoryBase({ name }: CategoryProps) {
+export default function CategoryBase({ name, features }: CategoryProps) {
   return (
     <Accordion.Root type="single" asChild collapsible>
       <div className="flex flex-col bg-category justify-between m-1 font-manrope text-compText rounded-md shadow-md">
@@ -15,11 +17,24 @@ export default function CategoryBase({ name }: CategoryProps) {
             <Accordion.Header asChild>
               <header className="flex items-center justify-flex-start lg:space-x-16 md:space-x-8">
                 <div className="flex flex-col items-center justify-center p-4">
-                  <Checkbox className="bg-categoryToggleUnchecked w-7 h-7 flex justify-center items-center shadow-inset rounded mb-2">
-                    <CheckboxIndicator>
-                      <div className="bg-categoryToggleChecked w-7 h-7 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
-                    </CheckboxIndicator>
-                  </Checkbox>
+                  {features.length ? (
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold">{`${
+                        features.filter((feat) => feat.isComplete === true)
+                          .length
+                      } / ${features.length}`}</span>
+                      <span className="text-xxs text-categoryToggleUnchecked stroke-black">
+                        features <br /> complete
+                      </span>
+                    </div>
+                  ) : (
+                    <Checkbox className="bg-categoryToggleUnchecked w-7 h-7 flex justify-center items-center shadow-inset rounded mb-2">
+                      <CheckboxIndicator>
+                        <div className="bg-categoryToggleChecked w-7 h-7 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
+                      </CheckboxIndicator>
+                    </Checkbox>
+                  )}
+
                   <Accordion.Trigger asChild={true}>
                     <button type="button" className="-mb-4">
                       <Chevron width={32} height={32} color="black" />
@@ -27,13 +42,17 @@ export default function CategoryBase({ name }: CategoryProps) {
                   </Accordion.Trigger>
                 </div>
 
-                <h3 className="lg:text-3xl md:text-2xl sm:text-xl p-2">
+                <h3 className="lg:text-3xl md:text-2xl sm:text-xl p-0.5 mr-1">
                   {name}
                 </h3>
               </header>
             </Accordion.Header>
             <Accordion.Content asChild={true}>
-              <div className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm"></div>
+              <div className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm">
+                {features.map((feat) => (
+                  <p>{feat.featureName}</p>
+                ))}
+              </div>
             </Accordion.Content>
           </>
         </Accordion.Item>

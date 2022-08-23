@@ -19,4 +19,10 @@
   .header {
     @apply bg-black flex justify-center;
   }
+  [data-state="open"] > svg {
+    @apply rotate-180 transition duration-[125] ease-in-out;
+  }
+  [data-state="closed"] > svg {
+    @apply transition duration-[125] ease-in-out;
+  }
 }

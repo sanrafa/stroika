@@ -23,6 +23,14 @@ module.exports = {
         inset: "inset 0px 2px 4px rgba(0, 0, 0, 0.17)",
         category: "inset 2px 4px 4px rgba(0, 0, 0, 0.25)",
       },
+      keyframes: {
+        rotate180: {
+          "0%, 100%": { transform: "rotate(180deg)" },
+        },
+      },
+      animation: {
+        rotate180: "rotate180 500ms infinite",
+      },
     },
   },
   plugins: [require("./src/plugins/tailwindcss/scrollbar.cjs")],

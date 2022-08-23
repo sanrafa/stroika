@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxIndicator } from "../index";
+import { Checkbox, CheckboxIndicator } from "./index";
 import { ChevronDownIcon as Chevron } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 
@@ -9,7 +9,7 @@ type CategoryProps = {
 export default function CategoryBase({ name }: CategoryProps) {
   return (
     <Accordion.Root type="single" asChild collapsible>
-      <div className="flex bg-category justify-between m-1 flex-col">
+      <div className="flex flex-col bg-category justify-between m-1 font-manrope text-compText rounded-md shadow-md">
         <Accordion.Item value={name} asChild>
           <>
             <Accordion.Header asChild>
@@ -17,12 +17,12 @@ export default function CategoryBase({ name }: CategoryProps) {
                 <div className="flex flex-col items-center justify-center p-4">
                   <Checkbox className="bg-categoryToggleUnchecked w-7 h-7 flex justify-center items-center shadow-inset rounded mb-2">
                     <CheckboxIndicator>
-                      <div className="bg-categoryToggleChecked w-7 h-7 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm" />
+                      <div className="bg-categoryToggleChecked w-7 h-7 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
                     </CheckboxIndicator>
                   </Checkbox>
                   <Accordion.Trigger asChild={true}>
-                    <button type="button">
-                      <Chevron width={32} height={32} />
+                    <button type="button" className="-mb-4">
+                      <Chevron width={32} height={32} color="black" />
                     </button>
                   </Accordion.Trigger>
                 </div>

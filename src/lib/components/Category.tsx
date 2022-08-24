@@ -1,6 +1,13 @@
-import { Checkbox, CheckboxIndicator } from "./index";
+import {
+  Checkbox,
+  CheckboxIndicator,
+  Feature as FeatureComponent,
+} from "./index";
 import type { Feature } from "../mocks/features"; // TODO: put types in dedicated folder
-import { ChevronDownIcon as Chevron } from "@radix-ui/react-icons";
+import {
+  ChevronDownIcon as Chevron,
+  PlusCircledIcon as AddIcon,
+} from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
 
@@ -20,17 +27,17 @@ export default function CategoryBase({
   return (
     <Accordion.Root type="single" asChild collapsible>
       <div
-        className={`flex flex-col bg-category justify-between m-1 font-manrope text-compText rounded-md shadow-md ${
+        className={`flex flex-col bg-category justify-between m-1 font-manrope text-compText rounded-md shadow-md max-h-[75%] min-w-fit  ${
           suspended ? "opacity-50" : null
         }`}
       >
         <Accordion.Item value={name} asChild>
           <>
             <Accordion.Header asChild>
-              <header className="flex items-center justify-flex-start lg:space-x-16 md:space-x-8">
-                <div className="flex flex-col items-center justify-center p-4">
+              <header className="flex items-center justify-between pr-4 md:space-x-8">
+                <div className="flex flex-col items-center justify-center p-4 leading-3 ">
                   {features.length ? (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col sm:-mr-4 lg:-mr-0">
                       <span className="text-sm font-bold">{`${
                         features.filter((feat) => feat.isComplete === true)
                           .length
@@ -58,15 +65,22 @@ export default function CategoryBase({
                   </Accordion.Trigger>
                 </div>
 
-                <h3 className="lg:text-3xl md:text-2xl sm:text-xl p-0.5 mr-1">
+                <h3 className="lg:text-3xl md:text-2xl sm:text-xl p-0.5 mr-2">
                   {name}
                 </h3>
+                <button type="button" className="hover:text-green-600">
+                  <AddIcon width={24} height={24} />
+                </button>
               </header>
             </Accordion.Header>
-            <Accordion.Content asChild={true}>
-              <div className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm">
+            <Accordion.Content asChild={true} id="category-slider">
+              <div className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm overflow-y-auto space-y-2 p-2 hide-scroll">
                 {features.map((feat) => (
-                  <p>{feat.featureName}</p>
+                  <FeatureComponent
+                    name={feat.featureName}
+                    isComplete={feat.isComplete}
+                    tasks={feat.tasks}
+                  />
                 ))}
               </div>
             </Accordion.Content>

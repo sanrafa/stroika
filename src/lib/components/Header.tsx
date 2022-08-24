@@ -60,7 +60,7 @@ export default function Header() {
           </>
         ) : null}
       </header>
-      <hr className=" bg-line p-0.25" />
+      <hr className=" border-line p-0.25 border rounded" />
     </>
   );
 }

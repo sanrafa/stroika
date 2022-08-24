@@ -1,3 +1,4 @@
+import { CardStackPlusIcon } from "@radix-ui/react-icons";
 import { ColumnDropdown, Category } from "./index";
 import categories from "../mocks/categories";
 
@@ -32,6 +33,12 @@ export default function Column({ name }: ColumnProps) {
             />
           ))}
       </div>
+      <button
+        type="button"
+        className="static inset-x-0 bottom-0 bg-green-700 w-full rounded-b-sm opacity-30 flex justify-center hover:opacity-100"
+      >
+        <CardStackPlusIcon width={24} height={24} />
+      </button>
     </section>
   );
 }

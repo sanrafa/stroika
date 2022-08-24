@@ -4,7 +4,10 @@ import {
   Feature as FeatureComponent,
 } from "./index";
 import type { Feature } from "../mocks/features"; // TODO: put types in dedicated folder
-import { ChevronDownIcon as Chevron } from "@radix-ui/react-icons";
+import {
+  ChevronDownIcon as Chevron,
+  PlusCircledIcon as AddIcon,
+} from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
 
@@ -31,7 +34,7 @@ export default function CategoryBase({
         <Accordion.Item value={name} asChild>
           <>
             <Accordion.Header asChild>
-              <header className="flex items-center justify-flex-start lg:space-x-16 md:space-x-8">
+              <header className="flex items-center justify-between pr-4 md:space-x-8">
                 <div className="flex flex-col items-center justify-center p-4 leading-3 ">
                   {features.length ? (
                     <div className="flex flex-col sm:-mr-4 lg:-mr-0">
@@ -65,6 +68,9 @@ export default function CategoryBase({
                 <h3 className="lg:text-3xl md:text-2xl sm:text-xl p-0.5 mr-2">
                   {name}
                 </h3>
+                <button type="button" className="hover:text-green-600">
+                  <AddIcon width={24} height={24} />
+                </button>
               </header>
             </Accordion.Header>
             <Accordion.Content asChild={true} id="category-slider">

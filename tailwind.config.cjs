@@ -46,7 +46,7 @@ module.exports = {
       animation: {
         rotate180: "rotate180 500ms infinite",
         slideDown: "slideDown 150ms linear",
-        slideUp: "slideUp 125ms linear",
+        slideUp: "slideUp 150ms linear",
       },
     },
   },

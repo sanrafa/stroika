@@ -1,3 +1,5 @@
+import { ITask } from "../types";
+
 import {
   CheckCircledIcon as CheckIcon,
   ListBulletIcon as TasksIcon,
@@ -6,7 +8,7 @@ import {
 type FeatureProps = {
   name: string;
   isComplete: boolean;
-  tasks: string[];
+  tasks: ITask[];
 };
 
 export default function Feature({ name, isComplete, tasks }: FeatureProps) {
@@ -23,8 +25,9 @@ export default function Feature({ name, isComplete, tasks }: FeatureProps) {
         ) : (
           <span className="text-blue-100">
             <span className="text-sm text-compText font-bold">
-              {/* similar to categories, changes dynamic based on tasks marked complete */}
-              {`0 / ${tasks.length}`}
+              {`${tasks.filter((task) => task.completed === true).length} / ${
+                tasks.length
+              }`}
             </span>
             <br /> tasks <br /> complete
           </span>

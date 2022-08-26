@@ -1,4 +1,5 @@
 import { ITask } from "../types";
+import { TaskView } from "./index";
 
 import {
   CheckCircledIcon as CheckIcon,
@@ -35,12 +36,15 @@ export default function Feature({ name, isComplete, tasks }: FeatureProps) {
       </div>
 
       <h4 className="p-0.5 ml-1">{name}</h4>
-      <button
-        type="button"
-        className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked"
-      >
-        <TasksIcon />
-      </button>
+      {/* Wrap with TaskView component to serve as trigger */}
+      <TaskView tasks={tasks} featureName={name}>
+        <button
+          type="button"
+          className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked"
+        >
+          <TasksIcon />
+        </button>
+      </TaskView>
     </div>
   );
 }

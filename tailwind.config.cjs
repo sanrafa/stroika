@@ -14,6 +14,7 @@ module.exports = {
         column: "rgba(253, 253, 252, 0.1)",
         columnBorder: "rgba(52, 190, 218, 0.3)",
         featureContainer: "rgba(4, 20, 22, 0.75)",
+        taskView: "rgba(28, 132, 151, 0.9)",
       },
       fontSize: {
         xxs: "11px",
@@ -25,6 +26,7 @@ module.exports = {
       boxShadow: {
         inset: "inset 0px 2px 4px rgba(0, 0, 0, 0.17)",
         category: "inset 2px 4px 4px rgba(0, 0, 0, 0.25)",
+        taskView: "2px 2px 4px 2px rgba(28, 132, 151, 0.25)",
       },
       keyframes: {
         rotate180: {

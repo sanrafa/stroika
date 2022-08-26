@@ -26,7 +26,7 @@ module.exports = {
       boxShadow: {
         inset: "inset 0px 2px 4px rgba(0, 0, 0, 0.17)",
         category: "inset 2px 4px 4px rgba(0, 0, 0, 0.25)",
-        taskView: "2px 2px 4px 2px rgba(28, 132, 151, 0.25)",
+        taskView: "2px 2px 3px 2px rgba(28, 132, 151, 0.25)",
       },
       keyframes: {
         rotate180: {

@@ -1,6 +1,10 @@
 import { Checkbox, CheckboxIndicator } from "./index";
 import * as Dialog from "@radix-ui/react-dialog";
-import { CrossCircledIcon as CloseIcon } from "@radix-ui/react-icons";
+import {
+  CrossCircledIcon as CloseIcon,
+  Pencil1Icon as EditIcon,
+  CircleBackslashIcon as DeleteIcon,
+} from "@radix-ui/react-icons";
 import { ITask } from "../types";
 import React from "react";
 
@@ -17,7 +21,41 @@ type TaskProps = {
 };
 
 const Task = ({ id, description, completed }: TaskProps) => {
-  return <li>{description}</li>;
+  const [complete, setComplete] = React.useState(completed);
+  return (
+    <li
+      className={`flex space-x-2 px-4 py-1 rounded-md hover:bg-slate-900 ${
+        completed ? "self-center opacity-60" : null
+      }`}
+    >
+      <Checkbox
+        defaultChecked={completed}
+        onCheckedChange={() => setComplete(!complete)}
+        className="bg-categoryToggleUnchecked w-5 h-5 flex justify-center items-center self-center shadow-inset rounded"
+      >
+        <CheckboxIndicator>
+          <div className="bg-categoryToggleChecked w-5 h-5 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
+        </CheckboxIndicator>
+      </Checkbox>
+      <span className="self-baseline">{description}</span>
+      {!completed ? (
+        <>
+          <button
+            type="button"
+            className="text-feature rounded-full px-2 hover:text-categoryToggleUnchecked hover:bg-slate-700"
+          >
+            <EditIcon />
+          </button>
+          <button
+            type="button"
+            className="text-red-500 px-2 rounded-full hover:text-red-600 hover:bg-slate-700"
+          >
+            <DeleteIcon />
+          </button>
+        </>
+      ) : null}
+    </li>
+  );
 };
 
 export default function TaskView({
@@ -57,7 +95,7 @@ export default function TaskView({
               <input
                 type="text"
                 name="task-name"
-                className="bg-slate-500 text-center rounded-l-md p-0.5 focus:bg-white"
+                className="bg-slate-500 text-center rounded-l-md p-0.5 focus:bg-white mb-2"
                 placeholder="Add a new task"
               />
               <button
@@ -67,15 +105,18 @@ export default function TaskView({
                 ADD
               </button>
             </form>
-            <ul>
-              {tasks.map((task) => (
-                <Task
-                  key={task.id}
-                  id={task.id}
-                  description={task.description}
-                  completed={task.completed}
-                />
-              ))}
+            <ul className="space-y-1 flex flex-col min-w-fit overflow-y-auto hide-scroll">
+              {tasks
+                // completed tasks are sorted to the bottom
+                .sort((a, b) => Number(a.completed) - Number(b.completed))
+                .map((task) => (
+                  <Task
+                    key={task.id}
+                    id={task.id}
+                    description={task.description}
+                    completed={task.completed}
+                  />
+                ))}
             </ul>
           </aside>
         </Dialog.Content>

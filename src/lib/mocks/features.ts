@@ -1,8 +1,11 @@
+import { ITask } from "../types";
+import { default as tasks } from "./tasks";
+
 export interface Feature {
   featureId: string;
   featureName: string;
   isComplete: boolean; // TODO: change to computed value coerced to boolean
-  tasks: string[];
+  tasks: ITask[];
 }
 
 const testFeatures: Feature[] = [
@@ -10,13 +13,24 @@ const testFeatures: Feature[] = [
     featureId: "feat1",
     featureName: "This is feature 1 with a long name.",
     isComplete: false,
-    tasks: ["task1", "task2"],
+    tasks: tasks,
   },
   {
     featureId: "feat2",
     featureName: "This is feature 2.",
     isComplete: true,
-    tasks: [],
+    tasks: [
+      {
+        id: "doneTask1",
+        description: "This task is complete.",
+        completed: true,
+      },
+      {
+        id: "doneTask2",
+        description: "This task is complete.",
+        completed: true,
+      },
+    ],
   },
   {
     featureId: "feat3",

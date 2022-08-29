@@ -5,3 +5,4 @@ export { default as ColumnDropdown } from "./ColumnDropdown";
 export { default as Category } from "./Category";
 export * from "./Checkbox";
 export { default as Feature } from "./Feature";
+export { default as TaskView } from "./TaskView";

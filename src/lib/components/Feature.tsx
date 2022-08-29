@@ -1,3 +1,6 @@
+import { ITask } from "../types";
+import { TaskView } from "./index";
+
 import {
   CheckCircledIcon as CheckIcon,
   ListBulletIcon as TasksIcon,
@@ -6,7 +9,7 @@ import {
 type FeatureProps = {
   name: string;
   isComplete: boolean;
-  tasks: string[];
+  tasks: ITask[];
 };
 
 export default function Feature({ name, isComplete, tasks }: FeatureProps) {
@@ -23,8 +26,9 @@ export default function Feature({ name, isComplete, tasks }: FeatureProps) {
         ) : (
           <span className="text-blue-100">
             <span className="text-sm text-compText font-bold">
-              {/* similar to categories, changes dynamic based on tasks marked complete */}
-              {`0 / ${tasks.length}`}
+              {`${tasks.filter((task) => task.completed === true).length} / ${
+                tasks.length
+              }`}
             </span>
             <br /> tasks <br /> complete
           </span>
@@ -32,12 +36,15 @@ export default function Feature({ name, isComplete, tasks }: FeatureProps) {
       </div>
 
       <h4 className="p-0.5 ml-1">{name}</h4>
-      <button
-        type="button"
-        className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked"
-      >
-        <TasksIcon />
-      </button>
+      {/* Wrap with TaskView component to serve as trigger */}
+      <TaskView tasks={tasks} featureName={name}>
+        <button
+          type="button"
+          className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked"
+        >
+          <TasksIcon />
+        </button>
+      </TaskView>
     </div>
   );
 }

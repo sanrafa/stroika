@@ -1,18 +1,20 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import projectsSlice from "./projects";
 import columnsSlice from "./columns";
 import categoriesSlice from "./categories";
 import featuresSlice from "./features";
 import taskSlice from "./tasks";
 
+const rootReducer = combineReducers({
+  projects: projectsSlice,
+  columns: columnsSlice,
+  categories: categoriesSlice,
+  features: featuresSlice,
+  tasks: taskSlice,
+});
+
 const store = configureStore({
-  reducer: {
-    projects: projectsSlice,
-    columns: columnsSlice,
-    categories: categoriesSlice,
-    features: featuresSlice,
-    tasks: taskSlice,
-  },
+  reducer: rootReducer,
 });
 
 export type RootState = ReturnType<typeof store.getState>;

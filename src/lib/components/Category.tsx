@@ -80,6 +80,7 @@ export default function CategoryBase({
                     name={feat.featureName}
                     isComplete={feat.isComplete}
                     tasks={feat.tasks}
+                    key={feat.featureId}
                   />
                 ))}
               </div>

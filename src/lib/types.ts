@@ -3,13 +3,14 @@ export interface IProject {
   name: string;
   createdAt: string;
   updatedAt?: string;
-  columns?: string[];
+  columns: string[];
 }
 
 export interface IColumn {
   id: string;
   name: string;
   order: number;
+  projectId: string;
   categories?: string[];
 }
 

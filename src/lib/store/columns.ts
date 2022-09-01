@@ -11,18 +11,21 @@ export const generateDefaultColumns = (projectId: string): IColumn[] => {
       name: "TO DO",
       order: 0,
       projectId,
+      categories: [],
     },
     {
       id: nanoid(5),
       name: "DOING",
       order: 1,
       projectId,
+      categories: [],
     },
     {
       id: nanoid(5),
       name: "DONE",
       order: 2,
       projectId,
+      categories: [],
     },
   ];
 };

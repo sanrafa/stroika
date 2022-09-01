@@ -24,7 +24,7 @@ const Task = ({ id, description, completed }: TaskProps) => {
   const [complete, setComplete] = React.useState(completed);
   return (
     <li
-      className={`flex space-x-2 px-4 py-1 rounded-md hover:bg-slate-900 ${
+      className={`flex space-x-2 px-4 py-1 rounded-md hover:bg-slate-700 ${
         completed ? "self-center opacity-60" : null
       }`}
     >
@@ -42,13 +42,13 @@ const Task = ({ id, description, completed }: TaskProps) => {
         <>
           <button
             type="button"
-            className="text-feature rounded-full px-2 hover:text-categoryToggleUnchecked hover:bg-slate-700"
+            className="text-feature rounded-full px-2 hover:text-categoryToggleUnchecked hover:bg-slate-600"
           >
             <EditIcon />
           </button>
           <button
             type="button"
-            className="text-red-500 px-2 rounded-full hover:text-red-600 hover:bg-slate-700"
+            className="text-red-500 px-2 rounded-full hover:text-red-600 hover:bg-slate-600"
           >
             <DeleteIcon />
           </button>

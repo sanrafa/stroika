@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <Route path="/" element={<App />}>
           <Route index element={<Homepage />} />
           <Route path="project/:id" element={<ProjectView />} />
-          <Route path="project" element={<ProjectPage />} />
+          {/*  <Route path="project" element={<ProjectPage />} /> */}
           <Route path="projects" element={<ProjectsPage />} />
         </Route>
       </Routes>

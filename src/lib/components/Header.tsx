@@ -1,4 +1,4 @@
-import { useMatch, Link } from "react-router-dom";
+import { useMatch, Link, useParams } from "react-router-dom";
 import {
   Dropdown,
   DropdownTrigger,
@@ -13,9 +13,14 @@ import {
   DotsVerticalIcon as MenuIcon,
   Cross1Icon as CloseIcon,
 } from "@radix-ui/react-icons";
+import { useAppSelector } from "../store/hooks";
 
 export default function Header() {
-  let match = useMatch("project");
+  let match = useMatch("/project/:id");
+  const { id } = useParams();
+  const project = useAppSelector(
+    (state) => state.projects.entities[id as string]
+  );
 
   return (
     <>
@@ -26,7 +31,7 @@ export default function Header() {
         {match ? (
           <>
             <h1 className="text-4xl text-white font-josefin mt-2 font-light">
-              PROJECT NAME
+              {project?.name}
             </h1>
             <div className="flex space-x-4">
               <Dropdown>

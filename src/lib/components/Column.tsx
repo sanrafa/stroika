@@ -1,12 +1,15 @@
 import { CardStackPlusIcon } from "@radix-ui/react-icons";
 import { ColumnDropdown, Category } from "./index";
+import { useAppSelector } from "../store/hooks";
 import categories from "../mocks/categories";
 
 type ColumnProps = {
-  name: string;
+  id: string;
 };
 
-export default function Column({ name }: ColumnProps) {
+export default function Column({ id }: ColumnProps) {
+  const column = useAppSelector((state) => state.columns.entities[id]);
+
   return (
     <section className="bg-black md:w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
       <div className="flex items-center justify-center w-full">
@@ -14,7 +17,7 @@ export default function Column({ name }: ColumnProps) {
           className="font-manrope text-3xl tracking-widest p-1
       "
         >
-          {name}
+          {column?.name}
         </h1>
         <div className="pl-4">
           <ColumnDropdown />

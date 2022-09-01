@@ -11,7 +11,7 @@ export interface IColumn {
   name: string;
   order: number;
   projectId: string;
-  categories?: string[];
+  categories: string[];
 }
 
 export interface ICategory {
@@ -27,7 +27,7 @@ export interface IFeature {
   name: string;
   completed: boolean;
   order: number;
-  tasks?: string[];
+  tasks: string[];
 }
 
 export interface ITask {

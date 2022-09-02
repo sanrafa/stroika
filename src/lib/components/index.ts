@@ -6,3 +6,4 @@ export { default as Category } from "./Category";
 export * from "./Checkbox";
 export { default as Feature } from "./Feature";
 export { default as TaskView } from "./TaskView";
+export { default as AddProjectForm } from "./AddProjectForm";

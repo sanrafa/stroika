@@ -1,16 +1,17 @@
 export interface IProject {
   id: string;
   name: string;
-  createdAt: string | Date;
-  updatedAt?: string | Date;
-  columns?: IColumn[];
+  createdAt: string;
+  updatedAt: string | null;
+  columns: string[];
 }
 
 export interface IColumn {
   id: string;
   name: string;
   order: number;
-  categories?: ICategory[];
+  projectId: string;
+  categories: string[];
 }
 
 export interface ICategory {
@@ -18,18 +19,20 @@ export interface ICategory {
   name: string;
   order: number;
   suspended: boolean;
-  features: IFeature[];
+  features: string[];
 }
 
 export interface IFeature {
   id: string;
   name: string;
   completed: boolean;
-  tasks?: ITask[];
+  order: number;
+  tasks: string[];
 }
 
 export interface ITask {
   id: string;
+  order: number;
   description: string;
   completed: boolean;
 }

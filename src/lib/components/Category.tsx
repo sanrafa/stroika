@@ -10,20 +10,21 @@ import {
 } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
+import { useAppSelector } from "../store/hooks";
 
 type CategoryProps = {
-  name: string;
-  isSuspended: boolean;
-  features: Feature[];
+  id: string;
 };
 
-export default function CategoryBase({
-  name,
-  features,
-  isSuspended,
-}: CategoryProps) {
+export default function CategoryBase({ id }: CategoryProps) {
   /* This and the checkbox are PURELY PRESENTATIONAL at this time */
-  const [suspended, setSuspended] = React.useState(isSuspended);
+  const category = useAppSelector((state) => state.categories.entities[id]);
+  const features = useAppSelector((state) =>
+    Object.values(state.features.entities).filter((feat) =>
+      category?.features.includes(feat?.id as string)
+    )
+  );
+  const [suspended, setSuspended] = React.useState(false);
   return (
     <Accordion.Root type="single" asChild collapsible>
       <div
@@ -31,7 +32,7 @@ export default function CategoryBase({
           suspended ? "opacity-50" : null
         }`}
       >
-        <Accordion.Item value={name} asChild>
+        <Accordion.Item value={category?.name as string} asChild>
           <>
             <Accordion.Header asChild>
               <header className="flex items-center justify-between pr-4 md:space-x-8">
@@ -39,7 +40,7 @@ export default function CategoryBase({
                   {features.length ? (
                     <div className="flex flex-col sm:-mr-4 lg:-mr-0">
                       <span className="text-sm font-bold">{`${
-                        features.filter((feat) => feat.isComplete === true)
+                        features.filter((feat) => feat?.completed === true)
                           .length
                       } / ${features.length}`}</span>
                       <span className="text-xxs text-categoryToggleUnchecked stroke-black">
@@ -66,21 +67,17 @@ export default function CategoryBase({
                 </div>
 
                 <h3 className="lg:text-3xl md:text-2xl sm:text-xl p-0.5 mr-2">
-                  {name}
+                  {category?.name}
                 </h3>
                 <button type="button" className="hover:text-green-600">
                   <AddIcon width={24} height={24} />
                 </button>
               </header>
             </Accordion.Header>
-            <Accordion.Content asChild={true} id="category-slider">
+            <Accordion.Content asChild id="category-slider">
               <div className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm overflow-y-auto space-y-2 p-2 hide-scroll">
                 {features.map((feat) => (
-                  <FeatureComponent
-                    name={feat.featureName}
-                    isComplete={feat.isComplete}
-                    tasks={feat.tasks}
-                  />
+                  <FeatureComponent id={feat?.id as string} key={feat?.id} />
                 ))}
               </div>
             </Accordion.Content>

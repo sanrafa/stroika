@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
+import { AddProjectForm } from "../components";
 
 function ProjectsPage() {
   return (
     <>
       <h1>PROJECTS PAGE</h1>
-      <Link to="/project">View Project</Link>
+      <AddProjectForm />
     </>
   );
 }

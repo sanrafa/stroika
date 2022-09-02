@@ -4,7 +4,7 @@ function Homepage() {
   return (
     <>
       <h1>Welcome to Stroika</h1>
-      <Link to="project">GET STARTED</Link>
+      <Link to="projects">GET STARTED</Link>
     </>
   );
 }

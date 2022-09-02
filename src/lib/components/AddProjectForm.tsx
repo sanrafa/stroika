@@ -20,6 +20,7 @@ const AddProjectForm = () => {
         name,
         createdAt: Date(),
         columns: [],
+        updatedAt: null,
       })
     );
     const cols = generateDefaultColumns(id);

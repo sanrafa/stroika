@@ -2,7 +2,7 @@ export interface IProject {
   id: string;
   name: string;
   createdAt: string;
-  updatedAt?: string;
+  updatedAt: string | null;
   columns: string[];
 }
 

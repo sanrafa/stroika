@@ -2,7 +2,6 @@ import { IColumn } from "../types";
 import { createEntityAdapter, createSlice, nanoid } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
-import { addProject, updateProject } from "./projects";
 
 export const generateDefaultColumns = (projectId: string): IColumn[] => {
   return [
@@ -40,7 +39,22 @@ const columnsSlice = createSlice({
   name: "columns",
   initialState,
   reducers: {
-    addColumn: columnsAdapter.addOne,
+    addColumn(
+      state,
+      action: PayloadAction<{
+        id: string;
+        projectId: string;
+        name: string;
+      }>
+    ) {
+      columnsAdapter.addOne(state, {
+        id: action.payload.id,
+        name: action.payload.name,
+        order: state.ids.length + 1,
+        projectId: action.payload.projectId,
+        categories: [],
+      });
+    },
     updateColumn: columnsAdapter.updateOne,
     deleteColumn(
       state,

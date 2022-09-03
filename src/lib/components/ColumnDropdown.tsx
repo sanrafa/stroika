@@ -32,13 +32,18 @@ export default function ColumnDropdown({ id, projectId }: Props) {
           alignOffset={15}
           sideOffset={4}
         >
-          <DropdownItem className="p-0.5">Edit Column</DropdownItem>
+          <DropdownItem>
+            <button type="button" className="p-0.5">
+              Rename Column
+            </button>
+          </DropdownItem>
           <DropdownSeparator asChild>
             <hr color="black" />
           </DropdownSeparator>
-          <DropdownItem className="p-0.5" asChild>
+          <DropdownItem asChild>
             <button
               type="button"
+              className="p-0.5"
               onClick={() => dispatch(deleteColumn({ id, projectId }))}
             >
               Delete Column

@@ -13,9 +13,11 @@ import logo from "../../assets/logo-darkmode.svg";
 import {
   DotsVerticalIcon as MenuIcon,
   Cross1Icon as CloseIcon,
+  ColumnsIcon,
 } from "@radix-ui/react-icons";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { updateProject } from "../store/actions";
+import { updateProject, addColumn } from "../store/actions";
+import { nanoid } from "@reduxjs/toolkit";
 
 export default function Header() {
   const dispatch = useAppDispatch();
@@ -27,6 +29,7 @@ export default function Header() {
 
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(project?.name);
+  const addColumnDisabled = project?.columns.length === 3;
 
   return (
     <>
@@ -65,6 +68,24 @@ export default function Header() {
             )}
 
             <div className="flex space-x-4">
+              <button
+                type="button"
+                className={`p-4 rounded-full m-1 ${
+                  addColumnDisabled ? "opacity-30" : "hover:bg-green-800"
+                }`}
+                disabled={addColumnDisabled}
+                onClick={() => {
+                  dispatch(
+                    addColumn({
+                      id: nanoid(5),
+                      projectId: project?.id as string,
+                      name: "NEW COLUMN",
+                    })
+                  );
+                }}
+              >
+                <ColumnsIcon width={32} height={32} color="white" />
+              </button>
               <Dropdown>
                 <DropdownTrigger asChild>
                   <button

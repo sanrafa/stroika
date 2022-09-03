@@ -2,17 +2,25 @@ import { HamburgerMenuIcon as MenuIcon } from "@radix-ui/react-icons";
 import {
   Dropdown,
   DropdownTrigger,
-  DropdownContent,
   DropdownItem,
   DropdownSeparator,
-  DropdownArrow,
 } from "./index";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
-export default function ColumnDropdown() {
+import { deleteColumn } from "../store/actions";
+import { useAppDispatch } from "../store/hooks";
+
+type Props = {
+  id: string;
+  projectId: string;
+};
+
+export default function ColumnDropdown({ id, projectId }: Props) {
+  const dispatch = useAppDispatch();
+
   return (
     <Dropdown>
-      <DropdownTrigger asChild={true}>
+      <DropdownTrigger asChild>
         <button type="button" className="hover:bg-gray-700">
           <MenuIcon />
         </button>
@@ -25,10 +33,17 @@ export default function ColumnDropdown() {
           sideOffset={4}
         >
           <DropdownItem className="p-0.5">Edit Column</DropdownItem>
-          <DropdownSeparator asChild={true}>
+          <DropdownSeparator asChild>
             <hr color="black" />
           </DropdownSeparator>
-          <DropdownItem className="p-0.5">Delete Column</DropdownItem>
+          <DropdownItem className="p-0.5" asChild>
+            <button
+              type="button"
+              onClick={() => dispatch(deleteColumn({ id, projectId }))}
+            >
+              Delete Column
+            </button>
+          </DropdownItem>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </Dropdown>

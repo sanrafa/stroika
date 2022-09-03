@@ -42,7 +42,15 @@ const columnsSlice = createSlice({
   reducers: {
     addColumn: columnsAdapter.addOne,
     updateColumn: columnsAdapter.updateOne,
-    deleteColumn: columnsAdapter.removeOne,
+    deleteColumn(
+      state,
+      action: PayloadAction<{
+        id: string;
+        projectId: string;
+      }>
+    ) {
+      columnsAdapter.removeOne(state, action.payload.id);
+    },
     addManyColumns: columnsAdapter.addMany,
   },
 });

@@ -20,7 +20,7 @@ export default function Column({ id }: ColumnProps) {
           {column?.name}
         </h1>
         <div className="pl-4">
-          <ColumnDropdown />
+          <ColumnDropdown id={id} projectId={column?.projectId as string} />
         </div>
       </div>
       <hr className="w-[90%] bg-white" />

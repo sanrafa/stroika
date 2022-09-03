@@ -1,6 +1,7 @@
 import { IProject } from "../types";
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
+import { deleteColumn } from "./actions";
 
 const projectsAdapter = createEntityAdapter<IProject>({
   // if both projects have been updated, use that field. Otherwise, creation dates
@@ -19,6 +20,20 @@ const projectsSlice = createSlice({
     addProject: projectsAdapter.addOne,
     updateProject: projectsAdapter.updateOne,
     deleteProject: projectsAdapter.removeOne,
+  },
+  extraReducers: (builder) => {
+    builder.addCase(deleteColumn, (state, action) => {
+      const { id, projectId } = action.payload;
+      if (state.entities[projectId]) {
+        const newColumns = state.entities[projectId]?.columns.filter(
+          (colId) => colId !== id
+        );
+        projectsSlice.caseReducers.updateProject(state, {
+          id: projectId,
+          changes: { columns: newColumns, updatedAt: Date() },
+        });
+      }
+    });
   },
 });
 

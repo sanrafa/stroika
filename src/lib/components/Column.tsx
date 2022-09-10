@@ -68,6 +68,7 @@ export default function Column({ id }: ColumnProps) {
             addCategory({
               id: nanoid(5),
               columnId: id,
+              projectId: column?.projectId as string,
             })
           )
         }

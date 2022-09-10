@@ -5,7 +5,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
-import { deleteColumn } from "./actions";
+import { deleteColumn, deleteProject } from "./actions";
 
 const categoriesAdapter = createEntityAdapter<ICategory>({
   sortComparer: (a, b) => a.order - b.order,
@@ -22,11 +22,13 @@ const categoriesSlice = createSlice({
       action: PayloadAction<{
         id: string;
         columnId: string;
+        projectId: string;
       }>
     ) {
       categoriesAdapter.addOne(state, {
         id: action.payload.id,
         columnId: action.payload.columnId,
+        projectId: action.payload.projectId,
         order:
           Object.values(state.entities).filter(
             (cat) => cat?.columnId === action.payload.columnId
@@ -49,16 +51,24 @@ const categoriesSlice = createSlice({
     deleteCategories: categoriesAdapter.removeMany,
   },
   extraReducers: (builder) => {
-    builder.addCase(deleteColumn, (state, action) => {
-      const { id } = action.payload;
-      const categoriesToDelete = Object.values(state.entities)
-        .filter((cat) => cat?.columnId === id)
-        .map((cat) => cat?.id);
-      categoriesSlice.caseReducers.deleteCategories(
-        state,
-        categoriesToDelete as string[]
-      );
-    });
+    builder
+      .addCase(deleteProject, (state, action) => {
+        const id = action.payload;
+        const categoriesToDelete = Object.values(state.entities)
+          .filter((cat) => cat?.projectId === id)
+          .map((cat) => cat?.id) as string[];
+        categoriesAdapter.removeMany(state, categoriesToDelete);
+      })
+      .addCase(deleteColumn, (state, action) => {
+        const { id } = action.payload;
+        const categoriesToDelete = Object.values(state.entities)
+          .filter((cat) => cat?.columnId === id)
+          .map((cat) => cat?.id);
+        categoriesSlice.caseReducers.deleteCategories(
+          state,
+          categoriesToDelete as string[]
+        );
+      });
   },
 });
 

@@ -19,6 +19,7 @@ export interface ICategory {
   name: string;
   order: number;
   suspended: boolean;
+  projectId: string;
   columnId: string;
   features: string[];
 }
@@ -28,6 +29,8 @@ export interface IFeature {
   name: string;
   completed: boolean;
   order: number;
+  projectId: string;
+  columnId: string;
   categoryId: string;
   tasks: string[];
 }
@@ -37,4 +40,8 @@ export interface ITask {
   order: number;
   description: string;
   completed: boolean;
+  projectId: string;
+  columnId: string;
+  categoryId: string;
+  featureId: string;
 }

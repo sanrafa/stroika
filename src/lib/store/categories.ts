@@ -71,7 +71,7 @@ const categoriesSlice = createSlice({
       })
       .addCase(addFeature, (state, action) => {
         const { id, categoryId } = action.payload;
-        state.entities[categoryId]?.features.push(id);
+        state.entities[categoryId]?.features.unshift(id);
       });
   },
 });

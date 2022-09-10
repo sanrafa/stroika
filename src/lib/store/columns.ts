@@ -79,7 +79,7 @@ const columnsSlice = createSlice({
       })
       .addCase(addCategory, (state, action) => {
         const { id, columnId } = action.payload;
-        state.entities[columnId]?.categories.push(id);
+        state.entities[columnId]?.categories.unshift(id);
       })
       .addCase(deleteCategory, (state, action) => {
         const { id, columnId } = action.payload;

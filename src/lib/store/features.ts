@@ -27,13 +27,19 @@ const featuresSlice = createSlice({
       }>
     ) {
       const { id, categoryId, columnId, projectId } = action.payload;
+      const toUpdate = Object.values(state.entities).map((feat) => ({
+        ...feat,
+        // @ts-ignore
+        order: feat.order + 1,
+      })) as IFeature[];
+      featuresAdapter.upsertMany(state, toUpdate);
       featuresAdapter.addOne(state, {
         id,
         categoryId,
         columnId,
         projectId,
         name: "New Feature",
-        order: state.ids.length + 1,
+        order: 1,
         tasks: [],
         completed: false,
       });

@@ -23,9 +23,9 @@ export default function CategoryBase({ id }: CategoryProps) {
   /* This and the checkbox are PURELY PRESENTATIONAL at this time */
   const category = useAppSelector((state) => state.categories.entities[id]);
   const features = useAppSelector((state) =>
-    Object.values(state.features.entities).filter((feat) =>
-      category?.features.includes(feat?.id as string)
-    )
+    Object.values(state.features.entities)
+      .filter((feat) => category?.features.includes(feat?.id as string))
+      .sort((a, b) => (a?.order as number) - (b?.order as number))
   );
   const [suspended, setSuspended] = React.useState(category?.suspended);
   React.useEffect(() => {

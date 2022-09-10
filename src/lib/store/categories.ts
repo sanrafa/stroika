@@ -25,14 +25,19 @@ const categoriesSlice = createSlice({
         projectId: string;
       }>
     ) {
+      const { id, columnId, projectId } = action.payload;
+      const toUpdate = Object.values(state.entities)
+        .filter((cat) => cat?.columnId === columnId)
+        .map((cat) => ({
+          ...cat,
+          order: (cat?.order as number) + 1,
+        })) as ICategory[];
+      categoriesAdapter.upsertMany(state, toUpdate);
       categoriesAdapter.addOne(state, {
-        id: action.payload.id,
-        columnId: action.payload.columnId,
-        projectId: action.payload.projectId,
-        order:
-          Object.values(state.entities).filter(
-            (cat) => cat?.columnId === action.payload.columnId
-          ).length + 1,
+        id: id,
+        columnId: columnId,
+        projectId: projectId,
+        order: 1,
         features: [],
         name: "New Category",
         suspended: false,

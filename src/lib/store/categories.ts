@@ -1,5 +1,9 @@
 import { ICategory } from "../types";
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import type { RootState } from "./index";
 import { deleteColumn } from "./actions";
 
@@ -13,7 +17,25 @@ const categoriesSlice = createSlice({
   name: "categories",
   initialState,
   reducers: {
-    addCategory: categoriesAdapter.addOne,
+    addCategory(
+      state,
+      action: PayloadAction<{
+        id: string;
+        columnId: string;
+      }>
+    ) {
+      categoriesAdapter.addOne(state, {
+        id: action.payload.id,
+        columnId: action.payload.columnId,
+        order:
+          Object.values(state.entities).filter(
+            (cat) => cat?.columnId === action.payload.columnId
+          ).length + 1,
+        features: [],
+        name: "New Category",
+        suspended: false,
+      });
+    },
     updateCategory: categoriesAdapter.updateOne,
     deleteCategory: categoriesAdapter.removeOne,
     deleteCategories: categoriesAdapter.removeMany,

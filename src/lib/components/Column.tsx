@@ -1,7 +1,8 @@
 import { CardStackPlusIcon as AddCategoryIcon } from "@radix-ui/react-icons";
 import { ColumnDropdown, Category } from "./index";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { updateColumn } from "../store/actions";
+import { updateColumn, addCategory } from "../store/actions";
+import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 
 type ColumnProps = {
@@ -17,7 +18,7 @@ export default function Column({ id }: ColumnProps) {
 
   return (
     <section className="bg-black md:w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
-      <div className="flex items-center justify-center w-full">
+      <div className="flex items-center justify-center w-full p-0.5">
         {isEditing ? (
           <form
             onSubmit={(e) => {
@@ -62,6 +63,14 @@ export default function Column({ id }: ColumnProps) {
       <button
         type="button"
         className="static inset-x-0 bottom-0 bg-green-700 w-full rounded-b-sm opacity-30 flex justify-center hover:opacity-100"
+        onClick={() =>
+          dispatch(
+            addCategory({
+              id: nanoid(5),
+              columnId: id,
+            })
+          )
+        }
       >
         <AddCategoryIcon width={24} height={24} />
       </button>

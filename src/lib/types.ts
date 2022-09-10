@@ -19,6 +19,7 @@ export interface ICategory {
   name: string;
   order: number;
   suspended: boolean;
+  columnId: string;
   features: string[];
 }
 

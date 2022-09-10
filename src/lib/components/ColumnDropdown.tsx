@@ -6,6 +6,7 @@ import {
   DropdownSeparator,
 } from "./index";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import React from "react";
 
 import { deleteColumn } from "../store/actions";
 import { useAppDispatch } from "../store/hooks";
@@ -13,9 +14,10 @@ import { useAppDispatch } from "../store/hooks";
 type Props = {
   id: string;
   projectId: string;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function ColumnDropdown({ id, projectId }: Props) {
+export default function ColumnDropdown({ id, projectId, setIsEditing }: Props) {
   const dispatch = useAppDispatch();
 
   return (
@@ -32,7 +34,8 @@ export default function ColumnDropdown({ id, projectId }: Props) {
           alignOffset={15}
           sideOffset={4}
         >
-          <DropdownItem>
+          {/* The 1st dropdown item cannot render as child - Radix bug? */}
+          <DropdownItem onClick={() => setIsEditing(true)}>
             <button type="button" className="p-0.5">
               Rename Column
             </button>

@@ -3,7 +3,6 @@ import { ColumnDropdown, Category } from "./index";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { updateColumn } from "../store/actions";
 import React from "react";
-import categories from "../mocks/categories";
 
 type ColumnProps = {
   id: string;
@@ -32,6 +31,7 @@ export default function Column({ id }: ColumnProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoFocus
+              tabIndex={99}
               className="font-manrope text-3xl text-center p-1 w-1/2 bg-slate-900 outline outline-1 outline-slate-50 tracking-widest"
             />
             <button type="submit" className="hidden"></button>
@@ -46,7 +46,11 @@ export default function Column({ id }: ColumnProps) {
         )}
 
         <div className={`${isEditing ? "hidden" : "pl-4"}`}>
-          <ColumnDropdown id={id} projectId={column?.projectId as string} />
+          <ColumnDropdown
+            id={id}
+            projectId={column?.projectId as string}
+            setIsEditing={setIsEditing}
+          />
         </div>
       </div>
       <hr className="w-[90%] bg-white" />

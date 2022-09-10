@@ -74,7 +74,7 @@ export default function TaskView({
               <button
                 type="button"
                 aria-label="Close"
-                className="self-end text-categoryToggleUnchecked hover:text-red-600"
+                className="self-end text-categoryToggleUnchecked hover:text-red-600 focus:text-red-600"
               >
                 <CloseIcon width={32} height={32} />
               </button>

@@ -5,10 +5,11 @@ import React from "react";
 import {
   CheckCircledIcon as CheckIcon,
   ListBulletIcon as TasksIcon,
+  Cross1Icon as DeleteIcon,
 } from "@radix-ui/react-icons";
 
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { updateFeature } from "../store/actions";
+import { updateFeature, deleteFeature } from "../store/actions";
 
 type FeatureProps = {
   id: string;
@@ -85,16 +86,27 @@ export default function Feature({ id }: FeatureProps) {
           {feature?.name}
         </h4>
       )}
-
-      {/* Wrap with TaskView component to serve as trigger */}
-      <TaskView tasks={tasks as ITask[]} featureName={feature?.name as string}>
+      <div className="flex items-center">
         <button
           type="button"
-          className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked"
+          className="p-0.5 hover:text-red-600 text-red-700 hover:bg-red-900 focus:bg-red-900 focus:text-red-600 border border-solid border-red-600 rounded-sm"
+          onClick={() => dispatch(deleteFeature(id))}
         >
-          <TasksIcon />
+          <DeleteIcon />
         </button>
-      </TaskView>
+        {/* Wrap with TaskView component to serve as trigger */}
+        <TaskView
+          tasks={tasks as ITask[]}
+          featureName={feature?.name as string}
+        >
+          <button
+            type="button"
+            className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked focus:bg-categoryToggleUnchecked"
+          >
+            <TasksIcon />
+          </button>
+        </TaskView>
+      </div>
     </div>
   );
 }

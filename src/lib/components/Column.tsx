@@ -62,7 +62,7 @@ export default function Column({ id }: ColumnProps) {
       </div>
       <button
         type="button"
-        className="static inset-x-0 bottom-0 bg-green-700 w-full rounded-b-sm opacity-30 flex justify-center hover:opacity-100"
+        className="static inset-x-0 bottom-0 bg-green-700 w-full rounded-b-sm opacity-30 flex justify-center hover:opacity-100 focus:opacity-100"
         onClick={() =>
           dispatch(
             addCategory({

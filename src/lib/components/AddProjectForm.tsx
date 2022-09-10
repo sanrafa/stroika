@@ -1,5 +1,5 @@
 import React from "react";
-import { addProject, updateProject } from "../store/projects";
+import { addProject, updateProject } from "../store/actions";
 import { generateDefaultColumns, addManyColumns } from "../store/columns";
 import { useAppDispatch } from "../store/hooks";
 import { useNavigate } from "react-router-dom";

@@ -2,17 +2,27 @@ import { HamburgerMenuIcon as MenuIcon } from "@radix-ui/react-icons";
 import {
   Dropdown,
   DropdownTrigger,
-  DropdownContent,
   DropdownItem,
   DropdownSeparator,
-  DropdownArrow,
 } from "./index";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import React from "react";
 
-export default function ColumnDropdown() {
+import { deleteColumn } from "../store/actions";
+import { useAppDispatch } from "../store/hooks";
+
+type Props = {
+  id: string;
+  projectId: string;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function ColumnDropdown({ id, projectId, setIsEditing }: Props) {
+  const dispatch = useAppDispatch();
+
   return (
     <Dropdown>
-      <DropdownTrigger asChild={true}>
+      <DropdownTrigger asChild>
         <button type="button" className="hover:bg-gray-700">
           <MenuIcon />
         </button>
@@ -24,11 +34,24 @@ export default function ColumnDropdown() {
           alignOffset={15}
           sideOffset={4}
         >
-          <DropdownItem className="p-0.5">Edit Column</DropdownItem>
-          <DropdownSeparator asChild={true}>
+          {/* The 1st dropdown item cannot render as child - Radix bug? */}
+          <DropdownItem onClick={() => setIsEditing(true)}>
+            <button type="button" className="p-0.5">
+              Rename Column
+            </button>
+          </DropdownItem>
+          <DropdownSeparator asChild>
             <hr color="black" />
           </DropdownSeparator>
-          <DropdownItem className="p-0.5">Delete Column</DropdownItem>
+          <DropdownItem asChild>
+            <button
+              type="button"
+              className="p-0.5"
+              onClick={() => dispatch(deleteColumn({ id, projectId }))}
+            >
+              Delete Column
+            </button>
+          </DropdownItem>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </Dropdown>

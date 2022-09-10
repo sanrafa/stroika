@@ -11,6 +11,9 @@
   width: 0;
   height: 0;
 }
+.unset_input {
+  all: unset;
+}
 
 @layer components {
   .project-header {

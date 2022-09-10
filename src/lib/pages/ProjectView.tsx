@@ -12,7 +12,7 @@ function ProjectView() {
     <>
       <div className="bg-project p-4 m-4 h-5/6 flex justify-between overflow-x-auto">
         {project?.columns.map((id) => (
-          <Column id={id} />
+          <Column id={id} key={id} />
         ))}
       </div>
     </>

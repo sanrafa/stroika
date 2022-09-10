@@ -28,6 +28,7 @@ export interface IFeature {
   name: string;
   completed: boolean;
   order: number;
+  categoryId: string;
   tasks: string[];
 }
 

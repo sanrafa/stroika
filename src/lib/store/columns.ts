@@ -2,7 +2,7 @@ import { IColumn } from "../types";
 import { createEntityAdapter, createSlice, nanoid } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
-import { addCategory } from "./actions";
+import { addCategory, deleteCategory } from "./actions";
 
 export const generateDefaultColumns = (projectId: string): IColumn[] => {
   return [
@@ -69,10 +69,19 @@ const columnsSlice = createSlice({
     addManyColumns: columnsAdapter.addMany,
   },
   extraReducers: (builder) => {
-    builder.addCase(addCategory, (state, action) => {
-      const { id, columnId } = action.payload;
-      state.entities[columnId]?.categories.push(id);
-    });
+    builder
+      .addCase(addCategory, (state, action) => {
+        const { id, columnId } = action.payload;
+        state.entities[columnId]?.categories.push(id);
+      })
+      .addCase(deleteCategory, (state, action) => {
+        const { id, columnId } = action.payload;
+        const filtered = state.entities[columnId]?.categories.filter(
+          (cat) => cat !== id
+        );
+        // @ts-ignore
+        state.entities[columnId].categories = filtered;
+      });
   },
 });
 

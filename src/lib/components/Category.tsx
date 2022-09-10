@@ -6,11 +6,12 @@ import {
 import {
   ChevronDownIcon as Chevron,
   PlusCircledIcon as AddIcon,
+  TrashIcon as DeleteIcon,
 } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { updateCategory } from "../store/actions";
+import { updateCategory, deleteCategory } from "../store/actions";
 
 type CategoryProps = {
   id: string;
@@ -83,6 +84,7 @@ export default function CategoryBase({ id }: CategoryProps) {
 
                 {isEditing ? (
                   <form
+                    className="mr-2"
                     onSubmit={(e) => {
                       e.preventDefault();
                       dispatch(
@@ -99,8 +101,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                     <input
                       type="text"
                       autoFocus
-                      className="text-black text-center p-1 text-md"
-                      defaultValue={name}
+                      className="text-black text-center p-1 text-md w-full"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
@@ -118,9 +119,28 @@ export default function CategoryBase({ id }: CategoryProps) {
                     {category?.name}
                   </h3>
                 )}
-                <button type="button" className="hover:text-green-600">
-                  <AddIcon width={24} height={24} />
-                </button>
+                <div className="flex flex-col space-y-4 mt-2">
+                  <button
+                    type="button"
+                    className="hover:text-green-600 focus:text-green-600"
+                  >
+                    <AddIcon width={24} height={24} />
+                  </button>
+                  <button
+                    type="button"
+                    className="hover:text-red-600 focus:text-red-600"
+                    onClick={() =>
+                      dispatch(
+                        deleteCategory({
+                          id,
+                          columnId: category?.columnId as string,
+                        })
+                      )
+                    }
+                  >
+                    <DeleteIcon width={24} height={24} />
+                  </button>
+                </div>
               </header>
             </Accordion.Header>
             <Accordion.Content asChild id="category-slider">

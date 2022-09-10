@@ -37,7 +37,15 @@ const categoriesSlice = createSlice({
       });
     },
     updateCategory: categoriesAdapter.updateOne,
-    deleteCategory: categoriesAdapter.removeOne,
+    deleteCategory(
+      state,
+      action: PayloadAction<{
+        id: string;
+        columnId: string;
+      }>
+    ) {
+      categoriesAdapter.removeOne(state, action.payload.id);
+    },
     deleteCategories: categoriesAdapter.removeMany,
   },
   extraReducers: (builder) => {

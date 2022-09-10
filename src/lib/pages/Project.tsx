@@ -1,7 +1,8 @@
 import { Column } from "../components";
-import testColumns from "../mocks/columns";
+//import testColumns from "../mocks/columns";
 
 function ProjectPage() {
+  /*   const testColumns = []
   return (
     <>
       <div className="bg-project p-4 m-4 h-5/6 flex justify-between overflow-x-auto">
@@ -10,7 +11,7 @@ function ProjectPage() {
         ))}
       </div>
     </>
-  );
+  ); */
 }
 
 export default ProjectPage;

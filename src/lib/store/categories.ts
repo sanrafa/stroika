@@ -5,7 +5,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
-import { deleteColumn, deleteProject } from "./actions";
+import { addFeature, deleteColumn, deleteProject } from "./actions";
 
 const categoriesAdapter = createEntityAdapter<ICategory>({
   sortComparer: (a, b) => a.order - b.order,
@@ -68,6 +68,10 @@ const categoriesSlice = createSlice({
           state,
           categoriesToDelete as string[]
         );
+      })
+      .addCase(addFeature, (state, action) => {
+        const { id, categoryId } = action.payload;
+        state.entities[categoryId]?.features.push(id);
       });
   },
 });

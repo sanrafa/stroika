@@ -11,7 +11,8 @@ import {
 import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { updateCategory, deleteCategory } from "../store/actions";
+import { updateCategory, deleteCategory, addFeature } from "../store/actions";
+import { nanoid } from "@reduxjs/toolkit";
 
 type CategoryProps = {
   id: string;
@@ -123,6 +124,16 @@ export default function CategoryBase({ id }: CategoryProps) {
                   <button
                     type="button"
                     className="hover:text-green-600 focus:text-green-600"
+                    onClick={() => {
+                      dispatch(
+                        addFeature({
+                          id: nanoid(5),
+                          categoryId: id,
+                          columnId: category?.columnId as string,
+                          projectId: category?.projectId as string,
+                        })
+                      );
+                    }}
                   >
                     <AddIcon width={24} height={24} />
                   </button>

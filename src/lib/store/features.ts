@@ -1,5 +1,9 @@
 import { IFeature } from "../types";
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import type { RootState } from "./index";
 import { deleteCategory, deleteColumn, deleteProject } from "./actions";
 
@@ -13,7 +17,27 @@ const featuresSlice = createSlice({
   name: "features",
   initialState,
   reducers: {
-    addFeature: featuresAdapter.addOne,
+    addFeature(
+      state,
+      action: PayloadAction<{
+        id: string;
+        categoryId: string;
+        columnId: string;
+        projectId: string;
+      }>
+    ) {
+      const { id, categoryId, columnId, projectId } = action.payload;
+      featuresAdapter.addOne(state, {
+        id,
+        categoryId,
+        columnId,
+        projectId,
+        name: "New Feature",
+        order: state.ids.length + 1,
+        tasks: [],
+        completed: false,
+      });
+    },
     updateFeature: featuresAdapter.updateOne,
     deleteFeature: featuresAdapter.removeOne,
   },

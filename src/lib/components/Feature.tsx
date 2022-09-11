@@ -95,10 +95,7 @@ export default function Feature({ id }: FeatureProps) {
           <DeleteIcon />
         </button>
         {/* Wrap with TaskView component to serve as trigger */}
-        <TaskView
-          tasks={tasks as ITask[]}
-          featureName={feature?.name as string}
-        >
+        <TaskView taskIds={feature?.tasks as string[]} featureId={id as string}>
           <button
             type="button"
             className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked focus:bg-categoryToggleUnchecked"

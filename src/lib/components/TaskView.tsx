@@ -5,39 +5,51 @@ import {
   Pencil1Icon as EditIcon,
   CircleBackslashIcon as DeleteIcon,
 } from "@radix-ui/react-icons";
-import { ITask } from "../types";
+import { ITask, IFeature } from "../types";
 import React from "react";
+import { nanoid } from "@reduxjs/toolkit";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { addTask, updateTask, toggleTaskComplete } from "../store/actions";
 
 type TaskViewProps = {
-  featureName: string;
-  tasks: ITask[];
+  featureId: string;
+  taskIds: string[];
   children: React.ReactNode;
 };
 
 type TaskProps = {
   id: string;
-  description: string;
-  completed: boolean;
 };
 
-const Task = ({ id, description, completed }: TaskProps) => {
-  const [complete, setComplete] = React.useState(completed);
+const Task = ({ id }: TaskProps) => {
+  const dispatch = useAppDispatch();
+  const task = useAppSelector((state) => state.tasks.entities[id]);
+  const [completed, setCompleted] = React.useState(Boolean(task?.completed));
+
+  React.useEffect(() => {
+    dispatch(toggleTaskComplete({ id, completed }));
+  }, [completed]);
+
   return (
     <li
       className={`flex space-x-2 px-4 py-1 rounded-md hover:bg-slate-700 ${
-        completed ? "self-center opacity-60" : null
+        completed ? "opacity-60" : null
       }`}
     >
       <Checkbox
-        defaultChecked={completed}
-        onCheckedChange={() => setComplete(!complete)}
+        checked={completed}
+        onCheckedChange={(e) => {
+          setCompleted(!completed);
+        }}
         className="bg-categoryToggleUnchecked w-5 h-5 flex justify-center items-center self-center shadow-inset rounded"
       >
         <CheckboxIndicator>
           <div className="bg-categoryToggleChecked w-5 h-5 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
         </CheckboxIndicator>
       </Checkbox>
-      <span className="self-baseline">{description}</span>
+      <span className="self-baseline text-center w-4/5">
+        {task?.description}
+      </span>
       {!completed ? (
         <>
           <button
@@ -58,11 +70,34 @@ const Task = ({ id, description, completed }: TaskProps) => {
   );
 };
 
+const TaskList = ({ taskIds }: { taskIds: string[] }) => {
+  const tasks = useAppSelector((state) =>
+    Object.values(state.tasks.entities).filter((task) =>
+      taskIds.includes(task?.id as string)
+    )
+  );
+  return (
+    <ul className="space-y-1 flex flex-col min-w-[75%] overflow-y-auto hide-scroll">
+      {tasks
+        .sort((a, b) => Number(a?.order) - Number(b?.order))
+
+        .map((task) => (
+          <Task id={task?.id as string} key={task?.id as string} />
+        ))}
+    </ul>
+  );
+};
+
 export default function TaskView({
-  tasks,
+  taskIds,
   children,
-  featureName,
+  featureId,
 }: TaskViewProps) {
+  const dispatch = useAppDispatch();
+  const feature = useAppSelector((state) => state.features.entities[featureId]);
+
+  const [desc, setDesc] = React.useState("");
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>{children}</Dialog.Trigger>
@@ -81,7 +116,7 @@ export default function TaskView({
             </Dialog.Close>
             <Dialog.Title asChild>
               <header className="uppercase text-2xl tracking-wider w-full text-left flex flex-col font-josefin">
-                <h1 className="px-4">{featureName}</h1>
+                <h1 className="px-4">{feature?.name}</h1>
                 <hr className="mt-2 border-categoryToggleUnchecked border-1 w-11/12 self-center" />
               </header>
             </Dialog.Title>
@@ -90,11 +125,28 @@ export default function TaskView({
             </Dialog.Description>
             <form
               className="p-2 text-black"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (feature) {
+                  dispatch(
+                    addTask({
+                      id: nanoid(5),
+                      description: desc,
+                      featureId: feature?.id,
+                      categoryId: feature?.categoryId,
+                      columnId: feature?.columnId,
+                      projectId: feature?.projectId,
+                    })
+                  );
+                  setDesc("");
+                }
+              }}
             >
               <input
                 type="text"
-                name="task-name"
+                name="task-description"
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
                 className="bg-slate-500 text-center rounded-l-md p-0.5 focus:bg-white mb-2"
                 placeholder="Add a new task"
               />
@@ -105,19 +157,7 @@ export default function TaskView({
                 ADD
               </button>
             </form>
-            <ul className="space-y-1 flex flex-col min-w-fit overflow-y-auto hide-scroll">
-              {tasks
-                // completed tasks are sorted to the bottom
-                .sort((a, b) => Number(a.completed) - Number(b.completed))
-                .map((task) => (
-                  <Task
-                    key={task.id}
-                    id={task.id}
-                    description={task.description}
-                    completed={task.completed}
-                  />
-                ))}
-            </ul>
+            <TaskList taskIds={feature?.tasks as string[]} />
           </aside>
         </Dialog.Content>
       </Dialog.Portal>

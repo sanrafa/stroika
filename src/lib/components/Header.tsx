@@ -17,14 +17,15 @@ import {
 } from "@radix-ui/react-icons";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { updateProject, addColumn } from "../store/actions";
+import { getProjectById } from "../store/projects";
 import { nanoid } from "@reduxjs/toolkit";
 
 export default function Header() {
   const dispatch = useAppDispatch();
-  let match = useMatch("/project/:id");
+  let match = useMatch("/projects/:id");
   const { id } = useParams();
-  const project = useAppSelector(
-    (state) => state.projects.entities[id as string]
+  const project = useAppSelector((state) =>
+    getProjectById(state, id as string)
   );
 
   const [isEditing, setIsEditing] = React.useState(false);

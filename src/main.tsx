@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { Homepage, ProjectPage, ProjectsPage, ProjectView } from "./lib/pages";
+import { Homepage, ProjectsPage, ProjectView } from "./pages";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import "@fontsource/josefin-sans";
@@ -14,9 +14,8 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Homepage />} />
-          <Route path="project/:id" element={<ProjectView />} />
-          {/*  <Route path="project" element={<ProjectPage />} /> */}
-          <Route path="projects" element={<ProjectsPage />} />
+          <Route path="projects" element={<ProjectsPage />}></Route>
+          <Route path="projects/:id" element={<ProjectView />} />
         </Route>
       </Routes>
     </BrowserRouter>

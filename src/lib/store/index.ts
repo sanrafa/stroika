@@ -4,8 +4,11 @@ import columnsSlice from "./columns";
 import categoriesSlice from "./categories";
 import featuresSlice from "./features";
 import taskSlice from "./tasks";
+import sessionSlice from "./session";
+import listener from "./listener";
 
 const rootReducer = combineReducers({
+  session: sessionSlice,
   projects: projectsSlice,
   columns: columnsSlice,
   categories: categoriesSlice,
@@ -15,6 +18,7 @@ const rootReducer = combineReducers({
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (middleware) => middleware().prepend(listener.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -9,21 +9,21 @@ export const generateDefaultColumns = (projectId: string): IColumn[] => {
     {
       id: nanoid(5),
       name: "TO DO",
-      order: 0,
-      projectId,
-      categories: [],
-    },
-    {
-      id: nanoid(5),
-      name: "DOING",
       order: 1,
       projectId,
       categories: [],
     },
     {
       id: nanoid(5),
-      name: "DONE",
+      name: "DOING",
       order: 2,
+      projectId,
+      categories: [],
+    },
+    {
+      id: nanoid(5),
+      name: "DONE",
+      order: 3,
       projectId,
       categories: [],
     },
@@ -48,13 +48,25 @@ const columnsSlice = createSlice({
         name: string;
       }>
     ) {
-      columnsAdapter.addOne(state, {
+      const columnsToUpdate = Object.values(state.entities).map((col, idx) => ({
+        ...col,
+        order: idx + 1,
+      }));
+      columnsToUpdate.push({
         id: action.payload.id,
         name: action.payload.name,
         order: state.ids.length + 1,
         projectId: action.payload.projectId,
         categories: [],
       });
+      columnsAdapter.upsertMany(state, columnsToUpdate as IColumn[]);
+      /* columnsAdapter.addOne(state, {
+        id: action.payload.id,
+        name: action.payload.name,
+        order: state.ids.length + 1,
+        projectId: action.payload.projectId,
+        categories: [],
+      }); */
     },
     updateColumn: columnsAdapter.updateOne,
     deleteColumn(

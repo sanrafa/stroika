@@ -34,16 +34,10 @@ const featuresSlice = createSlice({
       }>
     ) {
       const { id, categoryId, columnId, projectId } = action.payload;
-
-      /* Increase the order of existing feats by 1, insert new feat at top */
-      const toUpdate = Object.values(state.entities).map((feat) => ({
-        ...feat,
-        // @ts-ignore
-        order: feat.order + 1,
-      })) as IFeature[];
-      if (toUpdate.length > 0) featuresAdapter.upsertMany(state, toUpdate);
-
-      featuresAdapter.addOne(state, {
+      const featuresToUpdate = Object.values(state.entities).filter(
+        (feat) => feat && feat.columnId === columnId
+      );
+      featuresToUpdate.unshift({
         id,
         categoryId,
         columnId,
@@ -53,6 +47,11 @@ const featuresSlice = createSlice({
         tasks: [],
         completed: false,
       });
+      const features = featuresToUpdate.map((feat, idx) => ({
+        ...feat,
+        order: idx + 1,
+      }));
+      featuresAdapter.upsertMany(state, features as IFeature[]);
     },
     updateFeature: featuresAdapter.updateOne,
     deleteFeature(

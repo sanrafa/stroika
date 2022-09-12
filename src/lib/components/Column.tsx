@@ -68,15 +68,27 @@ export default function Column({ id }: ColumnProps) {
       <button
         type="button"
         className="static inset-x-0 bottom-0 bg-green-700 w-full rounded-b-sm opacity-30 flex justify-center hover:opacity-100 focus:opacity-100"
-        onClick={() =>
+        onMouseDown={(e) => {
+          e.preventDefault();
           dispatch(
             addCategory({
               id: nanoid(5),
               columnId: id,
               projectId: column?.projectId as string,
             })
-          )
-        }
+          );
+        }}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            dispatch(
+              addCategory({
+                id: nanoid(5),
+                columnId: id,
+                projectId: column?.projectId as string,
+              })
+            );
+          }
+        }}
       >
         <AddCategoryIcon width={24} height={24} />
       </button>

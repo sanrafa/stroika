@@ -32,7 +32,7 @@ export default function Feature({ id }: FeatureProps) {
     <div className="flex justify-between items-center bg-feature leading-none p-2 rounded shadow-md">
       {/* Task progress indicator OR checkmark if all complete */}
       <div className="text-xxs mr-1">
-        {feature?.completed ? (
+        {tasks.every((task) => task?.completed === true) ? (
           <CheckIcon width={25} height={25} stroke="green" className="ml-1" />
         ) : !feature?.tasks.length ? (
           <span className="text-red-500">

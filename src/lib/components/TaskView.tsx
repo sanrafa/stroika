@@ -26,10 +26,6 @@ const Task = ({ id }: TaskProps) => {
   const task = useAppSelector((state) => state.tasks.entities[id]);
   const [completed, setCompleted] = React.useState(Boolean(task?.completed));
 
-  React.useEffect(() => {
-    dispatch(toggleTaskComplete({ id, completed }));
-  }, [completed]);
-
   return (
     <li
       className={`flex space-x-2 px-4 py-1 rounded-md hover:bg-slate-700 ${
@@ -39,6 +35,7 @@ const Task = ({ id }: TaskProps) => {
       <Checkbox
         checked={completed}
         onCheckedChange={(e) => {
+          dispatch(toggleTaskComplete({ id, completed: !completed }));
           setCompleted(!completed);
         }}
         className="bg-categoryToggleUnchecked w-5 h-5 flex justify-center items-center self-center shadow-inset rounded"

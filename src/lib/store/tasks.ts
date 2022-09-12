@@ -2,7 +2,6 @@ import { ITask } from "../types";
 import {
   createEntityAdapter,
   createSlice,
-  nanoid,
   PayloadAction,
 } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
@@ -53,30 +52,30 @@ const tasksSlice = createSlice({
       action: PayloadAction<{ id: string; completed: boolean }>
     ) {
       const { id, completed } = action.payload;
-      console.log("Changing ID:", id, "To state:", completed);
-      tasksAdapter.updateOne(state, {
-        id,
-        changes: {
-          order: state.ids.length,
-          completed,
-        },
+      const insertOrder = completed === true ? state.ids.length - 1 : 0; // if marking complete, insert at bottom, if unmarking, move to top
+      const tasks = Object.values(state.entities).filter(
+        (task) => task && task.id !== action.payload.id
+      ) as ITask[];
+      tasks
+        .sort((a, b) => Number(a.completed) - Number(b.completed))
+        .splice(insertOrder, 0, {
+          ...state.entities[id],
+        } as ITask);
+      const tasksToUpdate = tasks.map((task, idx) => {
+        if (task.id === id) {
+          return { ...task, completed, order: idx + 1 };
+        }
+        return { ...task, order: idx + 1 };
       });
+      console.log(tasksToUpdate);
+      tasksAdapter.upsertMany(state, tasksToUpdate);
+      console.log("Changing ID:", id, "To state:", completed);
     },
     updateTask: tasksAdapter.updateOne,
     deleteTask: tasksAdapter.removeOne,
   },
   extraReducers: (builder) => {
-    builder.addCase(toggleTaskComplete, (state, action) => {
-      const tasks = Object.values(state.entities) as ITask[];
-      const tasksToUpdate = tasks
-        .filter((task) => task.id !== action.payload.id)
-        .map((task) => {
-          if (task.order > 1) {
-            return { ...task, order: task.order - 1 };
-          }
-        }) as ITask[];
-      tasksAdapter.upsertMany(state, tasksToUpdate);
-    });
+    builder.addCase(toggleTaskComplete, (state, action) => {});
   },
 });
 

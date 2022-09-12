@@ -37,8 +37,7 @@ const categoriesSlice = createSlice({
           ...cat,
           order: (cat?.order as number) + 1,
         })) as ICategory[];
-      categoriesAdapter.upsertMany(state, toUpdate);
-      categoriesAdapter.addOne(state, {
+      toUpdate.push({
         id: id,
         columnId: columnId,
         projectId: projectId,
@@ -47,6 +46,7 @@ const categoriesSlice = createSlice({
         name: "New Category",
         suspended: false,
       });
+      categoriesAdapter.upsertMany(state, toUpdate);
     },
     toggleCategorySuspended(
       state,

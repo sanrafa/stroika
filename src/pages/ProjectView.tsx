@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { setCurrentProject } from "../store/actions";
-import { getProjectById } from "../store/projects";
-import { Column } from "../components";
+import { useAppSelector, useAppDispatch } from "../lib/store/hooks";
+import { setCurrentProject } from "../lib/store/actions";
+import { getProjectById } from "../lib/store/projects";
+import { Column } from "../lib/components";
 import React from "react";
 
 function ProjectView() {

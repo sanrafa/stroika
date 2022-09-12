@@ -1,7 +1,7 @@
-import { AddProjectForm } from "../components";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { deleteProject, setCurrentProject } from "../store/actions";
-import { getAllProjects } from "../store/projects";
+import { AddProjectForm } from "../lib/components";
+import { useAppSelector, useAppDispatch } from "../lib/store/hooks";
+import { deleteProject, setCurrentProject } from "../lib/store/actions";
+import { getAllProjects } from "../lib/store/projects";
 import { Link } from "react-router-dom";
 import React from "react";
 

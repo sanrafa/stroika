@@ -1,12 +1,17 @@
 import { AddProjectForm } from "../components";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { deleteProject } from "../store/actions";
+import { deleteProject, setCurrentProject } from "../store/actions";
 import { getAllProjects } from "../store/projects";
 import { Link } from "react-router-dom";
+import React from "react";
 
 function ProjectsPage() {
   const dispatch = useAppDispatch();
   const projects = useAppSelector(getAllProjects);
+
+  React.useEffect(() => {
+    dispatch(setCurrentProject({ id: null }));
+  }, []);
 
   return (
     <>

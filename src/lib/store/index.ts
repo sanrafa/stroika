@@ -4,8 +4,10 @@ import columnsSlice from "./columns";
 import categoriesSlice from "./categories";
 import featuresSlice from "./features";
 import taskSlice from "./tasks";
+import sessionSlice from "./session";
 
 const rootReducer = combineReducers({
+  session: sessionSlice,
   projects: projectsSlice,
   columns: columnsSlice,
   categories: categoriesSlice,

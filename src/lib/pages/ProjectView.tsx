@@ -1,12 +1,19 @@
 import { useParams } from "react-router-dom";
-import { useAppSelector } from "../store/hooks";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { setCurrentProject } from "../store/actions";
 import { Column } from "../components";
+import React from "react";
 
 function ProjectView() {
+  const dispatch = useAppDispatch();
   const { id } = useParams();
   const project = useAppSelector(
     (state) => state.projects.entities[id as string]
   );
+
+  React.useEffect(() => {
+    if (id) dispatch(setCurrentProject({ id }));
+  }, []);
 
   return (
     <>

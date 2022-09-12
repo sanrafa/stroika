@@ -32,12 +32,12 @@ export default function Feature({ id }: FeatureProps) {
     <div className="flex justify-between items-center bg-feature leading-none p-2 rounded shadow-md">
       {/* Task progress indicator OR checkmark if all complete */}
       <div className="text-xxs mr-1">
-        {tasks.every((task) => task?.completed === true) ? (
-          <CheckIcon width={25} height={25} stroke="green" className="ml-1" />
-        ) : !feature?.tasks.length ? (
+        {!feature?.tasks.length ? (
           <span className="text-red-500">
             NO <br /> TASKS
           </span>
+        ) : tasks.every((task) => task?.completed === true) ? (
+          <CheckIcon width={25} height={25} stroke="green" className="ml-1" />
         ) : (
           <span className="text-blue-100">
             <span className="text-sm text-compText font-bold">
@@ -90,7 +90,11 @@ export default function Feature({ id }: FeatureProps) {
         <button
           type="button"
           className="p-0.5 hover:text-red-600 text-red-700 hover:bg-red-900 focus:bg-red-900 focus:text-red-600 border border-solid border-red-600 rounded-sm"
-          onClick={() => dispatch(deleteFeature(id))}
+          onClick={() =>
+            dispatch(
+              deleteFeature({ id, categoryId: feature?.categoryId as string })
+            )
+          }
         >
           <DeleteIcon />
         </button>

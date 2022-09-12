@@ -9,7 +9,12 @@ import { ITask, IFeature } from "../types";
 import React from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { addTask, updateTask, toggleTaskComplete } from "../store/actions";
+import {
+  addTask,
+  updateTask,
+  toggleTaskComplete,
+  deleteTask,
+} from "../store/actions";
 
 type TaskViewProps = {
   featureId: string;
@@ -58,6 +63,9 @@ const Task = ({ id }: TaskProps) => {
           <button
             type="button"
             className="text-red-500 px-2 rounded-full hover:text-red-600 hover:bg-slate-600"
+            onClick={() =>
+              dispatch(deleteTask({ id, featureId: task?.featureId }))
+            }
           >
             <DeleteIcon />
           </button>

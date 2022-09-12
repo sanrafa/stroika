@@ -5,7 +5,12 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
-import { addFeature, deleteColumn, deleteProject } from "./actions";
+import {
+  addFeature,
+  deleteColumn,
+  deleteFeature,
+  deleteProject,
+} from "./actions";
 
 const categoriesAdapter = createEntityAdapter<ICategory>({
   sortComparer: (a, b) => a.order - b.order,
@@ -73,6 +78,17 @@ const categoriesSlice = createSlice({
           state,
           categoriesToDelete as string[]
         );
+      })
+      .addCase(deleteFeature, (state, action) => {
+        const { id, categoryId } = action.payload;
+
+        const filtered = state.entities[categoryId]?.features.filter(
+          (feat) => feat !== id
+        ) as string[];
+        categoriesAdapter.updateOne(state, {
+          id: categoryId,
+          changes: { features: filtered },
+        });
       })
       .addCase(addFeature, (state, action) => {
         const { id, categoryId } = action.payload;

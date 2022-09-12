@@ -2,9 +2,16 @@ import { ITask } from "../types";
 import {
   createEntityAdapter,
   createSlice,
+  EntityId,
   PayloadAction,
 } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
+import {
+  deleteProject,
+  deleteFeature,
+  deleteColumn,
+  deleteCategory,
+} from "./actions";
 
 const tasksAdapter = createEntityAdapter<ITask>({
   sortComparer: (a, b) => a.order - b.order,
@@ -67,15 +74,47 @@ const tasksSlice = createSlice({
         }
         return { ...task, order: idx + 1 };
       });
-      console.log(tasksToUpdate);
       tasksAdapter.upsertMany(state, tasksToUpdate);
-      console.log("Changing ID:", id, "To state:", completed);
     },
     updateTask: tasksAdapter.updateOne,
-    deleteTask: tasksAdapter.removeOne,
+    deleteTask(
+      state,
+      action: PayloadAction<{ id: EntityId; featureId: string }>
+    ) {
+      const { id } = action.payload;
+      tasksAdapter.removeOne(state, id);
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(toggleTaskComplete, (state, action) => {});
+    builder
+      .addCase(deleteProject, (state, action) => {
+        const id = action.payload;
+        const tasksToDelete = Object.values(state.entities)
+          .filter((task) => task?.projectId === id)
+          .map((task) => task?.id) as string[];
+        tasksAdapter.removeMany(state, tasksToDelete);
+      })
+      .addCase(deleteColumn, (state, action) => {
+        const { id } = action.payload;
+        const tasksToDelete = Object.values(state.entities)
+          .filter((task) => task?.columnId === id)
+          .map((task) => task?.id) as string[];
+        tasksAdapter.removeMany(state, tasksToDelete);
+      })
+      .addCase(deleteCategory, (state, action) => {
+        const { id } = action.payload;
+        const tasksToDelete = Object.values(state.entities)
+          .filter((task) => task?.categoryId === id)
+          .map((task) => task?.id) as string[];
+        tasksAdapter.removeMany(state, tasksToDelete);
+      })
+      .addCase(deleteFeature, (state, action) => {
+        const { id } = action.payload;
+        const tasksToDelete = Object.values(state.entities)
+          .filter((task) => task?.featureId === id)
+          .map((task) => task?.id) as string[];
+        tasksAdapter.removeMany(state, tasksToDelete);
+      });
   },
 });
 

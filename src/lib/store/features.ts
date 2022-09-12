@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   createSlice,
   PayloadAction,
+  EntityId,
 } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
 import {
@@ -10,6 +11,7 @@ import {
   deleteCategory,
   deleteColumn,
   deleteProject,
+  deleteTask,
 } from "./actions";
 
 const featuresAdapter = createEntityAdapter<IFeature>({
@@ -53,7 +55,13 @@ const featuresSlice = createSlice({
       });
     },
     updateFeature: featuresAdapter.updateOne,
-    deleteFeature: featuresAdapter.removeOne,
+    deleteFeature(
+      state,
+      action: PayloadAction<{ id: EntityId; categoryId: string }>
+    ) {
+      const { id } = action.payload;
+      featuresAdapter.removeOne(state, id);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -81,6 +89,16 @@ const featuresSlice = createSlice({
           .filter((feat) => feat?.categoryId === id)
           .map((feat) => feat?.id) as string[];
         featuresAdapter.removeMany(state, featuresToDelete);
+      })
+      .addCase(deleteTask, (state, action) => {
+        const { id, featureId } = action.payload;
+        const filtered = state.entities[featureId]?.tasks.filter(
+          (taskId) => taskId !== id
+        ) as string[];
+        featuresAdapter.updateOne(state, {
+          id: featureId,
+          changes: { tasks: filtered },
+        });
       });
   },
 });

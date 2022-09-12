@@ -37,7 +37,7 @@ const AddProjectForm = () => {
         e.preventDefault();
         const id = createProject(name);
         setName("");
-        navigate(`/project/${id}`);
+        navigate(`/projects/${id}`);
       }}
     >
       <label htmlFor="new-project">Create a new project:</label>

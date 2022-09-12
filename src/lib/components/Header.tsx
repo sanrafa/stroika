@@ -21,7 +21,7 @@ import { nanoid } from "@reduxjs/toolkit";
 
 export default function Header() {
   const dispatch = useAppDispatch();
-  let match = useMatch("/project/:id");
+  let match = useMatch("/projects/:id");
   const { id } = useParams();
   const project = useAppSelector(
     (state) => state.projects.entities[id as string]

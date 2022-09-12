@@ -3,6 +3,7 @@ import { ColumnDropdown, Category } from "./index";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { updateColumn, addCategory } from "../store/actions";
 import { getColumnById } from "../store/columns";
+import { getSortedCategoriesByColumn } from "../store/categories";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 
@@ -13,6 +14,9 @@ type ColumnProps = {
 export default function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
   const column = useAppSelector((state) => getColumnById(state, id));
+  const categoryIds = useAppSelector((state) =>
+    getSortedCategoriesByColumn(state, id)
+  );
 
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(column?.name);
@@ -57,7 +61,7 @@ export default function Column({ id }: ColumnProps) {
       </div>
       <hr className="w-[90%] bg-white" />
       <div className="bg-column h-full w-full mt-2 rounded overflow-y-auto hide-scroll">
-        {column?.categories.map((id) => (
+        {categoryIds.map((id) => (
           <Category id={id} key={id} />
         ))}
       </div>

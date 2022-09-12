@@ -48,6 +48,31 @@ const categoriesSlice = createSlice({
         suspended: false,
       });
     },
+    toggleCategorySuspended(
+      state,
+      action: PayloadAction<{
+        id: string;
+        suspended: boolean;
+        columnId: string;
+      }>
+    ) {
+      const { id, suspended, columnId } = action.payload;
+      const insertIndex = suspended === true ? state.ids.length - 1 : 0;
+      const categories = Object.values(state.entities).filter(
+        (cat) => cat && cat.id !== id && cat.columnId === columnId
+      ) as ICategory[];
+      categories
+        .sort((a, b) => Number(a.suspended) - Number(b.suspended))
+        .splice(insertIndex, 0, { ...state.entities[id] } as ICategory);
+      const categoriesToUpdate = categories.map((cat, idx) => {
+        if (cat.id === id) {
+          return { ...cat, suspended, order: idx + 1 };
+        } else {
+          return { ...cat, order: idx + 1 };
+        }
+      });
+      categoriesAdapter.upsertMany(state, categoriesToUpdate);
+    },
     updateCategory: categoriesAdapter.updateOne,
     deleteCategory(
       state,
@@ -97,10 +122,24 @@ const categoriesSlice = createSlice({
   },
 });
 
-export const { addCategory, updateCategory, deleteCategory } =
-  categoriesSlice.actions;
+export const {
+  addCategory,
+  updateCategory,
+  deleteCategory,
+  toggleCategorySuspended,
+} = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;
 
 export const { selectById: getCategoryById } =
   categoriesAdapter.getSelectors<RootState>((state) => state.categories);
+
+export const getSortedCategoriesByColumn = (
+  state: RootState,
+  columnId: string
+) => {
+  return Object.values(state.categories.entities)
+    .filter((cat) => cat?.columnId === columnId)
+    .sort((a, b) => Number(a?.order) - Number(b?.order))
+    .map((cat) => cat?.id) as string[];
+};

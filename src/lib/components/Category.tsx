@@ -11,7 +11,12 @@ import {
 import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { updateCategory, deleteCategory, addFeature } from "../store/actions";
+import {
+  updateCategory,
+  deleteCategory,
+  addFeature,
+  toggleCategorySuspended,
+} from "../store/actions";
 import { getCategoryById } from "../store/categories";
 import { getFeaturesByCategory } from "../store/features";
 import { nanoid } from "@reduxjs/toolkit";
@@ -25,16 +30,6 @@ export default function CategoryBase({ id }: CategoryProps) {
   const category = useAppSelector((state) => getCategoryById(state, id));
   const features = useAppSelector((state) => getFeaturesByCategory(state, id));
   const [suspended, setSuspended] = React.useState(category?.suspended);
-  React.useEffect(() => {
-    dispatch(
-      updateCategory({
-        id: id,
-        changes: {
-          suspended: suspended,
-        },
-      })
-    );
-  }, [suspended]);
 
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(category?.name);
@@ -63,8 +58,17 @@ export default function CategoryBase({ id }: CategoryProps) {
                     </div>
                   ) : (
                     <Checkbox
-                      defaultChecked={suspended}
-                      onCheckedChange={() => setSuspended(!suspended)}
+                      checked={suspended}
+                      onCheckedChange={() => {
+                        dispatch(
+                          toggleCategorySuspended({
+                            id,
+                            suspended: !suspended,
+                            columnId: category?.columnId as string,
+                          })
+                        );
+                        setSuspended(!suspended);
+                      }}
                       className="bg-categoryToggleUnchecked w-7 h-7 flex justify-center items-center shadow-inset rounded mb-2"
                     >
                       <CheckboxIndicator>
@@ -120,7 +124,12 @@ export default function CategoryBase({ id }: CategoryProps) {
                 <div className="flex flex-col space-y-4 mt-2">
                   <button
                     type="button"
-                    className="hover:text-green-600 focus:text-green-600"
+                    disabled={suspended}
+                    className={
+                      suspended
+                        ? "opacity-50"
+                        : "hover:text-green-600 focus:text-green-600"
+                    }
                     onClick={() => {
                       dispatch(
                         addFeature({
@@ -136,7 +145,12 @@ export default function CategoryBase({ id }: CategoryProps) {
                   </button>
                   <button
                     type="button"
-                    className="hover:text-red-600 focus:text-red-600"
+                    disabled={suspended}
+                    className={
+                      suspended
+                        ? "opacity-50"
+                        : "hover:text-red-600 focus:text-red-600"
+                    }
                     onClick={() =>
                       dispatch(
                         deleteCategory({

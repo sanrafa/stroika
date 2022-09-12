@@ -10,6 +10,7 @@ import React from "react";
 
 import { deleteColumn } from "../store/actions";
 import { useAppDispatch } from "../store/hooks";
+import { toast } from "react-hot-toast";
 
 type Props = {
   id: string;
@@ -47,7 +48,17 @@ export default function ColumnDropdown({ id, projectId, setIsEditing }: Props) {
             <button
               type="button"
               className="p-0.5"
-              onClick={() => dispatch(deleteColumn({ id, projectId }))}
+              onClick={() => {
+                dispatch(deleteColumn({ id, projectId }));
+                toast.success("Column deleted.", {
+                  className: "bg-red-300 font-bold",
+                  duration: 1000,
+                  iconTheme: {
+                    primary: "red",
+                    secondary: "white",
+                  },
+                });
+              }}
             >
               Delete Column
             </button>

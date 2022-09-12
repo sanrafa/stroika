@@ -19,6 +19,7 @@ import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { updateProject, addColumn } from "../store/actions";
 import { getProjectById } from "../store/projects";
 import { nanoid } from "@reduxjs/toolkit";
+import { toast } from "react-hot-toast";
 
 export default function Header() {
   const dispatch = useAppDispatch();
@@ -44,6 +45,12 @@ export default function Header() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
+                  if (!name) {
+                    toast.error("A name must be provided!", {
+                      duration: 2000,
+                    });
+                    return;
+                  }
                   dispatch(
                     updateProject({
                       id: id as string,
@@ -56,7 +63,7 @@ export default function Header() {
                 <input
                   type="text"
                   className="text-black text-4xl text-center font-light"
-                  value={name}
+                  defaultValue={name}
                   onChange={(e) => setName(e.target.value)}
                   name="project-name"
                 />

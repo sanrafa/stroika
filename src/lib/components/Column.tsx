@@ -5,6 +5,7 @@ import { updateColumn, addCategory } from "../store/actions";
 import { getColumnById } from "../store/columns";
 import { getSortedCategoriesByColumn } from "../store/categories";
 import { nanoid } from "@reduxjs/toolkit";
+import { toast } from "react-hot-toast";
 import React from "react";
 
 type ColumnProps = {
@@ -28,6 +29,10 @@ export default function Column({ id }: ColumnProps) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (!name) {
+                toast.error("Column name cannot be blank!", { duration: 2000 });
+                return;
+              }
               dispatch(updateColumn({ id, changes: { name } }));
               setIsEditing(false);
             }}

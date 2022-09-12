@@ -20,6 +20,7 @@ import {
 import { getCategoryById } from "../store/categories";
 import { getFeaturesByCategory } from "../store/features";
 import { nanoid } from "@reduxjs/toolkit";
+import { toast } from "react-hot-toast";
 
 type CategoryProps = {
   id: string;
@@ -151,14 +152,22 @@ export default function CategoryBase({ id }: CategoryProps) {
                         ? "opacity-50"
                         : "hover:text-red-600 focus:text-red-600"
                     }
-                    onClick={() =>
+                    onClick={() => {
+                      toast.success(`"${category?.name}" deleted.`, {
+                        className: "bg-red-300 font-bold",
+                        duration: 1500,
+                        iconTheme: {
+                          primary: "red",
+                          secondary: "white",
+                        },
+                      });
                       dispatch(
                         deleteCategory({
                           id,
                           columnId: category?.columnId as string,
                         })
-                      )
-                    }
+                      );
+                    }}
                   >
                     <DeleteIcon width={24} height={24} />
                   </button>

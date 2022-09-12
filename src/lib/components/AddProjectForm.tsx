@@ -4,6 +4,7 @@ import { generateDefaultColumns, addManyColumns } from "../store/columns";
 import { useAppDispatch } from "../store/hooks";
 import { useNavigate } from "react-router-dom";
 import { nanoid } from "@reduxjs/toolkit";
+import { toast } from "react-hot-toast";
 
 const AddProjectForm = () => {
   const navigate = useNavigate();
@@ -36,8 +37,13 @@ const AddProjectForm = () => {
       onSubmit={(e) => {
         e.preventDefault();
         const id = createProject(name);
-        setName("");
-        navigate(`/projects/${id}`);
+        if (id) {
+          toast.success("Project created!", {
+            duration: 1000,
+          }); // Convert to 'project saved' when hooked to a backend
+          setName("");
+          navigate(`/projects/${id}`);
+        }
       }}
     >
       <label htmlFor="new-project">Create a new project:</label>

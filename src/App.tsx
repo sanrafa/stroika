@@ -2,6 +2,7 @@ import { Header } from "./lib/components";
 import { Outlet } from "react-router-dom";
 import store from "./lib/store";
 import { Provider } from "react-redux";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
 
         <Outlet />
       </main>
+      <Toaster position="top-right" />
     </Provider>
   );
 }

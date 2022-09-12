@@ -110,3 +110,9 @@ export default featuresSlice.reducer;
 
 export const { selectById: getFeatureById } =
   featuresAdapter.getSelectors<RootState>((state) => state.features);
+
+export const getFeaturesByCategory = (state: RootState, categoryId: string) => {
+  return Object.values(state.features.entities)
+    .filter((feat) => feat?.categoryId === categoryId)
+    .sort((a, b) => (a?.order as number) - (b?.order as number));
+};

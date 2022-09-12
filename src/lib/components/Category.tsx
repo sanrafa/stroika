@@ -12,6 +12,8 @@ import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { updateCategory, deleteCategory, addFeature } from "../store/actions";
+import { getCategoryById } from "../store/categories";
+import { getFeaturesByCategory } from "../store/features";
 import { nanoid } from "@reduxjs/toolkit";
 
 type CategoryProps = {
@@ -20,13 +22,8 @@ type CategoryProps = {
 
 export default function CategoryBase({ id }: CategoryProps) {
   const dispatch = useAppDispatch();
-  /* This and the checkbox are PURELY PRESENTATIONAL at this time */
-  const category = useAppSelector((state) => state.categories.entities[id]);
-  const features = useAppSelector((state) =>
-    Object.values(state.features.entities)
-      .filter((feat) => category?.features.includes(feat?.id as string))
-      .sort((a, b) => (a?.order as number) - (b?.order as number))
-  );
+  const category = useAppSelector((state) => getCategoryById(state, id));
+  const features = useAppSelector((state) => getFeaturesByCategory(state, id));
   const [suspended, setSuspended] = React.useState(category?.suspended);
   React.useEffect(() => {
     dispatch(

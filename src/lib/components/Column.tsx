@@ -2,6 +2,7 @@ import { CardStackPlusIcon as AddCategoryIcon } from "@radix-ui/react-icons";
 import { ColumnDropdown, Category } from "./index";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { updateColumn, addCategory } from "../store/actions";
+import { getColumnById } from "../store/columns";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 
@@ -11,7 +12,7 @@ type ColumnProps = {
 
 export default function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
-  const column = useAppSelector((state) => state.columns.entities[id]);
+  const column = useAppSelector((state) => getColumnById(state, id));
 
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(column?.name);

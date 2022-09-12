@@ -126,3 +126,15 @@ export default tasksSlice.reducer;
 export const { selectById: getTaskById } = tasksAdapter.getSelectors<RootState>(
   (state) => state.tasks
 );
+
+export const getTasksByFeature = (state: RootState, featureId: string) => {
+  return Object.values(state.tasks.entities).filter(
+    (task) => task?.featureId === featureId
+  );
+};
+
+export const getTasksWithIds = (state: RootState, ids: string[]) => {
+  return Object.values(state.tasks.entities).filter((task) =>
+    ids.includes(task?.id as string)
+  );
+};

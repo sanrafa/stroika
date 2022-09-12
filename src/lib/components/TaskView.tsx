@@ -5,7 +5,6 @@ import {
   Pencil1Icon as EditIcon,
   CircleBackslashIcon as DeleteIcon,
 } from "@radix-ui/react-icons";
-import { ITask, IFeature } from "../types";
 import React from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
@@ -15,10 +14,11 @@ import {
   toggleTaskComplete,
   deleteTask,
 } from "../store/actions";
+import { getTaskById, getTasksWithIds } from "../store/tasks";
+import { getFeatureById } from "../store/features";
 
 type TaskViewProps = {
   featureId: string;
-  taskIds: string[];
   children: React.ReactNode;
 };
 
@@ -28,7 +28,7 @@ type TaskProps = {
 
 const Task = ({ id }: TaskProps) => {
   const dispatch = useAppDispatch();
-  const task = useAppSelector((state) => state.tasks.entities[id]);
+  const task = useAppSelector((state) => getTaskById(state, id));
   const [completed, setCompleted] = React.useState(Boolean(task?.completed));
 
   const [isEditing, setIsEditing] = React.useState(false);
@@ -105,11 +105,7 @@ const Task = ({ id }: TaskProps) => {
 };
 
 const TaskList = ({ taskIds }: { taskIds: string[] }) => {
-  const tasks = useAppSelector((state) =>
-    Object.values(state.tasks.entities).filter((task) =>
-      taskIds.includes(task?.id as string)
-    )
-  );
+  const tasks = useAppSelector((state) => getTasksWithIds(state, taskIds));
   return (
     <ul className="space-y-1 flex flex-col min-w-[75%] overflow-y-auto hide-scroll">
       {tasks
@@ -122,13 +118,9 @@ const TaskList = ({ taskIds }: { taskIds: string[] }) => {
   );
 };
 
-export default function TaskView({
-  taskIds,
-  children,
-  featureId,
-}: TaskViewProps) {
+export default function TaskView({ children, featureId }: TaskViewProps) {
   const dispatch = useAppDispatch();
-  const feature = useAppSelector((state) => state.features.entities[featureId]);
+  const feature = useAppSelector((state) => getFeatureById(state, featureId));
 
   const [desc, setDesc] = React.useState("");
 

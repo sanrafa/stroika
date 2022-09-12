@@ -10,6 +10,8 @@ import {
 
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { updateFeature, deleteFeature } from "../store/actions";
+import { getFeatureById } from "../store/features";
+import { getTasksByFeature } from "../store/tasks";
 
 type FeatureProps = {
   id: string;
@@ -18,12 +20,8 @@ type FeatureProps = {
 export default function Feature({ id }: FeatureProps) {
   const dispatch = useAppDispatch();
 
-  const feature = useAppSelector((state) => state.features.entities[id]);
-  const tasks = useAppSelector((state) =>
-    Object.values(state.tasks.entities).filter((task) =>
-      feature?.tasks.includes(task?.id as string)
-    )
-  );
+  const feature = useAppSelector((state) => getFeatureById(state, id));
+  const tasks = useAppSelector((state) => getTasksByFeature(state, id));
 
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(feature?.name);
@@ -99,7 +97,7 @@ export default function Feature({ id }: FeatureProps) {
           <DeleteIcon />
         </button>
         {/* Wrap with TaskView component to serve as trigger */}
-        <TaskView taskIds={feature?.tasks as string[]} featureId={id as string}>
+        <TaskView featureId={id as string}>
           <button
             type="button"
             className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked focus:bg-categoryToggleUnchecked"

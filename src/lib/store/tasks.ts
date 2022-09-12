@@ -56,9 +56,13 @@ const tasksSlice = createSlice({
     },
     toggleTaskComplete(
       state,
-      action: PayloadAction<{ id: string; completed: boolean }>
+      action: PayloadAction<{
+        id: string;
+        featureId: string;
+        completed: boolean;
+      }>
     ) {
-      const { id, completed } = action.payload;
+      const { id, featureId, completed } = action.payload;
       const insertOrder = completed === true ? state.ids.length - 1 : 0; // if marking complete, insert at bottom, if unmarking, move to top
       const tasks = Object.values(state.entities).filter(
         (task) => task && task.id !== action.payload.id

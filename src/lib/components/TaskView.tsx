@@ -43,7 +43,13 @@ const Task = ({ id }: TaskProps) => {
       <Checkbox
         checked={completed}
         onCheckedChange={(e) => {
-          dispatch(toggleTaskComplete({ id, completed: !completed }));
+          dispatch(
+            toggleTaskComplete({
+              id,
+              completed: !completed,
+              featureId: task?.featureId as string,
+            })
+          );
           setCompleted(!completed);
         }}
         className="bg-categoryToggleUnchecked w-5 h-5 flex flex-shrink-0 justify-center items-center self-center shadow-inset rounded"

@@ -15,7 +15,9 @@ function ProjectsPage() {
 
   return (
     <>
-      <h1>PROJECTS PAGE</h1>
+      <h1 className="text-center text-5xl tracking-widest font-josefin mt-4">
+        PROJECTS
+      </h1>
       <AddProjectForm />
       <ul className="grid grid-cols-1 md:grid-cols-3 gap-2 p-2">
         {projects.map((project) => (

@@ -34,6 +34,7 @@ const AddProjectForm = () => {
 
   return (
     <form
+      className="flex flex-col items-center space-y-4 my-2 font-manrope"
       onSubmit={(e) => {
         e.preventDefault();
         const id = createProject(name);
@@ -46,16 +47,23 @@ const AddProjectForm = () => {
         }
       }}
     >
-      <label htmlFor="new-project">Create a new project:</label>
+      <label htmlFor="new-project" className="text-xl">
+        Create a new project:
+      </label>
       <input
-        className="text-black"
+        className="text-black p-1 text-2xl text-center rounded-md bg-slate-600 focus:bg-slate-200"
         type="text"
         name="new-project"
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Project Name"
       />
-      <button type="submit">ADD PROJECT</button>
+      <button
+        type="submit"
+        className="bg-green-700 hover:bg-green-500 p-1.5 rounded-sm font-bold tracking-wider"
+      >
+        ADD PROJECT
+      </button>
     </form>
   );
 };

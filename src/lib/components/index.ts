@@ -8,3 +8,4 @@ export { default as Feature } from "./Feature";
 export { default as TaskView } from "./TaskView";
 export { default as AddProjectForm } from "./AddProjectForm";
 export { default as ProjectCard } from "./ProjectCard";
+export * from "./AlertDialog";

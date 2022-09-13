@@ -9,6 +9,7 @@ import {
 } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { getTasksByProject } from "../store/tasks";
+import { DeleteProjectDialog } from "./index";
 
 type Props = {
   project: IProject;
@@ -47,13 +48,15 @@ const ProjectCard = ({ project }: Props) => {
         </p>
       </div>
       <div className="flex justify-between">
-        <button
-          type="button"
-          onClick={() => dispatch(deleteProject(project.id))}
-          className="text-red-900 hover:text-red-700 hover:bg-red-200 rounded-full p-1 m-1"
-        >
-          <DeleteIcon width={32} height={32} />
-        </button>
+        <DeleteProjectDialog projectId={project.id} projectName={project.name}>
+          <button
+            type="button"
+            /*         onClick={() => dispatch(deleteProject(project.id))} */
+            className="text-red-900 hover:text-red-700 hover:bg-red-200 rounded-full p-1 m-1"
+          >
+            <DeleteIcon width={32} height={32} />
+          </button>
+        </DeleteProjectDialog>
         <p className="flex text-3xl items-center p-1 m-1 space-x-1">
           <ListBulletIcon
             width={24}

@@ -1,6 +1,6 @@
-import { AddProjectForm } from "../lib/components";
+import { AddProjectForm, ProjectCard } from "../lib/components";
 import { useAppSelector, useAppDispatch } from "../lib/store/hooks";
-import { deleteProject, setCurrentProject } from "../lib/store/actions";
+import { setCurrentProject } from "../lib/store/actions";
 import { getAllProjects } from "../lib/store/projects";
 import { Link } from "react-router-dom";
 import React from "react";
@@ -15,28 +15,22 @@ function ProjectsPage() {
 
   return (
     <>
-      <h1>PROJECTS PAGE</h1>
+      <h1 className="text-center text-5xl tracking-widest font-josefin mt-4">
+        PROJECTS
+      </h1>
       <AddProjectForm />
-      <ul>
-        {projects.map((project) => (
-          <li>
-            <Link to={`/projects/${project.id}`}>{project.name}</Link>{" "}
-            <button
-              type="button"
-              onClick={() => dispatch(deleteProject(project.id))}
-              className="bg-white text-black p-1"
-            >
-              DELETE
-            </button>
-            <br />
-            <span>CREATED AT: {project.createdAt}</span> <br />
-            {project.updatedAt ? (
-              <span>LAST EDITED: {project.updatedAt}</span>
-            ) : null}
-            <br />
-          </li>
-        ))}
-      </ul>
+      {projects.length ? (
+        <ul className="grid grid-cols-1 md:grid-cols-3 gap-2 p-2">
+          {projects.map((project) => (
+            <ProjectCard project={project} key={project.id} />
+          ))}
+        </ul>
+      ) : (
+        <p className="text-center mt-8 font-manrope text-md tracking-wide">
+          Looks like you don't have any projects yet... Use the form above to
+          add one!
+        </p>
+      )}
     </>
   );
 }

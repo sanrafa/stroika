@@ -19,11 +19,18 @@ function ProjectsPage() {
         PROJECTS
       </h1>
       <AddProjectForm />
-      <ul className="grid grid-cols-1 md:grid-cols-3 gap-2 p-2">
-        {projects.map((project) => (
-          <ProjectCard project={project} key={project.id} />
-        ))}
-      </ul>
+      {projects.length ? (
+        <ul className="grid grid-cols-1 md:grid-cols-3 gap-2 p-2">
+          {projects.map((project) => (
+            <ProjectCard project={project} key={project.id} />
+          ))}
+        </ul>
+      ) : (
+        <p className="text-center mt-8 font-manrope text-md tracking-wide">
+          Looks like you don't have any projects yet... Use the form above to
+          add one!
+        </p>
+      )}
     </>
   );
 }

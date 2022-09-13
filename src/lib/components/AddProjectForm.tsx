@@ -34,9 +34,15 @@ const AddProjectForm = () => {
 
   return (
     <form
-      className="flex flex-col items-center space-y-4 my-2 font-manrope"
+      className="flex flex-col items-center space-y-4 my-4 font-manrope"
       onSubmit={(e) => {
         e.preventDefault();
+        if (!name) {
+          toast.error("Project name cannot be blank!", {
+            duration: 1500,
+          });
+          return;
+        }
         const id = createProject(name);
         if (id) {
           toast.success("Project created!", {

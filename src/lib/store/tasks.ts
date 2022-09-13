@@ -142,3 +142,9 @@ export const getTasksWithIds = (state: RootState, ids: string[]) => {
     ids.includes(task?.id as string)
   );
 };
+
+export const getTasksByProject = (state: RootState, projectId: string) => {
+  return Object.values(state.tasks.entities).filter(
+    (task) => task?.projectId === projectId
+  ) as ITask[];
+};

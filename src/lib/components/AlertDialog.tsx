@@ -1,8 +1,74 @@
 import * as Alert from "@radix-ui/react-alert-dialog";
 import React from "react";
 import { useAppDispatch } from "../store/hooks";
-import { deleteProject } from "../store/actions";
+import { deleteProject, deleteCategory } from "../store/actions";
 import { toast } from "react-hot-toast";
+
+type CatProps = {
+  categoryId: string;
+  categoryName: string;
+  columnId: string;
+  children: React.ReactNode;
+};
+
+export const DeleteCategoryDialog = ({
+  categoryId,
+  columnId,
+  categoryName,
+  children,
+}: CatProps) => {
+  const dispatch = useAppDispatch();
+
+  return (
+    <Alert.Root>
+      <Alert.Trigger asChild>{children}</Alert.Trigger>
+      <Alert.Portal>
+        <Alert.Overlay className="fixed inset-0 bg-black opacity-50" />
+        <Alert.Content className="alert-content">
+          <Alert.Title asChild>
+            <h1 className="text-4xl">
+              Delete{" "}
+              <span className="text-blue-300 underline">{categoryName}</span> ?
+            </h1>
+          </Alert.Title>
+          <Alert.Description asChild>
+            <p>
+              Are you sure you'd like to delete{" "}
+              <span className="font-bold">{categoryName}</span>? <br /> Doing so
+              will also delete all associated features/tasks.
+            </p>
+          </Alert.Description>
+          <div className="flex w-full justify-around mt-4">
+            <Alert.Cancel asChild>
+              <button type="button" className="alert-cancel-btn">
+                CANCEL
+              </button>
+            </Alert.Cancel>
+            <Alert.Action asChild>
+              <button
+                type="button"
+                className="bg-red-500 hover:bg-red-700 p-1 rounded-md text-lg"
+                onClick={() => {
+                  dispatch(deleteCategory({ id: categoryId, columnId }));
+                  toast.success(`"${categoryName}" deleted.`, {
+                    className: "bg-red-300 font-bold",
+                    duration: 1500,
+                    iconTheme: {
+                      primary: "red",
+                      secondary: "white",
+                    },
+                  });
+                }}
+              >
+                YES, DELETE
+              </button>
+            </Alert.Action>
+          </div>
+        </Alert.Content>
+      </Alert.Portal>
+    </Alert.Root>
+  );
+};
 
 type Props = {
   projectId: string;
@@ -22,7 +88,7 @@ export const DeleteProjectDialog = ({
       <Alert.Trigger asChild>{children}</Alert.Trigger>
       <Alert.Portal>
         <Alert.Overlay className="fixed inset-0 bg-black opacity-50" />
-        <Alert.Content className="bg-black text-compText fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg max-h-[85vh] flex flex-col items-center p-4 pb-8 border-2 border-taskView rounded-md space-y-6 font-manrope">
+        <Alert.Content className="alert-content">
           <Alert.Title asChild>
             <h1 className="text-4xl">
               Delete{" "}
@@ -38,10 +104,7 @@ export const DeleteProjectDialog = ({
           </Alert.Description>
           <div className="flex w-full justify-around mt-4">
             <Alert.Cancel asChild>
-              <button
-                type="button"
-                className="bg-slate-500 hover:bg-slate-700 p-1 rounded-md"
-              >
+              <button type="button" className="alert-cancel-btn">
                 CANCEL
               </button>
             </Alert.Cancel>

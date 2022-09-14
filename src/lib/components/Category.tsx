@@ -2,6 +2,7 @@ import {
   Checkbox,
   CheckboxIndicator,
   Feature as FeatureComponent,
+  DeleteCategoryDialog,
 } from "./index";
 import {
   ChevronDownIcon as Chevron,
@@ -144,33 +145,23 @@ export default function CategoryBase({ id }: CategoryProps) {
                   >
                     <AddIcon width={24} height={24} />
                   </button>
-                  <button
-                    type="button"
-                    disabled={suspended}
-                    className={
-                      suspended
-                        ? "opacity-50"
-                        : "hover:text-red-600 focus:text-red-600"
-                    }
-                    onClick={() => {
-                      toast.success(`"${category?.name}" deleted.`, {
-                        className: "bg-red-300 font-bold",
-                        duration: 1500,
-                        iconTheme: {
-                          primary: "red",
-                          secondary: "white",
-                        },
-                      });
-                      dispatch(
-                        deleteCategory({
-                          id,
-                          columnId: category?.columnId as string,
-                        })
-                      );
-                    }}
+                  <DeleteCategoryDialog
+                    categoryId={id}
+                    columnId={category?.columnId as string}
+                    categoryName={category?.name as string}
                   >
-                    <DeleteIcon width={24} height={24} />
-                  </button>
+                    <button
+                      type="button"
+                      disabled={suspended}
+                      className={
+                        suspended
+                          ? "opacity-50"
+                          : "hover:text-red-600 focus:text-red-600"
+                      }
+                    >
+                      <DeleteIcon width={24} height={24} />
+                    </button>
+                  </DeleteCategoryDialog>
                 </div>
               </header>
             </Accordion.Header>

@@ -28,12 +28,13 @@ export default function Column({ id }: ColumnProps) {
       return;
     }
     dispatch(updateColumn({ id, changes: { name: name.trim() } }));
+    setName(name.trim());
     setIsEditing(false);
   };
 
   return (
     <section className="bg-black md:w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
-      <div className="flex items-center justify-center w-full p-0.5">
+      <div className="flex items-center justify-center p-0.5">
         <form
           onClick={() => {
             setIsEditing(true);

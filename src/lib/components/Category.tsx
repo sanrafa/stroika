@@ -33,12 +33,25 @@ export default function CategoryBase({ id }: CategoryProps) {
   const [suspended, setSuspended] = React.useState(category?.suspended);
 
   const [isEditing, setIsEditing] = React.useState(false);
-  const [name, setName] = React.useState(category?.name);
+  const [name, setName] = React.useState(category?.name || "");
+
+  const handleSubmit = () => {
+    dispatch(
+      updateCategory({
+        id: id,
+        changes: {
+          name: name.trim(),
+        },
+      })
+    );
+    setName(name.trim());
+    setIsEditing(false);
+  };
 
   return (
     <Accordion.Root type="single" asChild collapsible>
       <div
-        className={`flex flex-col bg-category justify-between m-1 pb-2 font-manrope text-compText rounded-md shadow-md max-h-[75%] max-w-11/12  ${
+        className={`flex flex-col bg-category justify-between m-1 pb-2 font-manrope text-compText rounded-md shadow-md max-h-[75%] max-w-11/12 opacity-90 hover:opacity-100  ${
           suspended ? "opacity-50" : null
         }`}
       >
@@ -46,7 +59,7 @@ export default function CategoryBase({ id }: CategoryProps) {
           <>
             <Accordion.Header asChild>
               <header className="flex items-center justify-between pr-4 md:space-x-8">
-                <div className="flex flex-col items-center justify-center p-4 leading-3 ">
+                <div className="flex flex-col items-center justify-center p-4 leading-3 md:-mr-6">
                   {features.length ? (
                     <div className="flex flex-col sm:-mr-4 lg:-mr-0">
                       <span className="text-sm font-bold">{`${
@@ -85,43 +98,30 @@ export default function CategoryBase({ id }: CategoryProps) {
                   </Accordion.Trigger>
                 </div>
 
-                {isEditing ? (
-                  <form
-                    className="mr-2"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      dispatch(
-                        updateCategory({
-                          id: id,
-                          changes: {
-                            name: name,
-                          },
-                        })
-                      );
-                      setIsEditing(false);
+                <form
+                  onClick={() => setIsEditing(true)}
+                  className="mr-4"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmit();
+                  }}
+                >
+                  <input
+                    type="text"
+                    onBlur={handleSubmit}
+                    disabled={!isEditing}
+                    className="text-black disabled:text-compText disabled:bg-category disabled:cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    ref={(input) => {
+                      if (input !== null) {
+                        input.focus();
+                      }
                     }}
-                  >
-                    <input
-                      type="text"
-                      autoFocus
-                      className="text-black text-center p-1 text-md w-full"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                    <button type="submit" className="hidden"></button>
-                  </form>
-                ) : (
-                  <h3
-                    className="lg:text-3xl md:text-2xl sm:text-3xl p-0.5 mr-2 cursor-pointer"
-                    tabIndex={0}
-                    onClick={() => setIsEditing(!isEditing)}
-                    onKeyUp={(e) => {
-                      if (e.key == "Enter") setIsEditing(true);
-                    }}
-                  >
-                    {category?.name}
-                  </h3>
-                )}
+                  />
+                  <button type="submit" className="hidden"></button>
+                </form>
+
                 <div className="flex flex-col space-y-4 mt-2">
                   <button
                     type="button"

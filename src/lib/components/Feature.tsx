@@ -26,6 +26,19 @@ export default function Feature({ id }: FeatureProps) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(feature?.name);
 
+  const handleSubmit = () => {
+    dispatch(
+      updateFeature({
+        id: id,
+        changes: {
+          name: name?.trim(),
+        },
+      })
+    );
+    setName(name?.trim());
+    setIsEditing(false);
+  };
+
   return (
     <div className="flex justify-between items-center bg-feature leading-none p-2 rounded shadow-md">
       {/* Task progress indicator OR checkmark if all complete */}
@@ -48,42 +61,29 @@ export default function Feature({ id }: FeatureProps) {
         )}
       </div>
 
-      {isEditing ? (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            dispatch(
-              updateFeature({
-                id: id,
-                changes: {
-                  name: name,
-                },
-              })
-            );
-            setIsEditing(false);
+      <form
+        onClick={() => setIsEditing(true)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <input
+          type="text"
+          disabled={!isEditing}
+          value={name}
+          className="text-black text-center disabled:bg-feature disabled:text-compText disabled:cursor-pointer w-10/12 lg:w-full rounded-sm"
+          ref={(input) => {
+            if (input !== null) {
+              input.focus();
+            }
           }}
-        >
-          <input
-            type="text"
-            autoFocus
-            value={name}
-            className="text-black text-center"
-            onChange={(e) => setName(e.target.value)}
-          />
-          <button type="submit" className="hidden"></button>
-        </form>
-      ) : (
-        <h4
-          className="p-0.5 ml-1 cursor-pointer"
-          tabIndex={0}
-          onClick={() => setIsEditing(true)}
-          onKeyUp={(e) => {
-            if (e.key == "Enter") setIsEditing(true);
-          }}
-        >
-          {feature?.name}
-        </h4>
-      )}
+          onChange={(e) => setName(e.target.value)}
+          onBlur={handleSubmit}
+        />
+        <button type="submit" className="hidden"></button>
+      </form>
+
       <div className="flex items-center">
         <button
           type="button"

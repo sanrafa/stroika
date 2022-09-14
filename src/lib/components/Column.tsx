@@ -22,39 +22,45 @@ export default function Column({ id }: ColumnProps) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(column?.name);
 
+  const handleSubmit = () => {
+    if (!name) {
+      toast.error("Column name cannot be blank!", { duration: 2000 });
+      return;
+    }
+    dispatch(updateColumn({ id, changes: { name: name.trim() } }));
+    setName(name.trim());
+    setIsEditing(false);
+  };
+
   return (
     <section className="bg-black md:w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
-      <div className="flex items-center justify-center w-full p-0.5">
-        {isEditing ? (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!name) {
-                toast.error("Column name cannot be blank!", { duration: 2000 });
-                return;
+      <div className="flex items-center justify-center p-0.5">
+        <form
+          onClick={() => {
+            setIsEditing(true);
+          }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
+          <input
+            ref={(input) => {
+              if (input !== null) {
+                input.focus();
               }
-              dispatch(updateColumn({ id, changes: { name } }));
-              setIsEditing(false);
             }}
-          >
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              autoFocus
-              tabIndex={99}
-              className="font-manrope text-3xl text-center p-1 w-1/2 bg-slate-900 outline outline-1 outline-slate-50 tracking-widest"
-            />
-            <button type="submit" className="hidden"></button>
-          </form>
-        ) : (
-          <h1
-            className="font-manrope text-3xl tracking-widest p-1 cursor-pointer"
-            onClick={() => setIsEditing(true)}
-          >
-            {column?.name}
-          </h1>
-        )}
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            disabled={!isEditing}
+            className="font-manrope text-xl text-center p-1 text-black font-bold disabled:text-compText disabled:bg-slate-900 disabled:cursor-pointer tracking-widest rounded-sm"
+            onBlur={() => {
+              handleSubmit();
+            }}
+          />
+          <button type="submit" className="hidden"></button>
+        </form>
 
         <div className={`${isEditing ? "hidden" : "pl-4"}`}>
           <ColumnDropdown

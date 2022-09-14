@@ -18,7 +18,7 @@ type Props = {
 const ProjectCard = ({ project }: Props) => {
   const dispatch = useAppDispatch();
   const projectTasks = useAppSelector((state) =>
-    getTasksByProject(state, project.id)
+    getTasksByProject(state, project.id).filter((task) => !task.completed)
   );
 
   return (
@@ -51,7 +51,7 @@ const ProjectCard = ({ project }: Props) => {
         <DeleteProjectDialog projectId={project.id} projectName={project.name}>
           <button
             type="button"
-            /*         onClick={() => dispatch(deleteProject(project.id))} */
+            id="delete-project-icon"
             className="text-red-900 hover:text-red-700 hover:bg-red-200 rounded-full p-1 m-1"
           >
             <DeleteIcon width={32} height={32} />

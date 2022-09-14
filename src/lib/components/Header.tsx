@@ -33,6 +33,10 @@ export default function Header() {
   const [name, setName] = React.useState(project?.name);
   const addColumnDisabled = project?.columns.length === 3;
 
+  React.useEffect(() => {
+    setName(project?.name);
+  }, [project]);
+
   return (
     <>
       <header className={match ? "project-header" : "header"}>
@@ -41,10 +45,28 @@ export default function Header() {
         </Link>
         {match ? (
           <>
-            {isEditing ? (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
+            <form
+              onClick={() => setIsEditing(true)}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!name) {
+                  toast.error("A name must be provided!", {
+                    duration: 2000,
+                  });
+                  return;
+                }
+                dispatch(
+                  updateProject({
+                    id: id as string,
+                    changes: { name: name, updatedAt: Date() },
+                  })
+                );
+                setIsEditing(false);
+              }}
+              className="ml-4"
+            >
+              <input
+                onBlur={() => {
                   if (!name) {
                     toast.error("A name must be provided!", {
                       duration: 2000,
@@ -59,21 +81,17 @@ export default function Header() {
                   );
                   setIsEditing(false);
                 }}
-              >
-                <input
-                  type="text"
-                  className="text-black text-4xl text-center font-light"
-                  defaultValue={name}
-                  onChange={(e) => setName(e.target.value)}
-                  name="project-name"
-                />
-                <button type="submit" className="hidden"></button>
-              </form>
-            ) : (
-              <h1 className="text-4xl text-white font-josefin mt-2 font-light">
-                {project?.name}
-              </h1>
-            )}
+                type="text"
+                className={`text-black text-5xl text-center font-light w-11/12 disabled:bg-black disabled:text-compText disabled:cursor-pointer`}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                name="project-name"
+                disabled={!isEditing}
+                tabIndex={0}
+                autoFocus
+              />
+              <button type="submit" className="hidden"></button>
+            </form>
 
             <div className="flex space-x-4">
               <button

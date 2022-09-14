@@ -33,6 +33,22 @@ export default function Header() {
   const [name, setName] = React.useState(project?.name);
   const addColumnDisabled = project?.columns.length === 3;
 
+  const handleSubmit = () => {
+    if (!name) {
+      toast.error("A name must be provided!", {
+        duration: 2000,
+      });
+      return;
+    }
+    dispatch(
+      updateProject({
+        id: id as string,
+        changes: { name: name.trim(), updatedAt: Date() },
+      })
+    );
+    setIsEditing(false);
+  };
+
   React.useEffect(() => {
     setName(project?.name);
   }, [project]);
@@ -49,37 +65,13 @@ export default function Header() {
               onClick={() => setIsEditing(true)}
               onSubmit={(e) => {
                 e.preventDefault();
-                if (!name) {
-                  toast.error("A name must be provided!", {
-                    duration: 2000,
-                  });
-                  return;
-                }
-                dispatch(
-                  updateProject({
-                    id: id as string,
-                    changes: { name: name, updatedAt: Date() },
-                  })
-                );
-                setIsEditing(false);
+                handleSubmit();
               }}
               className="ml-4"
             >
               <input
                 onBlur={() => {
-                  if (!name) {
-                    toast.error("A name must be provided!", {
-                      duration: 2000,
-                    });
-                    return;
-                  }
-                  dispatch(
-                    updateProject({
-                      id: id as string,
-                      changes: { name: name, updatedAt: Date() },
-                    })
-                  );
-                  setIsEditing(false);
+                  handleSubmit();
                 }}
                 type="text"
                 className={`text-black text-5xl text-center font-light w-11/12 disabled:bg-black disabled:text-compText disabled:cursor-pointer`}
@@ -87,8 +79,11 @@ export default function Header() {
                 onChange={(e) => setName(e.target.value)}
                 name="project-name"
                 disabled={!isEditing}
-                tabIndex={0}
-                autoFocus
+                ref={(input) => {
+                  if (input !== null) {
+                    input.focus();
+                  }
+                }}
               />
               <button type="submit" className="hidden"></button>
             </form>

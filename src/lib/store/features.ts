@@ -34,9 +34,9 @@ const featuresSlice = createSlice({
       }>
     ) {
       const { id, categoryId, columnId, projectId } = action.payload;
-      const featuresToUpdate = Object.values(state.entities).filter(
-        (feat) => feat && feat.columnId === columnId
-      );
+      const featuresToUpdate = Object.values(state.entities)
+        .filter((feat) => feat && feat.columnId === columnId)
+        .sort((a, b) => Number(a?.order) - Number(b?.order));
       featuresToUpdate.unshift({
         id,
         categoryId,

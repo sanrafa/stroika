@@ -33,9 +33,9 @@ export const DeleteCategoryDialog = ({
           </Alert.Title>
           <Alert.Description asChild>
             <p>
-              Are you sure you'd like to delete{" "}
-              <span className="font-bold">{categoryName}</span>? <br /> Doing so
-              will also delete all associated features/tasks.
+              Are you sure you'd like to remove the{" "}
+              <span className="font-bold">{categoryName}</span> category? <br />{" "}
+              Doing so will also delete all associated features/tasks.
             </p>
           </Alert.Description>
           <div className="flex w-full justify-around mt-4">

@@ -33,6 +33,7 @@ export default function CategoryBase({ id }: CategoryProps) {
 
   const [name, setName] = React.useState(category?.name || "");
   const divRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
 
   const handleSubmit = () => {
     dispatch(
@@ -91,8 +92,12 @@ export default function CategoryBase({ id }: CategoryProps) {
                     </Checkbox>
                   )}
 
-                  <Accordion.Trigger asChild={true}>
-                    <button type="button" className="-mb-4">
+                  <Accordion.Trigger asChild>
+                    <button
+                      type="button"
+                      className="-mb-4 focus:outline-1"
+                      ref={triggerRef}
+                    >
                       <Chevron width={32} height={32} color="black" />
                     </button>
                   </Accordion.Trigger>
@@ -134,6 +139,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                           projectId: category?.projectId as string,
                         })
                       );
+                      triggerRef?.current?.focus();
                     }}
                   >
                     <AddIcon width={24} height={24} />

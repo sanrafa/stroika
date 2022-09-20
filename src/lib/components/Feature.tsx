@@ -1,4 +1,3 @@
-import { ITask } from "../types";
 import { TaskView } from "./index";
 import React from "react";
 
@@ -23,8 +22,8 @@ export default function Feature({ id }: FeatureProps) {
   const feature = useAppSelector((state) => getFeatureById(state, id));
   const tasks = useAppSelector((state) => getTasksByFeature(state, id));
 
-  const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(feature?.name);
+  const menuButtonRef = React.useRef<HTMLButtonElement>(null);
 
   const handleSubmit = () => {
     dispatch(
@@ -36,7 +35,6 @@ export default function Feature({ id }: FeatureProps) {
       })
     );
     setName(name?.trim());
-    setIsEditing(false);
   };
 
   return (
@@ -62,22 +60,16 @@ export default function Feature({ id }: FeatureProps) {
       </div>
 
       <form
-        onClick={() => setIsEditing(true)}
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
+          menuButtonRef?.current?.focus();
         }}
       >
         <input
           type="text"
-          disabled={!isEditing}
           value={name}
-          className="text-black text-center disabled:bg-feature disabled:text-compText disabled:cursor-pointer w-10/12 lg:w-full rounded-sm"
-          ref={(input) => {
-            if (input !== null) {
-              input.focus();
-            }
-          }}
+          className="text-center bg-feature text-compText focus:text-black focus:bg-compText focus:cursor-text cursor-pointer w-10/12 lg:w-full rounded-sm"
           onChange={(e) => setName(e.target.value)}
           onBlur={handleSubmit}
         />
@@ -99,6 +91,7 @@ export default function Feature({ id }: FeatureProps) {
         {/* Wrap with TaskView component to serve as trigger */}
         <TaskView featureId={id as string}>
           <button
+            ref={menuButtonRef}
             type="button"
             className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked focus:bg-categoryToggleUnchecked"
           >

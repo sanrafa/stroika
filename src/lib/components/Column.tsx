@@ -1,4 +1,7 @@
-import { CardStackPlusIcon as AddCategoryIcon } from "@radix-ui/react-icons";
+import {
+  CardStackPlusIcon as AddCategoryIcon,
+  WidthIcon as DragIcon,
+} from "@radix-ui/react-icons";
 import { ColumnDropdown, Category } from "./index";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { updateColumn, addCategory } from "../store/actions";
@@ -7,6 +10,8 @@ import { getSortedCategoriesByColumn } from "../store/categories";
 import { nanoid } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
 import React from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type ColumnProps = {
   id: string;
@@ -14,6 +19,18 @@ type ColumnProps = {
 
 export default function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    setActivatorNodeRef,
+  } = useSortable({ id: id });
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
   const column = useAppSelector((state) => getColumnById(state, id));
   const categoryIds = useAppSelector((state) =>
     getSortedCategoriesByColumn(state, id)
@@ -39,8 +56,19 @@ export default function Column({ id }: ColumnProps) {
   };
 
   return (
-    <section className="bg-black md:w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
-      <div className="flex items-center justify-center p-0.5">
+    <section
+      className="bg-black md:w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder"
+      style={sortableStyle}
+      ref={setNodeRef}
+    >
+      <div className="flex items-center justify-around w-full p-0.5">
+        <ColumnDropdown
+          id={id}
+          projectId={column?.projectId as string}
+          setIsEditing={setIsEditing}
+          inputRef={inputRef}
+          isEditing={isEditing}
+        />
         <form
           onClick={() => {
             setIsEditing(true);
@@ -69,15 +97,14 @@ export default function Column({ id }: ColumnProps) {
           ></button>
         </form>
 
-        <div className={`${isEditing ? "hidden" : "pl-4"}`}>
-          <ColumnDropdown
-            id={id}
-            projectId={column?.projectId as string}
-            setIsEditing={setIsEditing}
-            inputRef={inputRef}
-            isEditing={isEditing}
-          />
-        </div>
+        <button
+          {...attributes}
+          {...listeners}
+          className=" hover:bg-blue-300 hover:text-black p-0.5 rounded"
+          ref={setActivatorNodeRef}
+        >
+          <DragIcon width={24} height={24} />
+        </button>
       </div>
       <hr className="w-[90%] bg-white" />
       <div className="bg-column h-full w-full mt-2 rounded overflow-y-auto hide-scroll">

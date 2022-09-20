@@ -10,3 +10,4 @@ export { default as AddProjectForm } from "./AddProjectForm";
 export { default as ProjectCard } from "./ProjectCard";
 export * from "./AlertDialog";
 export { default as TaskDndContext } from "./TaskDndContext";
+export { default as ColumnDndContext } from "./ColumnDndContext";

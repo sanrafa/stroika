@@ -2,7 +2,8 @@ import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../lib/store/hooks";
 import { setCurrentProject } from "../lib/store/actions";
 import { getProjectById } from "../lib/store/projects";
-import { Column } from "../lib/components";
+import { getSortedColumnIdsByProject } from "../lib/store/columns";
+import { Column, ColumnDndContext } from "../lib/components";
 import React from "react";
 
 function ProjectView() {
@@ -14,9 +15,11 @@ function ProjectView() {
   const currentProject = useAppSelector(
     (state) => state.session.currentProjectId
   );
+  const columnIds = useAppSelector((state) =>
+    getSortedColumnIdsByProject(state, id as string)
+  ) as string[];
 
   React.useEffect(() => {
-    // TODO: Present error if currentProject is null
     if (id && project?.id) dispatch(setCurrentProject({ id }));
   }, []);
 
@@ -24,7 +27,11 @@ function ProjectView() {
     <>
       <div className="bg-project p-4 m-4 h-5/6 flex flex-1 justify-between overflow-x-auto">
         {currentProject ? (
-          project?.columns.map((id) => <Column id={id} key={id} />)
+          <ColumnDndContext colIds={columnIds}>
+            {columnIds.map((id) => (
+              <Column id={id} key={id} />
+            ))}
+          </ColumnDndContext>
         ) : (
           <p>Sorry, looks like this project doesn't exist :\</p>
         )}

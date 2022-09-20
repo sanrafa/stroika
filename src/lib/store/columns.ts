@@ -3,6 +3,7 @@ import { createEntityAdapter, createSlice, nanoid } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
 import { addCategory, deleteCategory, deleteProject } from "./actions";
+import { arrayMove } from "@dnd-kit/sortable";
 
 export const generateDefaultColumns = (projectId: string): IColumn[] => {
   return [
@@ -79,6 +80,24 @@ const columnsSlice = createSlice({
       columnsAdapter.removeOne(state, action.payload.id);
     },
     addManyColumns: columnsAdapter.addMany,
+    sortColumnsOnDragEnd(
+      state,
+      action: PayloadAction<{
+        activeId: string;
+        overId: string;
+        idList: string[];
+      }>
+    ) {
+      const { activeId, overId, idList } = action.payload;
+      const oldIdx = idList.indexOf(activeId);
+      const newIdx = idList.indexOf(overId);
+      const sortedIds = arrayMove(idList, oldIdx, newIdx);
+      const colsToUpdate = sortedIds.map((id, idx) => ({
+        ...state.entities[id],
+        order: idx + 1,
+      })) as IColumn[];
+      columnsAdapter.upsertMany(state, colsToUpdate);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -104,10 +123,25 @@ const columnsSlice = createSlice({
   },
 });
 
-export const { addColumn, updateColumn, deleteColumn, addManyColumns } =
-  columnsSlice.actions;
+export const {
+  addColumn,
+  updateColumn,
+  deleteColumn,
+  addManyColumns,
+  sortColumnsOnDragEnd,
+} = columnsSlice.actions;
 
 export default columnsSlice.reducer;
 
 export const { selectById: getColumnById } =
   columnsAdapter.getSelectors<RootState>((state) => state.columns);
+
+export const getSortedColumnIdsByProject = (
+  state: RootState,
+  projectId: string
+) => {
+  return Object.values(state.columns.entities)
+    .filter((col) => col?.projectId === projectId)
+    .sort((a, b) => Number(a?.order) - Number(b?.order))
+    .map((col) => col?.id);
+};

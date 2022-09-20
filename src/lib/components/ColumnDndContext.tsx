@@ -13,23 +13,23 @@ import {
 import {
   sortableKeyboardCoordinates,
   SortableContext,
-  verticalListSortingStrategy,
+  horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
 import {
-  restrictToVerticalAxis,
+  restrictToHorizontalAxis,
   restrictToFirstScrollableAncestor,
 } from "@dnd-kit/modifiers";
 
-import { useAppDispatch } from "../store/hooks";
-import { sortTasksOnDragEnd } from "../store/actions";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { sortColumnsOnDragEnd } from "../store/columns";
 
 type Props = {
-  taskIds: string[];
+  colIds: string[];
   children: React.ReactNode;
 };
 
-export default function TaskDndContext({ taskIds, children }: Props) {
+export default function ColumnDndContext({ colIds, children }: Props) {
   const dispatch = useAppDispatch();
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -40,10 +40,9 @@ export default function TaskDndContext({ taskIds, children }: Props) {
 
   function handleDragEnd(event: DragEndEvent, ids: string[]) {
     const { active, over } = event;
-
     if (over && active.id !== over.id) {
       dispatch(
-        sortTasksOnDragEnd({
+        sortColumnsOnDragEnd({
           activeId: active.id as string,
           overId: over.id as string,
           idList: ids,
@@ -56,10 +55,10 @@ export default function TaskDndContext({ taskIds, children }: Props) {
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      onDragEnd={(e) => handleDragEnd(e, taskIds)}
-      modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
+      modifiers={[restrictToHorizontalAxis, restrictToFirstScrollableAncestor]}
+      onDragEnd={(e) => handleDragEnd(e, colIds)}
     >
-      <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
+      <SortableContext items={colIds} strategy={horizontalListSortingStrategy}>
         {children}
       </SortableContext>
     </DndContext>

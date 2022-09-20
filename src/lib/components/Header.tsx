@@ -76,23 +76,30 @@ export default function Header() {
               }}
               className="ml-4"
             >
-              <input
-                onBlur={() => {
-                  handleSubmit();
-                }}
-                type="text"
-                className={`text-black text-5xl text-center font-light w-11/12 disabled:bg-black disabled:text-compText disabled:cursor-pointer`}
-                defaultValue={name}
-                onChange={(e) => setName(e.target.value)}
-                name="project-name"
-                disabled={!isEditing}
-                ref={projectNameInputRef}
-              />
-              <button type="submit" className="hidden"></button>
+              <h1>
+                <input
+                  onBlur={() => {
+                    handleSubmit();
+                  }}
+                  type="text"
+                  className={`text-black text-5xl text-center font-light w-11/12 disabled:bg-black disabled:text-compText disabled:cursor-pointer`}
+                  defaultValue={name}
+                  onChange={(e) => setName(e.target.value)}
+                  aria-label="project name"
+                  disabled={!isEditing}
+                  ref={projectNameInputRef}
+                />
+              </h1>
+              <button
+                type="submit"
+                className="hidden"
+                aria-label="update project name"
+              ></button>
             </form>
 
             <div className="flex space-x-4">
               <button
+                aria-label="add new column"
                 type="button"
                 className={`p-4 rounded-full m-1 ${
                   addColumnDisabled ? "opacity-30" : "hover:bg-green-800"
@@ -115,6 +122,7 @@ export default function Header() {
                   <button
                     type="button"
                     className="hover:bg-gray-800 p-4 rounded-full m-1"
+                    aria-label="open project menu"
                   >
                     <MenuIcon
                       width={32}
@@ -156,7 +164,12 @@ export default function Header() {
               </Dropdown>
 
               <Link to="projects" className="text-xl p-5 hover:bg-gray-800">
-                <CloseIcon width={32} height={32} color="white" />
+                <CloseIcon
+                  width={32}
+                  height={32}
+                  color="white"
+                  aria-label="view all projects"
+                />
               </Link>
             </div>
           </>

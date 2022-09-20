@@ -73,6 +73,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                     </div>
                   ) : (
                     <Checkbox
+                      aria-label="mark category as suspended"
                       checked={suspended}
                       onCheckedChange={() => {
                         dispatch(
@@ -97,6 +98,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                       type="button"
                       className="-mb-4 focus:outline-1"
                       ref={triggerRef}
+                      aria-label="view features"
                     >
                       <Chevron width={32} height={32} color="black" />
                     </button>
@@ -113,16 +115,22 @@ export default function CategoryBase({ id }: CategoryProps) {
                 >
                   <input
                     type="text"
+                    aria-label="category name"
                     onBlur={handleSubmit}
                     className="text-compText focus:text-black bg-category focus:bg-compText cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md focus:cursor-text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
-                  <button type="submit" className="hidden"></button>
+                  <button
+                    type="submit"
+                    className="hidden"
+                    aria-label="update category name"
+                  ></button>
                 </form>
 
                 <div className="flex flex-col space-y-4 mt-2">
                   <button
+                    aria-label="add new feature"
                     type="button"
                     disabled={suspended}
                     className={
@@ -150,6 +158,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                     categoryName={category?.name as string}
                   >
                     <button
+                      aria-label="delete category"
                       type="button"
                       disabled={suspended}
                       className={
@@ -164,7 +173,11 @@ export default function CategoryBase({ id }: CategoryProps) {
                 </div>
               </header>
             </Accordion.Header>
-            <Accordion.Content asChild id="category-slider">
+            <Accordion.Content
+              asChild
+              id={`${category?.id}-category-slider`}
+              aria-label={`${category?.name} features`}
+            >
               <div className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm overflow-y-auto space-y-2 p-2 hide-scroll">
                 {features.map((feat) => (
                   <FeatureComponent id={feat?.id as string} key={feat?.id} />

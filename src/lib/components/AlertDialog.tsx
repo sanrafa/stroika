@@ -40,12 +40,17 @@ export const DeleteCategoryDialog = ({
           </Alert.Description>
           <div className="flex w-full justify-around mt-4">
             <Alert.Cancel asChild>
-              <button type="button" className="alert-cancel-btn">
+              <button
+                type="button"
+                className="alert-cancel-btn"
+                aria-label="cancel"
+              >
                 CANCEL
               </button>
             </Alert.Cancel>
             <Alert.Action asChild>
               <button
+                aria-label="Confirm delete category"
                 type="button"
                 className="bg-red-500 hover:bg-red-700 p-1 rounded-md text-lg"
                 onClick={() => {
@@ -104,12 +109,17 @@ export const DeleteProjectDialog = ({
           </Alert.Description>
           <div className="flex w-full justify-around mt-4">
             <Alert.Cancel asChild>
-              <button type="button" className="alert-cancel-btn">
+              <button
+                type="button"
+                className="alert-cancel-btn"
+                aria-label="cancel"
+              >
                 CANCEL
               </button>
             </Alert.Cancel>
             <Alert.Action asChild>
               <button
+                aria-label="confirm delete project"
                 type="button"
                 className="bg-red-500 hover:bg-red-700 p-1 rounded-md text-lg"
                 onClick={() => {

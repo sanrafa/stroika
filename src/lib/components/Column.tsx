@@ -54,6 +54,7 @@ export default function Column({ id }: ColumnProps) {
             ref={inputRef}
             type="text"
             value={name}
+            aria-label="column name"
             onChange={(e) => setName(e.target.value)}
             disabled={!isEditing}
             className="font-manrope text-xl text-center p-1 text-black font-bold disabled:text-compText disabled:bg-slate-900 disabled:cursor-pointer tracking-widest rounded-sm"
@@ -61,7 +62,11 @@ export default function Column({ id }: ColumnProps) {
               handleSubmit();
             }}
           />
-          <button type="submit" className="hidden"></button>
+          <button
+            type="submit"
+            className="hidden"
+            aria-label="update column name"
+          ></button>
         </form>
 
         <div className={`${isEditing ? "hidden" : "pl-4"}`}>
@@ -81,6 +86,7 @@ export default function Column({ id }: ColumnProps) {
         ))}
       </div>
       <button
+        aria-label="add new category"
         type="button"
         className="static inset-x-0 bottom-0 bg-green-700 w-full rounded-b-sm opacity-30 flex justify-center hover:opacity-100 focus:opacity-100"
         onMouseDown={(e) => {

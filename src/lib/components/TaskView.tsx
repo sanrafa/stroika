@@ -75,8 +75,13 @@ const Task = ({ id }: TaskProps) => {
             type="text"
             className="text-center w-6/8 bg-slate-800 rounded mx-4"
             onChange={(e) => setDesc(e.target.value)}
+            aria-label="task description"
           />
-          <button type="submit" className="hidden"></button>
+          <button
+            type="submit"
+            className="hidden"
+            aria-label="update task description"
+          ></button>
         </form>
       ) : (
         <span className="self-baseline text-center w-4/5">
@@ -87,6 +92,7 @@ const Task = ({ id }: TaskProps) => {
       {!completed ? (
         <>
           <button
+            aria-label="edit description"
             type="button"
             className="text-feature rounded-full px-2 hover:text-categoryToggleUnchecked hover:bg-slate-600"
             onClick={() => setIsEditing(true)}
@@ -95,6 +101,7 @@ const Task = ({ id }: TaskProps) => {
             <EditIcon />
           </button>
           <button
+            aria-label="delete task"
             type="button"
             className="text-red-500 px-2 rounded-full hover:text-red-600 hover:bg-slate-600"
             onClick={() =>
@@ -185,6 +192,7 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
               <button
                 type="submit"
                 className="bg-green-400 px-1 py-0.5 font-bold rounded-r-md hover:bg-green-600 hover:text-green-900"
+                aria-label="add task"
               >
                 ADD
               </button>

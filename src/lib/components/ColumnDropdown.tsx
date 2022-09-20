@@ -32,7 +32,11 @@ export default function ColumnDropdown({
   return (
     <Dropdown>
       <DropdownTrigger asChild>
-        <button type="button" className="hover:bg-gray-700">
+        <button
+          type="button"
+          className="hover:bg-gray-700"
+          aria-label="open column menu"
+        >
           <MenuIcon />
         </button>
       </DropdownTrigger>

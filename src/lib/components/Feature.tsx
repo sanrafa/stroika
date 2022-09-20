@@ -42,7 +42,7 @@ export default function Feature({ id }: FeatureProps) {
       {/* Task progress indicator OR checkmark if all complete */}
       <div className="text-xxs mr-1">
         {!feature?.tasks.length ? (
-          <span className="text-red-500">
+          <span className="text-compText font-bold">
             NO <br /> TASKS
           </span>
         ) : tasks.every((task) => task?.completed === true) ? (
@@ -68,16 +68,22 @@ export default function Feature({ id }: FeatureProps) {
       >
         <input
           type="text"
+          aria-label="feature name"
           value={name}
           className="text-center bg-feature text-compText focus:text-black focus:bg-compText focus:cursor-text cursor-pointer w-10/12 lg:w-full rounded-sm"
           onChange={(e) => setName(e.target.value)}
           onBlur={handleSubmit}
         />
-        <button type="submit" className="hidden"></button>
+        <button
+          type="submit"
+          className="hidden"
+          aria-label="update feature name"
+        ></button>
       </form>
 
       <div className="flex items-center">
         <button
+          aria-label="delete feature"
           type="button"
           className="p-0.5 hover:text-red-600 text-red-700 hover:bg-red-900 focus:bg-red-900 focus:text-red-600 border border-solid border-red-600 rounded-sm"
           onClick={() =>
@@ -91,6 +97,7 @@ export default function Feature({ id }: FeatureProps) {
         {/* Wrap with TaskView component to serve as trigger */}
         <TaskView featureId={id as string}>
           <button
+            aria-label="view related tasks"
             ref={menuButtonRef}
             type="button"
             className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked focus:bg-categoryToggleUnchecked"

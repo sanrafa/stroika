@@ -58,9 +58,9 @@ const Task = ({ id }: TaskProps) => {
       }`}
       style={sortableStyle}
       ref={setNodeRef}
-      // TODO: add custom attributes according to https://docs.dndkit.com/api-documentation/draggable#attributes
     >
       <Checkbox
+        aria-label="mark task complete"
         checked={completed}
         onCheckedChange={(e) => {
           dispatch(
@@ -80,7 +80,10 @@ const Task = ({ id }: TaskProps) => {
       </Checkbox>
       {!completed ? (
         <button
+          {...attributes}
           {...listeners}
+          aria-label="sort task"
+          aria-roledescription="task drag handle"
           ref={setActivatorNodeRef}
           className="hover:bg-slate-500 rounded"
         >
@@ -151,13 +154,13 @@ const TaskList = ({ taskIds }: { taskIds: string[] }) => {
     getSortedTaskIds(state, taskIds)
   ) as string[];
   return (
-    <ul className="space-y-1 flex flex-col min-w-[75%] overflow-y-auto hide-scroll">
-      <TaskDndContext taskIds={sortedIds}>
+    <TaskDndContext taskIds={sortedIds}>
+      <ul className="space-y-1 flex flex-col min-w-[75%] overflow-y-auto hide-scroll">
         {sortedIds.map((id) => (
           <Task id={id} key={id} />
         ))}
-      </TaskDndContext>
-    </ul>
+      </ul>
+    </TaskDndContext>
   );
 };
 
@@ -173,7 +176,10 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-50" />
         <Dialog.Content asChild>
-          <aside className="bg-black text-compText fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg max-h-[85vh] flex flex-col items-center p-4 pb-8 border-2 border-taskView rounded-md shadow-taskView space-y-2 font-manrope">
+          <section
+            aria-label="task view"
+            className="bg-black text-compText fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg max-h-[85vh] flex flex-col items-center p-4 pb-8 border-2 border-taskView rounded-md shadow-taskView space-y-2 font-manrope"
+          >
             <Dialog.Close asChild>
               <button
                 type="button"
@@ -216,7 +222,7 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
                 name="task-description"
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
-                className="bg-slate-500 text-center rounded-l-md p-0.5 focus:bg-white mb-2"
+                className="bg-slate-300 text-center rounded-l-md p-0.5 focus:bg-white mb-2"
                 placeholder="Add a new task"
               />
               <button
@@ -228,7 +234,7 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
               </button>
             </form>
             <TaskList taskIds={feature?.tasks as string[]} />
-          </aside>
+          </section>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

@@ -1,9 +1,10 @@
-import { Checkbox, CheckboxIndicator } from "./index";
+import { Checkbox, CheckboxIndicator, TaskDndContext } from "./index";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   CrossCircledIcon as CloseIcon,
   Pencil1Icon as EditIcon,
   CircleBackslashIcon as DeleteIcon,
+  CaretSortIcon as DragIcon,
 } from "@radix-ui/react-icons";
 import React from "react";
 import { nanoid } from "@reduxjs/toolkit";
@@ -14,8 +15,11 @@ import {
   toggleTaskComplete,
   deleteTask,
 } from "../store/actions";
-import { getTaskById, getTasksWithIds } from "../store/tasks";
+import { getTaskById, getSortedTaskIds } from "../store/tasks";
 import { getFeatureById } from "../store/features";
+
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type TaskViewProps = {
   featureId: string;
@@ -29,8 +33,21 @@ type TaskProps = {
 const Task = ({ id }: TaskProps) => {
   const dispatch = useAppDispatch();
   const task = useAppSelector((state) => getTaskById(state, id));
-  const [completed, setCompleted] = React.useState(Boolean(task?.completed));
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    setActivatorNodeRef,
+  } = useSortable({ id: id });
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const [completed, setCompleted] = React.useState(Boolean(task?.completed));
   const [isEditing, setIsEditing] = React.useState(false);
   const [desc, setDesc] = React.useState(task?.description);
 
@@ -39,6 +56,9 @@ const Task = ({ id }: TaskProps) => {
       className={`flex space-x-2 px-4 py-1 rounded-md hover:bg-slate-700 ${
         completed ? "opacity-60" : null
       }`}
+      style={sortableStyle}
+      ref={setNodeRef}
+      // TODO: add custom attributes according to https://docs.dndkit.com/api-documentation/draggable#attributes
     >
       <Checkbox
         checked={completed}
@@ -58,6 +78,15 @@ const Task = ({ id }: TaskProps) => {
           <div className="bg-categoryToggleChecked w-5 h-5 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
         </CheckboxIndicator>
       </Checkbox>
+      {!completed ? (
+        <button
+          {...listeners}
+          ref={setActivatorNodeRef}
+          className="hover:bg-slate-500 rounded"
+        >
+          <DragIcon width={24} height={24} />
+        </button>
+      ) : null}
 
       {isEditing ? (
         <form
@@ -118,15 +147,16 @@ const Task = ({ id }: TaskProps) => {
 };
 
 const TaskList = ({ taskIds }: { taskIds: string[] }) => {
-  const tasks = useAppSelector((state) => getTasksWithIds(state, taskIds));
+  const sortedIds = useAppSelector((state) =>
+    getSortedTaskIds(state, taskIds)
+  ) as string[];
   return (
     <ul className="space-y-1 flex flex-col min-w-[75%] overflow-y-auto hide-scroll">
-      {tasks
-        .sort((a, b) => Number(a?.order) - Number(b?.order))
-
-        .map((task) => (
-          <Task id={task?.id as string} key={task?.id as string} />
+      <TaskDndContext taskIds={sortedIds}>
+        {sortedIds.map((id) => (
+          <Task id={id} key={id} />
         ))}
+      </TaskDndContext>
     </ul>
   );
 };

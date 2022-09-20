@@ -9,3 +9,4 @@ export { default as TaskView } from "./TaskView";
 export { default as AddProjectForm } from "./AddProjectForm";
 export { default as ProjectCard } from "./ProjectCard";
 export * from "./AlertDialog";
+export { default as TaskDndContext } from "./TaskDndContext";

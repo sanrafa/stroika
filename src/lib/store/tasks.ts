@@ -66,7 +66,7 @@ const tasksSlice = createSlice({
       const { id, featureId, completed } = action.payload;
       const insertOrder = completed === true ? state.ids.length - 1 : 0; // if marking complete, insert at bottom, if unmarking, move to top
       const tasks = Object.values(state.entities).filter(
-        (task) => task && task.id !== action.payload.id
+        (task) => task && task.id !== id && task.featureId === featureId
       ) as ITask[];
       tasks
         .sort((a, b) => Number(a.completed) - Number(b.completed))
@@ -161,10 +161,11 @@ export const getTasksByFeature = (state: RootState, featureId: string) => {
   );
 };
 
-export const getTasksWithIds = (state: RootState, ids: string[]) => {
-  return Object.values(state.tasks.entities).filter((task) =>
-    ids.includes(task?.id as string)
-  );
+export const getSortedTaskIds = (state: RootState, ids: string[]) => {
+  return Object.values(state.tasks.entities)
+    .filter((task) => ids.includes(task?.id as string))
+    .sort((a, b) => Number(a?.order) - Number(b?.order))
+    .map((task) => task?.id);
 };
 
 export const getTasksByProject = (state: RootState, projectId: string) => {

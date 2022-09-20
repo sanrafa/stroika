@@ -16,6 +16,11 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+import {
+  restrictToVerticalAxis,
+  restrictToFirstScrollableAncestor,
+} from "@dnd-kit/modifiers";
+
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { sortTasksOnDragEnd } from "../store/actions";
 
@@ -55,6 +60,7 @@ export default function TaskDndContext({ taskIds, children }: Props) {
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={(e) => handleDragEnd(e, taskIds)}
+      modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
     >
       <SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
         {children}

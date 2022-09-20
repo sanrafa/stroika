@@ -11,6 +11,9 @@ function ProjectView() {
   const project = useAppSelector((state) =>
     getProjectById(state, id as string)
   );
+  const currentProject = useAppSelector(
+    (state) => state.session.currentProjectId
+  );
 
   React.useEffect(() => {
     // TODO: Present error if currentProject is null
@@ -20,9 +23,11 @@ function ProjectView() {
   return (
     <>
       <div className="bg-project p-4 m-4 h-5/6 flex flex-1 justify-between overflow-x-auto">
-        {project?.columns.map((id) => (
-          <Column id={id} key={id} />
-        ))}
+        {currentProject ? (
+          project?.columns.map((id) => <Column id={id} key={id} />)
+        ) : (
+          <p>Sorry, looks like this project doesn't exist :\</p>
+        )}
       </div>
     </>
   );

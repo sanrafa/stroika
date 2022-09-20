@@ -1,8 +1,8 @@
-import React, { HTMLAttributes, ReactNode } from "react";
+import React from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 interface Props {
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 const Dropdown = DropdownMenu.Root;
@@ -14,8 +14,8 @@ const DropdownSeparator = DropdownMenu.Separator;
 const DropdownArrow = DropdownMenu.Arrow;
 
 const DropdownContent = React.forwardRef<
-  HTMLDivElement,
-  Props & HTMLAttributes<HTMLDivElement>
+  React.ElementRef<typeof DropdownMenu.Content>,
+  Props & React.ComponentPropsWithoutRef<typeof DropdownMenu.Content>
 >(({ children, ...props }, ref) => {
   return (
     <DropdownMenu.Portal>

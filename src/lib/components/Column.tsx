@@ -22,6 +22,12 @@ export default function Column({ id }: ColumnProps) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(column?.name);
 
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (isEditing) inputRef?.current?.focus();
+  }, [isEditing]);
+
   const handleSubmit = () => {
     if (!name) {
       toast.error("Column name cannot be blank!", { duration: 2000 });
@@ -45,11 +51,7 @@ export default function Column({ id }: ColumnProps) {
           }}
         >
           <input
-            ref={(input) => {
-              if (input !== null) {
-                input.focus();
-              }
-            }}
+            ref={inputRef}
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -67,6 +69,8 @@ export default function Column({ id }: ColumnProps) {
             id={id}
             projectId={column?.projectId as string}
             setIsEditing={setIsEditing}
+            inputRef={inputRef}
+            isEditing={isEditing}
           />
         </div>
       </div>

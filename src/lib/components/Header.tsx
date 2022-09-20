@@ -32,6 +32,17 @@ export default function Header() {
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(project?.name);
   const addColumnDisabled = project?.columns.length === 3;
+  const projectNameInputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    setName(project?.name);
+  }, [project]);
+
+  React.useEffect(() => {
+    if (projectNameInputRef.current) {
+      if (isEditing) projectNameInputRef.current.focus();
+    }
+  }, [isEditing]);
 
   const handleSubmit = () => {
     if (!name) {
@@ -48,10 +59,6 @@ export default function Header() {
     );
     setIsEditing(false);
   };
-
-  React.useEffect(() => {
-    setName(project?.name);
-  }, [project]);
 
   return (
     <>
@@ -75,15 +82,11 @@ export default function Header() {
                 }}
                 type="text"
                 className={`text-black text-5xl text-center font-light w-11/12 disabled:bg-black disabled:text-compText disabled:cursor-pointer`}
-                value={name}
+                defaultValue={name}
                 onChange={(e) => setName(e.target.value)}
                 name="project-name"
                 disabled={!isEditing}
-                ref={(input) => {
-                  if (input !== null) {
-                    input.focus();
-                  }
-                }}
+                ref={projectNameInputRef}
               />
               <button type="submit" className="hidden"></button>
             </form>
@@ -121,12 +124,24 @@ export default function Header() {
                     />
                   </button>
                 </DropdownTrigger>
-                <DropdownContent className="bg-white text-black font-manrope text-center p-0.5">
-                  <DropdownItem asChild>
+                <DropdownContent
+                  onCloseAutoFocus={(e) => {
+                    e.preventDefault();
+                    if (isEditing) {
+                      projectNameInputRef?.current?.focus();
+                    }
+                  }}
+                  className="bg-white text-black font-manrope text-center p-0.5"
+                >
+                  <DropdownItem
+                    asChild
+                    onSelect={() => {
+                      setIsEditing(true);
+                    }}
+                  >
                     <button
                       type="button"
                       className="hover:bg-slate-300 p-1 py-2 rounded"
-                      onClick={() => setIsEditing(true)}
                     >
                       Rename Project
                     </button>

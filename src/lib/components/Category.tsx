@@ -14,14 +14,12 @@ import React from "react";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import {
   updateCategory,
-  deleteCategory,
   addFeature,
   toggleCategorySuspended,
 } from "../store/actions";
 import { getCategoryById } from "../store/categories";
 import { getFeaturesByCategory } from "../store/features";
 import { nanoid } from "@reduxjs/toolkit";
-import { toast } from "react-hot-toast";
 
 type CategoryProps = {
   id: string;
@@ -33,8 +31,9 @@ export default function CategoryBase({ id }: CategoryProps) {
   const features = useAppSelector((state) => getFeaturesByCategory(state, id));
   const [suspended, setSuspended] = React.useState(category?.suspended);
 
-  const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(category?.name || "");
+  const divRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
 
   const handleSubmit = () => {
     dispatch(
@@ -46,13 +45,14 @@ export default function CategoryBase({ id }: CategoryProps) {
       })
     );
     setName(name.trim());
-    setIsEditing(false);
   };
 
   return (
     <Accordion.Root type="single" asChild collapsible>
       <div
-        className={`flex flex-col bg-category justify-between m-1 pb-2 font-manrope text-compText rounded-md shadow-md max-h-[75%] max-w-11/12 opacity-90 hover:opacity-100  ${
+        tabIndex={-1}
+        ref={divRef}
+        className={`flex flex-col bg-category justify-between m-1 pb-2 font-manrope text-compText rounded-md shadow-md max-h-[75%] max-w-11/12 opacity-90 hover:opacity-100 focus-within:opacity-100  ${
           suspended ? "opacity-50" : null
         }`}
       >
@@ -92,33 +92,31 @@ export default function CategoryBase({ id }: CategoryProps) {
                     </Checkbox>
                   )}
 
-                  <Accordion.Trigger asChild={true}>
-                    <button type="button" className="-mb-4">
+                  <Accordion.Trigger asChild>
+                    <button
+                      type="button"
+                      className="-mb-4 focus:outline-1"
+                      ref={triggerRef}
+                    >
                       <Chevron width={32} height={32} color="black" />
                     </button>
                   </Accordion.Trigger>
                 </div>
 
                 <form
-                  onClick={() => setIsEditing(true)}
                   className="mr-4"
                   onSubmit={(e) => {
                     e.preventDefault();
                     handleSubmit();
+                    divRef?.current?.focus();
                   }}
                 >
                   <input
                     type="text"
                     onBlur={handleSubmit}
-                    disabled={!isEditing}
-                    className="text-black disabled:text-compText disabled:bg-category disabled:cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md"
+                    className="text-compText focus:text-black bg-category focus:bg-compText cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md focus:cursor-text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    ref={(input) => {
-                      if (input !== null) {
-                        input.focus();
-                      }
-                    }}
                   />
                   <button type="submit" className="hidden"></button>
                 </form>
@@ -141,6 +139,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                           projectId: category?.projectId as string,
                         })
                       );
+                      triggerRef?.current?.focus();
                     }}
                   >
                     <AddIcon width={24} height={24} />

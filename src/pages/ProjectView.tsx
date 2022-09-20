@@ -13,7 +13,8 @@ function ProjectView() {
   );
 
   React.useEffect(() => {
-    if (id) dispatch(setCurrentProject({ id }));
+    // TODO: Present error if currentProject is null
+    if (id && project?.id) dispatch(setCurrentProject({ id }));
   }, []);
 
   return (

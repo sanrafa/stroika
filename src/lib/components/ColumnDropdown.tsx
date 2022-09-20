@@ -16,9 +16,17 @@ type Props = {
   id: string;
   projectId: string;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  isEditing: boolean;
+  inputRef: React.RefObject<HTMLInputElement>;
 };
 
-export default function ColumnDropdown({ id, projectId, setIsEditing }: Props) {
+export default function ColumnDropdown({
+  id,
+  projectId,
+  setIsEditing,
+  isEditing,
+  inputRef,
+}: Props) {
   const dispatch = useAppDispatch();
 
   return (
@@ -34,9 +42,20 @@ export default function ColumnDropdown({ id, projectId, setIsEditing }: Props) {
           align="start"
           alignOffset={15}
           sideOffset={4}
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+            if (isEditing) {
+              inputRef?.current?.focus();
+            }
+          }}
         >
           {/* The 1st dropdown item cannot render as child - Radix bug? */}
-          <DropdownItem onClick={() => setIsEditing(true)}>
+          <DropdownItem
+            onSelect={() => {
+              setIsEditing(true);
+              inputRef?.current?.focus();
+            }}
+          >
             <button type="button" className="p-0.5">
               Rename Column
             </button>
@@ -44,22 +63,21 @@ export default function ColumnDropdown({ id, projectId, setIsEditing }: Props) {
           <DropdownSeparator asChild>
             <hr color="black" />
           </DropdownSeparator>
-          <DropdownItem asChild>
-            <button
-              type="button"
-              className="p-0.5"
-              onClick={() => {
-                dispatch(deleteColumn({ id, projectId }));
-                toast.success("Column deleted.", {
-                  className: "bg-red-300 font-bold",
-                  duration: 1000,
-                  iconTheme: {
-                    primary: "red",
-                    secondary: "white",
-                  },
-                });
-              }}
-            >
+          <DropdownItem
+            asChild
+            onSelect={() => {
+              dispatch(deleteColumn({ id, projectId }));
+              toast.success("Column deleted.", {
+                className: "bg-red-300 font-bold",
+                duration: 1000,
+                iconTheme: {
+                  primary: "red",
+                  secondary: "white",
+                },
+              });
+            }}
+          >
+            <button type="button" className="p-0.5">
               Delete Column
             </button>
           </DropdownItem>

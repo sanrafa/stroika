@@ -7,5 +7,11 @@ export {
   toggleCategorySuspended,
 } from "./categories";
 export { addFeature, updateFeature, deleteFeature } from "./features";
-export { addTask, updateTask, deleteTask, toggleTaskComplete } from "./tasks";
+export {
+  addTask,
+  updateTask,
+  deleteTask,
+  toggleTaskComplete,
+  sortTasksOnDragEnd,
+} from "./tasks";
 export { setUser, setCurrentProject } from "./session";

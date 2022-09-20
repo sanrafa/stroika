@@ -12,6 +12,7 @@ import {
   deleteColumn,
   deleteCategory,
 } from "./actions";
+import { arrayMove } from "@dnd-kit/sortable";
 
 const tasksAdapter = createEntityAdapter<ITask>({
   sortComparer: (a, b) => a.order - b.order,
@@ -88,6 +89,24 @@ const tasksSlice = createSlice({
       const { id } = action.payload;
       tasksAdapter.removeOne(state, id);
     },
+    sortTasksOnDragEnd(
+      state,
+      action: PayloadAction<{
+        activeId: string;
+        overId: string;
+        idList: string[];
+      }>
+    ) {
+      const { activeId, overId, idList } = action.payload;
+      const oldIdx = idList.indexOf(activeId);
+      const newIdx = idList.indexOf(overId);
+      const sortedIds = arrayMove(idList, oldIdx, newIdx);
+      const tasksToUpdate = sortedIds.map((id, idx) => ({
+        ...state.entities[id],
+        order: idx + 1,
+      })) as ITask[];
+      tasksAdapter.upsertMany(state, tasksToUpdate);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -122,8 +141,13 @@ const tasksSlice = createSlice({
   },
 });
 
-export const { addTask, updateTask, deleteTask, toggleTaskComplete } =
-  tasksSlice.actions;
+export const {
+  addTask,
+  updateTask,
+  deleteTask,
+  toggleTaskComplete,
+  sortTasksOnDragEnd,
+} = tasksSlice.actions;
 
 export default tasksSlice.reducer;
 

@@ -7,6 +7,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
 } from "@dnd-kit/core";
 
 import {
@@ -15,7 +16,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { useAppSelector } from "../store/hooks";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { sortTasksOnDragEnd } from "../store/actions";
 
 type Props = {
   taskIds: string[];
@@ -23,6 +25,7 @@ type Props = {
 };
 
 export default function TaskDndContext({ taskIds, children }: Props) {
+  const dispatch = useAppDispatch();
   const sortedIds = useAppSelector((state) =>
     state.tasks.ids.filter((id) => taskIds.includes(id as string))
   );
@@ -33,8 +36,26 @@ export default function TaskDndContext({ taskIds, children }: Props) {
     })
   );
 
+  function handleDragEnd(event: DragEndEvent, ids: string[]) {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      dispatch(
+        sortTasksOnDragEnd({
+          activeId: active.id as string,
+          overId: over.id as string,
+          idList: ids,
+        })
+      );
+    }
+  }
+
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={(e) => handleDragEnd(e, taskIds)}
+    >
       <SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
         {children}
       </SortableContext>

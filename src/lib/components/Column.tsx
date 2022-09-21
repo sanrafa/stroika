@@ -4,13 +4,22 @@ import {
 } from "@radix-ui/react-icons";
 import { ColumnDropdown, Category } from "./index";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { updateColumn, addCategory } from "../store/actions";
+import {
+  updateColumn,
+  addCategory,
+  sortCategoriesOnDragEnd,
+} from "../store/actions";
 import { getColumnById } from "../store/columns";
 import { getSortedCategoriesByColumn } from "../store/categories";
 import { nanoid } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
 import React from "react";
-import { useSortable } from "@dnd-kit/sortable";
+import { useDroppable, DragEndEvent, DndContext } from "@dnd-kit/core";
+import {
+  useSortable,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 type ColumnProps = {
@@ -19,6 +28,9 @@ type ColumnProps = {
 
 export default function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
+  const droppableRef = useDroppable({
+    id,
+  }).setNodeRef;
   const {
     attributes,
     listeners,
@@ -108,11 +120,22 @@ export default function Column({ id }: ColumnProps) {
         </button>
       </div>
       <hr className="w-[90%] bg-white" />
-      <div className="bg-column h-full w-full mt-2 rounded overflow-y-auto hide-scroll">
-        {categoryIds.map((id) => (
-          <Category id={id} key={id} />
-        ))}
+
+      <div
+        className="bg-column h-full w-full mt-2 rounded overflow-y-auto hide-scroll"
+        ref={droppableRef}
+      >
+        <SortableContext
+          id={id}
+          items={categoryIds}
+          strategy={verticalListSortingStrategy}
+        >
+          {categoryIds.map((id) => (
+            <Category id={id} key={id} />
+          ))}
+        </SortableContext>
       </div>
+
       <button
         aria-label="add new category"
         type="button"

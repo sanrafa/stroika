@@ -8,6 +8,7 @@ import {
   ChevronDownIcon as Chevron,
   PlusCircledIcon as AddIcon,
   TrashIcon as DeleteIcon,
+  DragHandleDots2Icon as DragIcon,
 } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
@@ -16,10 +17,14 @@ import {
   updateCategory,
   addFeature,
   toggleCategorySuspended,
+  sortCategoriesOnDragEnd,
 } from "../store/actions";
 import { getCategoryById } from "../store/categories";
 import { getFeaturesByCategory } from "../store/features";
 import { nanoid } from "@reduxjs/toolkit";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { DragEndEvent, DragOverEvent } from "@dnd-kit/core";
 
 type CategoryProps = {
   id: string;
@@ -29,9 +34,29 @@ export default function CategoryBase({ id }: CategoryProps) {
   const dispatch = useAppDispatch();
   const category = useAppSelector((state) => getCategoryById(state, id));
   const features = useAppSelector((state) => getFeaturesByCategory(state, id));
-  const [suspended, setSuspended] = React.useState(category?.suspended);
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    setActivatorNodeRef,
+  } = useSortable({
+    id,
+    data: {
+      type: "category",
+    },
+  });
+
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const [suspended, setSuspended] = React.useState(category?.suspended);
   const [name, setName] = React.useState(category?.name || "");
+
   const divRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
 
@@ -50,8 +75,8 @@ export default function CategoryBase({ id }: CategoryProps) {
   return (
     <Accordion.Root type="single" asChild collapsible>
       <div
-        tabIndex={-1}
-        ref={divRef}
+        style={sortableStyle}
+        ref={setNodeRef}
         className={`flex flex-col bg-category justify-between m-1 pb-2 font-manrope text-compText rounded-md shadow-md max-h-[75%] max-w-11/12 opacity-90 hover:opacity-100 focus-within:opacity-100  ${
           suspended ? "opacity-50" : null
         }`}
@@ -105,28 +130,43 @@ export default function CategoryBase({ id }: CategoryProps) {
                   </Accordion.Trigger>
                 </div>
 
-                <form
-                  className="mr-4"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmit();
-                    divRef?.current?.focus();
-                  }}
-                >
-                  <input
-                    type="text"
-                    aria-label="category name"
-                    onBlur={handleSubmit}
-                    className="text-compText focus:text-black bg-category focus:bg-compText cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md focus:cursor-text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <button
-                    type="submit"
-                    className="hidden"
-                    aria-label="update category name"
-                  ></button>
-                </form>
+                <div className="mr-4 flex flex-col justify-evenly">
+                  <form
+                    className="mt-2 mb-1"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSubmit();
+                      triggerRef?.current?.focus();
+                    }}
+                  >
+                    <input
+                      type="text"
+                      aria-label="category name"
+                      onBlur={handleSubmit}
+                      className="text-compText focus:text-black bg-category focus:bg-compText cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md focus:cursor-text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                    <button
+                      type="submit"
+                      className="hidden"
+                      aria-label="update category name"
+                    ></button>
+                  </form>
+                  <div className="flex items-center justify-center ">
+                    <button
+                      ref={setActivatorNodeRef}
+                      {...attributes}
+                      {...listeners}
+                    >
+                      <DragIcon
+                        className="block text-slate-500 hover:text-compText rotate-90"
+                        width={24}
+                        height={24}
+                      />
+                    </button>
+                  </div>
+                </div>
 
                 <div className="flex flex-col space-y-4 mt-2">
                   <button

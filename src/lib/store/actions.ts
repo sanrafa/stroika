@@ -5,6 +5,7 @@ export {
   updateCategory,
   deleteCategory,
   toggleCategorySuspended,
+  sortCategoriesOnDragEnd,
 } from "./categories";
 export { addFeature, updateFeature, deleteFeature } from "./features";
 export {

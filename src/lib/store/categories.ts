@@ -11,6 +11,7 @@ import {
   deleteFeature,
   deleteProject,
 } from "./actions";
+import { arrayMove } from "@dnd-kit/sortable";
 
 const categoriesAdapter = createEntityAdapter<ICategory>({
   sortComparer: (a, b) => a.order - b.order,
@@ -84,6 +85,31 @@ const categoriesSlice = createSlice({
       categoriesAdapter.removeOne(state, action.payload.id);
     },
     deleteCategories: categoriesAdapter.removeMany,
+    sortCategoriesOnDragEnd(
+      state,
+      action: PayloadAction<{
+        activeId: string;
+        overId: string;
+        prevColId: string;
+        newColId?: string;
+      }>
+    ) {
+      const { activeId, overId, prevColId, newColId } = action.payload;
+      if (!newColId) {
+        const idList = Object.values(state.entities)
+          .filter((cat) => cat?.columnId === prevColId)
+          .sort((a, b) => Number(a?.order) - Number(b?.order))
+          .map((cat) => cat?.id);
+        const oldIdx = idList.indexOf(activeId);
+        const newIdx = idList.indexOf(overId);
+        const sortedIds = arrayMove(idList, oldIdx, newIdx);
+        const catsToUpdate = sortedIds.map((id, idx) => ({
+          ...state.entities[id as string],
+          order: idx + 1,
+        })) as ICategory[];
+        categoriesAdapter.upsertMany(state, catsToUpdate);
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -127,6 +153,7 @@ export const {
   updateCategory,
   deleteCategory,
   toggleCategorySuspended,
+  sortCategoriesOnDragEnd,
 } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

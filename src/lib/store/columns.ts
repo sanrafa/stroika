@@ -9,21 +9,21 @@ export const generateDefaultColumns = (projectId: string): IColumn[] => {
   return [
     {
       id: nanoid(5),
-      name: "TO DO",
+      name: "PLANNING",
       order: 1,
       projectId,
       categories: [],
     },
     {
       id: nanoid(5),
-      name: "DOING",
+      name: "IN PROGRESS",
       order: 2,
       projectId,
       categories: [],
     },
     {
       id: nanoid(5),
-      name: "DONE",
+      name: "READY FOR REVIEW",
       order: 3,
       projectId,
       categories: [],
@@ -61,13 +61,6 @@ const columnsSlice = createSlice({
         categories: [],
       });
       columnsAdapter.upsertMany(state, columnsToUpdate as IColumn[]);
-      /* columnsAdapter.addOne(state, {
-        id: action.payload.id,
-        name: action.payload.name,
-        order: state.ids.length + 1,
-        projectId: action.payload.projectId,
-        categories: [],
-      }); */
     },
     updateColumn: columnsAdapter.updateOne,
     deleteColumn(
@@ -116,9 +109,13 @@ const columnsSlice = createSlice({
         const { id, columnId } = action.payload;
         const filtered = state.entities[columnId]?.categories.filter(
           (cat) => cat !== id
-        );
-        // @ts-ignore
-        state.entities[columnId].categories = filtered;
+        ) as string[];
+        columnsAdapter.updateOne(state, {
+          id: columnId,
+          changes: {
+            categories: filtered,
+          },
+        });
       });
   },
 });

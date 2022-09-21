@@ -102,6 +102,7 @@ export default function Column({ id }: ColumnProps) {
           {...listeners}
           className=" hover:bg-blue-300 hover:text-black p-0.5 rounded"
           ref={setActivatorNodeRef}
+          aria-label="column drag handle"
         >
           <DragIcon width={24} height={24} />
         </button>

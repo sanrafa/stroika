@@ -28,9 +28,11 @@ type ColumnProps = {
 
 export default function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
+
   const droppableRef = useDroppable({
     id,
   }).setNodeRef;
+
   const {
     attributes,
     listeners,
@@ -38,11 +40,17 @@ export default function Column({ id }: ColumnProps) {
     transform,
     transition,
     setActivatorNodeRef,
-  } = useSortable({ id: id });
+  } = useSortable({
+    id: id,
+    data: {
+      type: "column",
+    },
+  });
   const sortableStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
   const column = useAppSelector((state) => getColumnById(state, id));
   const categoryIds = useAppSelector((state) =>
     getSortedCategoriesByColumn(state, id)

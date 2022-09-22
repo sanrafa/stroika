@@ -1,5 +1,10 @@
 export { addProject, deleteProject, updateProject } from "./projects";
-export { addColumn, updateColumn, deleteColumn } from "./columns";
+export {
+  addColumn,
+  updateColumn,
+  deleteColumn,
+  sortColumnsOnDragEnd,
+} from "./columns";
 export {
   addCategory,
   updateCategory,

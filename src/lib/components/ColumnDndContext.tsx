@@ -1,14 +1,19 @@
 import React from "react";
 import store from "../store";
 
+import { ColumnOverlay, CategoryOverlay } from "./overlays";
+
 import {
   DndContext,
   closestCenter,
+  closestCorners,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
 } from "@dnd-kit/core";
 
 import {
@@ -17,14 +22,13 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import {
-  restrictToHorizontalAxis,
-  restrictToFirstScrollableAncestor,
-} from "@dnd-kit/modifiers";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { sortColumnsOnDragEnd } from "../store/columns"; // re-export from store/actions
-import { sortCategoriesOnDragEnd } from "../store/actions";
+import {
+  sortCategoriesOnDragEnd,
+  sortColumnsOnDragEnd,
+} from "../store/actions";
 
 type Props = {
   colIds: string[];
@@ -40,6 +44,20 @@ export default function ColumnDndContext({ colIds, children }: Props) {
     })
   );
 
+  // this tracks which component is being dragged, for rendering overlay
+  const [activeComponent, setActiveComponent] = React.useState<{
+    id: string;
+    type: string;
+  }>({ id: "", type: "" });
+
+  function handleDragStart(event: DragStartEvent) {
+    const { active } = event;
+    const id = active.id as string;
+    const type = active.data.current?.type as string;
+
+    setActiveComponent({ id, type });
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (
@@ -52,19 +70,28 @@ export default function ColumnDndContext({ colIds, children }: Props) {
 
       const overCategory = store.getState().categories.entities[over.id];
 
-      console.log(
-        "Categories match",
-        activeCategory?.columnId === overCategory?.columnId
-      );
+      console.log("ACTIVE:");
 
-      if (activeCategory?.columnId === overCategory?.columnId) {
-        dispatch(
-          sortCategoriesOnDragEnd({
-            activeId: active.id as string,
-            overId: over.id as string,
-            prevColId: activeCategory?.columnId as string,
-          })
-        );
+      console.table(activeCategory);
+
+      console.log("OVER:");
+
+      console.table(overCategory);
+
+      const columnsMatch = activeCategory?.columnId === overCategory?.columnId;
+
+      console.log("Columns match", columnsMatch);
+
+      if (columnsMatch) {
+        if (over && active.id !== over.id) {
+          dispatch(
+            sortCategoriesOnDragEnd({
+              activeId: active.id as string,
+              overId: over.id as string,
+              prevColId: activeCategory?.columnId as string,
+            })
+          );
+        }
       }
     }
     if (over && active.id !== over.id) {
@@ -76,18 +103,35 @@ export default function ColumnDndContext({ colIds, children }: Props) {
         })
       );
     }
+    setActiveComponent({ id: "", type: "" });
+    return;
   }
 
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
-      //modifiers={[restrictToFirstScrollableAncestor]}
+      collisionDetection={closestCorners}
+      modifiers={[restrictToParentElement]}
+      onDragStart={(e) => handleDragStart(e)}
       onDragEnd={(e) => handleDragEnd(e)}
     >
       <SortableContext items={colIds} strategy={horizontalListSortingStrategy}>
         {children}
       </SortableContext>
+
+      <DragOverlay>
+        {/* using a switch statement for render requires self-invoking function */}
+        {(function () {
+          switch (activeComponent.type) {
+            case "column":
+              return <ColumnOverlay id={activeComponent.id} />;
+            case "category":
+              return <CategoryOverlay id={activeComponent.id} />;
+            default:
+              null;
+          }
+        })()}
+      </DragOverlay>
     </DndContext>
   );
 }

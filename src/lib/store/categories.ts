@@ -103,6 +103,7 @@ const categoriesSlice = createSlice({
         const oldIdx = idList.indexOf(activeId);
         const newIdx = idList.indexOf(overId);
         const sortedIds = arrayMove(idList, oldIdx, newIdx);
+        console.log("NEW SORT:", sortedIds);
         const catsToUpdate = sortedIds.map((id, idx) => ({
           ...state.entities[id as string],
           order: idx + 1,

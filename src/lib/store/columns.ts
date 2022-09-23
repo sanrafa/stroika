@@ -2,7 +2,12 @@ import { IColumn } from "../types";
 import { createEntityAdapter, createSlice, nanoid } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
-import { addCategory, deleteCategory, deleteProject } from "./actions";
+import {
+  addCategory,
+  deleteCategory,
+  deleteProject,
+  sortCategoriesOnDragEnd,
+} from "./actions";
 import { arrayMove } from "@dnd-kit/sortable";
 
 export const generateDefaultColumns = (projectId: string): IColumn[] => {
@@ -94,6 +99,13 @@ const columnsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(sortCategoriesOnDragEnd, (state, action) => {
+        const { activeId, overId, prevColId, newColId } = action.payload;
+        if (newColId) {
+          state.entities[prevColId]?.categories.filter((id) => id !== activeId);
+          state.entities[newColId]?.categories.unshift(activeId);
+        }
+      })
       .addCase(deleteProject, (state, action) => {
         const id = action.payload;
         const columnsToDelete = Object.values(state.entities)

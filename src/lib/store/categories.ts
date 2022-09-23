@@ -109,6 +109,28 @@ const categoriesSlice = createSlice({
           order: idx + 1,
         })) as ICategory[];
         categoriesAdapter.upsertMany(state, catsToUpdate);
+      } else {
+        const newColIdList = Object.values(state.entities)
+          .filter((cat) => cat?.columnId === newColId)
+          .sort((a, b) => Number(a?.order) - Number(b?.order))
+          .map((cat) => cat?.id);
+
+        newColIdList.unshift(activeId);
+        const catsToUpdate = newColIdList.map((id, idx) => {
+          if (id === activeId) {
+            return {
+              ...state.entities[id as string],
+              columnId: newColId,
+              order: idx + 1,
+            };
+          } else {
+            return {
+              ...state.entities[id as string],
+              order: idx + 1,
+            };
+          }
+        }) as ICategory[];
+        categoriesAdapter.upsertMany(state, catsToUpdate);
       }
     },
   },

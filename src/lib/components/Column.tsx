@@ -28,6 +28,7 @@ type ColumnProps = {
 
 export default function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
+  const column = useAppSelector((state) => getColumnById(state, id));
 
   const droppableRef = useDroppable({
     id,
@@ -51,7 +52,6 @@ export default function Column({ id }: ColumnProps) {
     transition,
   };
 
-  const column = useAppSelector((state) => getColumnById(state, id));
   const categoryIds = useAppSelector((state) =>
     getSortedCategoriesByColumn(state, id)
   );

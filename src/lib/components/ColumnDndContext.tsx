@@ -14,6 +14,7 @@ import {
   DragEndEvent,
   DragStartEvent,
   DragOverlay,
+  DragOverEvent,
 } from "@dnd-kit/core";
 
 import {
@@ -48,14 +49,54 @@ export default function ColumnDndContext({ colIds, children }: Props) {
   const [activeComponent, setActiveComponent] = React.useState<{
     id: string;
     type: string;
-  }>({ id: "", type: "" });
+    parentId: string;
+  }>({ id: "", type: "", parentId: "" });
 
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const id = active.id as string;
     const type = active.data.current?.type as string;
+    const parentId = active.data.current?.parentId || "";
 
-    setActiveComponent({ id, type });
+    setActiveComponent({ id, type, parentId });
+  }
+
+  function handleDragOver(event: DragOverEvent) {
+    const { active, over } = event;
+    const activeId = activeComponent.id,
+      activeType = activeComponent.type,
+      activeParent = activeComponent.parentId,
+      overId = over?.id as string,
+      overType = over?.data.current?.type;
+
+    // no action needed if column is active
+    if (activeType === "column") return;
+
+    console.log("active type:", activeType);
+    console.log("over type", overType);
+
+    // if category dragged over empty column, add it to that column
+    if (overType === "column") {
+      dispatch(
+        sortCategoriesOnDragEnd({
+          activeId,
+          overId,
+          prevColId: activeParent,
+          newColId: overId,
+        })
+      );
+    }
+
+    //if category dragged over another in same column, no action needed
+    /* 
+      if over and active type both category - fetch data, compare columnIds
+      if same: return, sort handled on drag end
+      if different: dispatch updateParentColumn action, column store extrareducer updates children. sort should be handled on drag end
+    */
+
+    // if category is dragged to non-empty column, it will be "over" a category in that column
+    // if that category is last in the column, push active to the end
+    // otherwise, sort it into categories in appropriate order
   }
 
   function handleDragEnd(event: DragEndEvent) {
@@ -65,22 +106,11 @@ export default function ColumnDndContext({ colIds, children }: Props) {
       active.data.current &&
       active.data.current["type"] === "category"
     ) {
-      console.log("A category is being moved!", active.id);
       const activeCategory = store.getState().categories.entities[active.id];
 
       const overCategory = store.getState().categories.entities[over.id];
 
-      console.log("ACTIVE:");
-
-      console.table(activeCategory);
-
-      console.log("OVER:");
-
-      console.table(overCategory);
-
       const columnsMatch = activeCategory?.columnId === overCategory?.columnId;
-
-      console.log("Columns match", columnsMatch);
 
       if (columnsMatch) {
         if (over && active.id !== over.id) {
@@ -103,7 +133,7 @@ export default function ColumnDndContext({ colIds, children }: Props) {
         })
       );
     }
-    setActiveComponent({ id: "", type: "" });
+    setActiveComponent({ id: "", type: "", parentId: "" });
     return;
   }
 
@@ -111,8 +141,11 @@ export default function ColumnDndContext({ colIds, children }: Props) {
     <DndContext
       sensors={sensors}
       collisionDetection={closestCorners}
-      modifiers={[restrictToParentElement]}
+      modifiers={
+        activeComponent.type === "column" ? [restrictToParentElement] : []
+      }
       onDragStart={(e) => handleDragStart(e)}
+      onDragOver={(e) => handleDragOver(e)}
       onDragEnd={(e) => handleDragEnd(e)}
     >
       <SortableContext items={colIds} strategy={horizontalListSortingStrategy}>

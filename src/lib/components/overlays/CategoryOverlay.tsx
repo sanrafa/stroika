@@ -38,6 +38,7 @@ export default function CategoryOverlay({ id }: CategoryProps) {
         <div className="mr-4 flex flex-col justify-evenly">
           <form className="mt-2 mb-1">
             <input
+              readOnly
               type="text"
               className="text-compText focus:text-black bg-category focus:bg-compText cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md focus:cursor-text"
               value={category?.name}

@@ -67,13 +67,13 @@ export default function ColumnDndContext({ colIds, children }: Props) {
   }
 
   function handleDragOver(event: DragOverEvent) {
-    const { over } = event;
+    const { active, over } = event;
 
     if (over) {
       const activeId = activeComponent.id,
         activeType = activeComponent.type,
-        activeParent = activeComponent.parentId,
-        activeParentColumn = activeComponent.columnId,
+        activeParent = active.data.current?.parentId as string,
+        activeParentColumn = active.data.current?.columnId as string,
         overId = over?.id as string,
         overType = over?.data.current?.type,
         overParent = over?.data.current?.parentId;

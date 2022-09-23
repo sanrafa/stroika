@@ -11,6 +11,7 @@ import {
   deleteFeature,
   deleteColumn,
   deleteCategory,
+  sortCategoriesOnDragEnd,
 } from "./actions";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -110,6 +111,15 @@ const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(sortCategoriesOnDragEnd, (state, action) => {
+        const { activeId, newColId } = action.payload;
+        if (newColId) {
+          const tasksToUpdate = Object.values(state.entities)
+            .filter((task) => task?.categoryId === activeId)
+            .map((task) => ({ ...task, columnId: newColId })) as ITask[];
+          tasksAdapter.upsertMany(state, tasksToUpdate);
+        }
+      })
       .addCase(deleteProject, (state, action) => {
         const id = action.payload;
         const tasksToDelete = Object.values(state.entities)

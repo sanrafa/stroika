@@ -12,7 +12,10 @@ import {
   deleteColumn,
   deleteProject,
   deleteTask,
+  sortCategoriesOnDragEnd,
 } from "./actions";
+
+// @NEXT - update feature columnId when parent category is updated
 
 const featuresAdapter = createEntityAdapter<IFeature>({
   sortComparer: (a, b) => a.order - b.order,
@@ -64,6 +67,15 @@ const featuresSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(sortCategoriesOnDragEnd, (state, action) => {
+        const { activeId, newColId } = action.payload;
+        if (newColId) {
+          const featsToUpdate = Object.values(state.entities)
+            .filter((feat) => feat?.categoryId === activeId)
+            .map((feat) => ({ ...feat, columnId: newColId })) as IFeature[];
+          featuresAdapter.upsertMany(state, featsToUpdate);
+        }
+      })
       .addCase(addTask, (state, action) => {
         const { id, featureId } = action.payload;
         state.entities[featureId]?.tasks.unshift(id);

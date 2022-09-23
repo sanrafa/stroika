@@ -62,41 +62,39 @@ export default function ColumnDndContext({ colIds, children }: Props) {
   }
 
   function handleDragOver(event: DragOverEvent) {
-    const { active, over } = event;
+    const { over } = event;
     const activeId = activeComponent.id,
       activeType = activeComponent.type,
       activeParent = activeComponent.parentId,
       overId = over?.id as string,
-      overType = over?.data.current?.type;
+      overType = over?.data.current?.type,
+      overParent = over?.data.current?.parentId;
 
     // no action needed if column is active
     if (activeType === "column") return;
 
-    console.log("active type:", activeType);
-    console.log("over type", overType);
-
-    // if category dragged over empty column, add it to that column
-    if (overType === "column") {
-      dispatch(
-        sortCategoriesOnDragEnd({
-          activeId,
-          overId,
-          prevColId: activeParent,
-          newColId: overId,
-        })
-      );
+    if (activeType === "category") {
+      // if category dragged over column, add it to that column
+      if (overType === "column") {
+        dispatch(
+          sortCategoriesOnDragEnd({
+            activeId,
+            overId,
+            prevColId: activeParent,
+            newColId: overId,
+          })
+        );
+      } else if (overType === "category" && overId !== activeId) {
+        dispatch(
+          sortCategoriesOnDragEnd({
+            activeId,
+            overId,
+            prevColId: activeParent,
+            newColId: overParent,
+          })
+        );
+      }
     }
-
-    //if category dragged over another in same column, no action needed
-    /* 
-      if over and active type both category - fetch data, compare columnIds
-      if same: return, sort handled on drag end
-      if different: dispatch updateParentColumn action, column store extrareducer updates children. sort should be handled on drag end
-    */
-
-    // if category is dragged to non-empty column, it will be "over" a category in that column
-    // if that category is last in the column, push active to the end
-    // otherwise, sort it into categories in appropriate order
   }
 
   function handleDragEnd(event: DragEndEvent) {

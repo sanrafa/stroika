@@ -96,6 +96,7 @@ const categoriesSlice = createSlice({
     ) {
       const { activeId, overId, prevColId, newColId } = action.payload;
       if (!newColId) {
+        /* remains in same column */
         const idList = Object.values(state.entities)
           .filter((cat) => cat?.columnId === prevColId)
           .sort((a, b) => Number(a?.order) - Number(b?.order))
@@ -103,13 +104,13 @@ const categoriesSlice = createSlice({
         const oldIdx = idList.indexOf(activeId);
         const newIdx = idList.indexOf(overId);
         const sortedIds = arrayMove(idList, oldIdx, newIdx);
-        console.log("NEW SORT:", sortedIds);
         const catsToUpdate = sortedIds.map((id, idx) => ({
           ...state.entities[id as string],
           order: idx + 1,
         })) as ICategory[];
         categoriesAdapter.upsertMany(state, catsToUpdate);
-      } else {
+      } else if (overId === newColId) {
+        /* dragged over new column */
         const newColIdList = Object.values(state.entities)
           .filter((cat) => cat?.columnId === newColId)
           .sort((a, b) => Number(a?.order) - Number(b?.order))
@@ -126,6 +127,36 @@ const categoriesSlice = createSlice({
           } else {
             return {
               ...state.entities[id as string],
+              order: idx + 1,
+            };
+          }
+        }) as ICategory[];
+        categoriesAdapter.upsertMany(state, catsToUpdate);
+      } else {
+        /* dragged over another category */
+        const overCatPosition = Number(state.entities[overId]?.order);
+        const newColIdList = Object.values(state.entities)
+          .filter((cat) => cat?.columnId === newColId)
+          .sort((a, b) => Number(a?.order) - Number(b?.order))
+          .map((cat) => cat?.id)
+          .concat(activeId) as string[];
+
+        const sortedCats = arrayMove(
+          newColIdList,
+          newColIdList.length - 1,
+          overCatPosition - 1
+        );
+
+        const catsToUpdate = sortedCats.map((id, idx) => {
+          if (id === activeId) {
+            return {
+              ...state.entities[id],
+              columnId: newColId,
+              order: idx + 1,
+            };
+          } else {
+            return {
+              ...state.entities[id],
               order: idx + 1,
             };
           }

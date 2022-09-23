@@ -5,12 +5,16 @@ import {
   CheckCircledIcon as CheckIcon,
   ListBulletIcon as TasksIcon,
   Cross1Icon as DeleteIcon,
+  DragHandleDots1Icon as DragIcon,
 } from "@radix-ui/react-icons";
 
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { updateFeature, deleteFeature } from "../store/actions";
 import { getFeatureById } from "../store/features";
 import { getTasksByFeature } from "../store/tasks";
+
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type FeatureProps = {
   id: string;
@@ -21,6 +25,27 @@ export default function Feature({ id }: FeatureProps) {
 
   const feature = useAppSelector((state) => getFeatureById(state, id));
   const tasks = useAppSelector((state) => getTasksByFeature(state, id));
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    setActivatorNodeRef,
+  } = useSortable({
+    id,
+    data: {
+      type: "feature",
+      parentId: feature?.categoryId,
+      columnId: feature?.columnId,
+    },
+  });
+
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const [name, setName] = React.useState(feature?.name);
   const menuButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -38,9 +63,13 @@ export default function Feature({ id }: FeatureProps) {
   };
 
   return (
-    <div className="flex justify-between items-center bg-feature leading-none p-2 rounded shadow-md">
+    <div
+      ref={setNodeRef}
+      style={sortableStyle}
+      className="flex justify-around items-center bg-feature leading-none p-2 rounded shadow-md"
+    >
       {/* Task progress indicator OR checkmark if all complete */}
-      <div className="text-xxs mr-1">
+      <div className="text-xxs">
         {!feature?.tasks.length ? (
           <span className="text-compText font-bold">
             NO <br /> TASKS
@@ -58,6 +87,15 @@ export default function Feature({ id }: FeatureProps) {
           </span>
         )}
       </div>
+
+      <button
+        className="text-slate-500 hover:text-compText"
+        ref={setActivatorNodeRef}
+        {...attributes}
+        {...listeners}
+      >
+        <DragIcon width={24} height={24} />
+      </button>
 
       <form
         onSubmit={(e) => {

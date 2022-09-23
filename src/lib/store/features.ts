@@ -14,8 +14,7 @@ import {
   deleteTask,
   sortCategoriesOnDragEnd,
 } from "./actions";
-
-// @NEXT - update feature columnId when parent category is updated
+import { arrayMove } from "@dnd-kit/sortable";
 
 const featuresAdapter = createEntityAdapter<IFeature>({
   sortComparer: (a, b) => a.order - b.order,
@@ -63,6 +62,35 @@ const featuresSlice = createSlice({
     ) {
       const { id } = action.payload;
       featuresAdapter.removeOne(state, id);
+    },
+    sortFeaturesOnDragEnd(
+      state,
+      action: PayloadAction<{
+        activeId: string;
+        overId: string;
+        prevCatId: string;
+        newCatId?: string;
+        prevColId?: string;
+        newColId?: string;
+      }>
+    ) {
+      const { activeId, overId, prevCatId, newCatId, prevColId, newColId } =
+        action.payload;
+      if (!newCatId && !newColId) {
+        // within the same category
+        const idList = Object.values(state.entities)
+          .filter((feat) => feat?.categoryId === prevCatId)
+          .sort((a, b) => Number(a?.order) - Number(b?.order))
+          .map((feat) => feat?.id);
+        const oldIdx = idList.indexOf(activeId);
+        const newIdx = idList.indexOf(overId);
+        const sortedIds = arrayMove(idList, oldIdx, newIdx);
+        const featsToUpdate = sortedIds.map((id, idx) => ({
+          ...state.entities[id as string],
+          order: idx + 1,
+        })) as IFeature[];
+        featuresAdapter.upsertMany(state, featsToUpdate);
+      }
     },
   },
   extraReducers: (builder) => {
@@ -114,8 +142,12 @@ const featuresSlice = createSlice({
   },
 });
 
-export const { addFeature, updateFeature, deleteFeature } =
-  featuresSlice.actions;
+export const {
+  addFeature,
+  updateFeature,
+  deleteFeature,
+  sortFeaturesOnDragEnd,
+} = featuresSlice.actions;
 
 export default featuresSlice.reducer;
 

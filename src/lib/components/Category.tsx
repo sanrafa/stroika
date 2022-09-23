@@ -22,7 +22,11 @@ import {
 import { getCategoryById } from "../store/categories";
 import { getFeaturesByCategory } from "../store/features";
 import { nanoid } from "@reduxjs/toolkit";
-import { useSortable } from "@dnd-kit/sortable";
+import {
+  useSortable,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { DragEndEvent, DragOverEvent } from "@dnd-kit/core";
 
@@ -34,6 +38,9 @@ export default function CategoryBase({ id }: CategoryProps) {
   const dispatch = useAppDispatch();
   const category = useAppSelector((state) => getCategoryById(state, id));
   const features = useAppSelector((state) => getFeaturesByCategory(state, id));
+  const categoryFeatureIds = features
+    ? (features.map((feat) => feat?.id) as string[])
+    : [];
 
   const {
     attributes,
@@ -42,6 +49,7 @@ export default function CategoryBase({ id }: CategoryProps) {
     transform,
     transition,
     setActivatorNodeRef,
+    setDroppableNodeRef,
   } = useSortable({
     id,
     data: {
@@ -58,7 +66,6 @@ export default function CategoryBase({ id }: CategoryProps) {
   const [suspended, setSuspended] = React.useState(category?.suspended);
   const [name, setName] = React.useState(category?.name || "");
 
-  const divRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
 
   const handleSubmit = () => {
@@ -219,10 +226,18 @@ export default function CategoryBase({ id }: CategoryProps) {
               id={`${category?.id}-category-slider`}
               aria-label={`${category?.name} features`}
             >
-              <div className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm overflow-y-auto space-y-2 p-2 hide-scroll">
-                {features.map((feat) => (
-                  <FeatureComponent id={feat?.id as string} key={feat?.id} />
-                ))}
+              <div
+                ref={setDroppableNodeRef}
+                className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm overflow-y-auto space-y-2 p-2 hide-scroll"
+              >
+                <SortableContext
+                  items={categoryFeatureIds}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {categoryFeatureIds.map((featId) => (
+                    <FeatureComponent id={featId as string} key={featId} />
+                  ))}
+                </SortableContext>
               </div>
             </Accordion.Content>
           </>

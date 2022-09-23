@@ -12,7 +12,12 @@ export {
   toggleCategorySuspended,
   sortCategoriesOnDragEnd,
 } from "./categories";
-export { addFeature, updateFeature, deleteFeature } from "./features";
+export {
+  addFeature,
+  updateFeature,
+  deleteFeature,
+  sortFeaturesOnDragEnd,
+} from "./features";
 export {
   addTask,
   updateTask,

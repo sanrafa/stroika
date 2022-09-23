@@ -1,11 +1,10 @@
 import React from "react";
 import store from "../store";
 
-import { ColumnOverlay, CategoryOverlay } from "./overlays";
+import { ColumnOverlay, CategoryOverlay, FeatureOverlay } from "./overlays";
 
 import {
   DndContext,
-  closestCenter,
   closestCorners,
   KeyboardSensor,
   PointerSensor,
@@ -23,12 +22,16 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { restrictToParentElement } from "@dnd-kit/modifiers";
+import {
+  restrictToParentElement,
+  restrictToHorizontalAxis,
+} from "@dnd-kit/modifiers";
 
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch } from "../store/hooks";
 import {
   sortCategoriesOnDragEnd,
   sortColumnsOnDragEnd,
+  sortFeaturesOnDragEnd,
 } from "../store/actions";
 
 type Props = {
@@ -50,88 +53,118 @@ export default function ColumnDndContext({ colIds, children }: Props) {
     id: string;
     type: string;
     parentId: string;
-  }>({ id: "", type: "", parentId: "" });
+    columnId: string;
+  }>({ id: "", type: "", parentId: "", columnId: "" });
 
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const id = active.id as string;
     const type = active.data.current?.type as string;
     const parentId = active.data.current?.parentId || "";
+    const columnId = active.data.current?.columnId || "";
 
-    setActiveComponent({ id, type, parentId });
+    setActiveComponent({ id, type, parentId, columnId });
   }
 
   function handleDragOver(event: DragOverEvent) {
     const { over } = event;
-    const activeId = activeComponent.id,
-      activeType = activeComponent.type,
-      activeParent = activeComponent.parentId,
-      overId = over?.id as string,
-      overType = over?.data.current?.type,
-      overParent = over?.data.current?.parentId;
 
-    // no action needed if column is active
-    if (activeType === "column") return;
+    if (over) {
+      const activeId = activeComponent.id,
+        activeType = activeComponent.type,
+        activeParent = activeComponent.parentId,
+        activeParentColumn = activeComponent.columnId,
+        overId = over?.id as string,
+        overType = over?.data.current?.type,
+        overParent = over?.data.current?.parentId;
 
-    if (activeType === "category") {
-      // if category dragged over column, add it to that column
-      if (overType === "column") {
-        dispatch(
-          sortCategoriesOnDragEnd({
-            activeId,
-            overId,
-            prevColId: activeParent,
-            newColId: overId,
-          })
-        );
-      } else if (overType === "category" && overId !== activeId) {
-        dispatch(
-          sortCategoriesOnDragEnd({
-            activeId,
-            overId,
-            prevColId: activeParent,
-            newColId: overParent,
-          })
-        );
+      switch (activeType) {
+        case "column":
+          break;
+        case "category":
+          if (overType === "column") {
+            dispatch(
+              sortCategoriesOnDragEnd({
+                activeId,
+                overId,
+                prevColId: activeParent,
+                newColId: overId,
+              })
+            );
+          } else if (overType === "category" && overId !== activeId) {
+            dispatch(
+              sortCategoriesOnDragEnd({
+                activeId,
+                overId,
+                prevColId: activeParent,
+                newColId: overParent,
+              })
+            );
+          }
+          break;
+        case "feature":
+          break;
+        default:
+          break;
       }
     }
   }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    if (
-      over &&
-      active.data.current &&
-      active.data.current["type"] === "category"
-    ) {
-      const activeCategory = store.getState().categories.entities[active.id];
 
-      const overCategory = store.getState().categories.entities[over.id];
+    if (over) {
+      const overType = over.data.current?.type;
+      const overParent = over.data.current?.parentId;
 
-      const columnsMatch = activeCategory?.columnId === overCategory?.columnId;
-
-      if (columnsMatch) {
-        if (over && active.id !== over.id) {
-          dispatch(
-            sortCategoriesOnDragEnd({
-              activeId: active.id as string,
-              overId: over.id as string,
-              prevColId: activeCategory?.columnId as string,
-            })
-          );
-        }
+      switch (activeComponent.type) {
+        case "category":
+          const activeCategory =
+            store.getState().categories.entities[active.id];
+          const overCategory = store.getState().categories.entities[over.id];
+          const columnsMatch =
+            activeCategory?.columnId === overCategory?.columnId;
+          if (columnsMatch && active.id !== over.id) {
+            return dispatch(
+              sortCategoriesOnDragEnd({
+                activeId: active.id as string,
+                overId: over.id as string,
+                prevColId: activeCategory?.columnId as string,
+              })
+            );
+          }
+          break;
+        case "column":
+          if (active.id !== over.id) {
+            return dispatch(
+              sortColumnsOnDragEnd({
+                activeId: active.id as string,
+                overId: over.id as string,
+                idList: colIds,
+              })
+            );
+          }
+          break;
+        case "feature":
+          if (
+            overType === "feature" &&
+            overParent === activeComponent.parentId
+          ) {
+            return dispatch(
+              sortFeaturesOnDragEnd({
+                activeId: activeComponent.id,
+                overId: over.id as string,
+                prevCatId: activeComponent.parentId,
+              })
+            );
+          }
+          break;
+        default:
+          break;
       }
     }
-    if (over && active.id !== over.id) {
-      dispatch(
-        sortColumnsOnDragEnd({
-          activeId: active.id as string,
-          overId: over.id as string,
-          idList: colIds,
-        })
-      );
-    }
-    setActiveComponent({ id: "", type: "", parentId: "" });
+
+    setActiveComponent({ id: "", type: "", parentId: "", columnId: "" });
     return;
   }
 
@@ -140,7 +173,9 @@ export default function ColumnDndContext({ colIds, children }: Props) {
       sensors={sensors}
       collisionDetection={closestCorners}
       modifiers={
-        activeComponent.type === "column" ? [restrictToParentElement] : []
+        activeComponent.type === "column"
+          ? [restrictToParentElement, restrictToHorizontalAxis]
+          : []
       }
       onDragStart={(e) => handleDragStart(e)}
       onDragOver={(e) => handleDragOver(e)}
@@ -158,6 +193,8 @@ export default function ColumnDndContext({ colIds, children }: Props) {
               return <ColumnOverlay id={activeComponent.id} />;
             case "category":
               return <CategoryOverlay id={activeComponent.id} />;
+            case "feature":
+              return <FeatureOverlay id={activeComponent.id} />;
             default:
               null;
           }

@@ -89,7 +89,7 @@ export default function Feature({ id }: FeatureProps) {
       </div>
 
       <button
-        className="text-slate-500 hover:text-compText"
+        className="text-slate-500 hover:text-compText cursor-grab"
         ref={setActivatorNodeRef}
         {...attributes}
         {...listeners}

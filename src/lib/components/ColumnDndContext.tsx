@@ -52,18 +52,14 @@ export default function ColumnDndContext({ colIds, children }: Props) {
   const [activeComponent, setActiveComponent] = React.useState<{
     id: string;
     type: string;
-    parentId: string;
-    columnId: string;
-  }>({ id: "", type: "", parentId: "", columnId: "" });
+  }>({ id: "", type: "" });
 
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const id = active.id as string;
     const type = active.data.current?.type as string;
-    const parentId = active.data.current?.parentId || "";
-    const columnId = active.data.current?.columnId || "";
 
-    setActiveComponent({ id, type, parentId, columnId });
+    setActiveComponent({ id, type });
   }
 
   function handleDragOver(event: DragOverEvent) {
@@ -140,6 +136,7 @@ export default function ColumnDndContext({ colIds, children }: Props) {
     if (over) {
       const overType = over.data.current?.type;
       const overParent = over.data.current?.parentId;
+      const activeParent = active.data.current?.parentId;
 
       switch (activeComponent.type) {
         case "category":
@@ -170,15 +167,12 @@ export default function ColumnDndContext({ colIds, children }: Props) {
           }
           break;
         case "feature":
-          if (
-            overType === "feature" &&
-            overParent === activeComponent.parentId
-          ) {
+          if (overType === "feature" && overParent === activeParent) {
             return dispatch(
               sortFeaturesOnDragEnd({
                 activeId: activeComponent.id,
                 overId: over.id as string,
-                prevCatId: activeComponent.parentId,
+                prevCatId: activeParent,
               })
             );
           }
@@ -189,7 +183,7 @@ export default function ColumnDndContext({ colIds, children }: Props) {
       }
     }
 
-    setActiveComponent({ id: "", type: "", parentId: "", columnId: "" });
+    setActiveComponent({ id: "", type: "" });
     return;
   }
 

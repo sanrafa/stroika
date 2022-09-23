@@ -166,6 +166,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                       ref={setActivatorNodeRef}
                       {...attributes}
                       {...listeners}
+                      className="cursor-grab"
                     >
                       <DragIcon
                         className="block text-slate-500 hover:text-compText rotate-90"

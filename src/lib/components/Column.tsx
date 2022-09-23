@@ -112,7 +112,7 @@ export default function Column({ id }: ColumnProps) {
         <button
           {...attributes}
           {...listeners}
-          className=" hover:bg-blue-300 hover:text-black p-0.5 rounded"
+          className=" hover:bg-blue-300 hover:text-black p-0.5 rounded cursor-grab"
           ref={setActivatorNodeRef}
           aria-label="column drag handle"
         >

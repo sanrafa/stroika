@@ -85,7 +85,7 @@ const Task = ({ id }: TaskProps) => {
           aria-label="sort task"
           aria-roledescription="task drag handle"
           ref={setActivatorNodeRef}
-          className="hover:bg-slate-500 rounded"
+          className="hover:bg-slate-500 rounded cursor-grab active:cursor-grabbing"
         >
           <DragIcon width={24} height={24} />
         </button>

@@ -18,7 +18,7 @@ export default function ColumnOverlay({ id }: Props) {
   );
 
   return (
-    <section className="bg-black w-full h-full rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
+    <section className="bg-black w-full h-full rounded-md text-center flex flex-col items-center p-1 border border-columnBorder cursor-grabbing">
       <div className="flex items-center justify-around w-full p-0.5">
         <button type="button" className="hover:bg-gray-700 p-0.5 rounded">
           <MenuIcon width={24} height={24} />
@@ -32,7 +32,7 @@ export default function ColumnOverlay({ id }: Props) {
           />
         </form>
 
-        <button className=" hover:bg-blue-300 hover:text-black p-0.5 rounded">
+        <button className=" bg-blue-300 text-black p-0.5 rounded cursor-grabbing">
           <DragIcon width={24} height={24} />
         </button>
       </div>

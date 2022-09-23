@@ -91,6 +91,29 @@ const featuresSlice = createSlice({
         })) as IFeature[];
         featuresAdapter.upsertMany(state, featsToUpdate);
       }
+      if (newCatId && !newColId) {
+        // new category, same column
+        const newCatFeatures = Object.values(state.entities)
+          .filter((feat) => feat?.categoryId === newCatId)
+          .sort((a, b) => Number(a?.order) - Number(b?.order))
+          .map((feat) => feat?.id)
+          .concat(activeId) as string[];
+        const featuresToUpdate = newCatFeatures.map((id, idx) => {
+          if (id === activeId) {
+            return {
+              ...state.entities[id],
+              categoryId: newCatId,
+              order: idx + 1,
+            };
+          } else {
+            return {
+              ...state.entities[id],
+              order: idx + 1,
+            };
+          }
+        }) as IFeature[];
+        featuresAdapter.upsertMany(state, featuresToUpdate);
+      }
     },
   },
   extraReducers: (builder) => {

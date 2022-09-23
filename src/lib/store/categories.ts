@@ -10,6 +10,7 @@ import {
   deleteColumn,
   deleteFeature,
   deleteProject,
+  sortFeaturesOnDragEnd,
 } from "./actions";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -167,6 +168,13 @@ const categoriesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(sortFeaturesOnDragEnd, (state, action) => {
+        const { activeId, prevCatId, newCatId } = action.payload;
+        if (newCatId) {
+          state.entities[prevCatId]?.features.filter((id) => id !== activeId);
+          state.entities[newCatId]?.features.unshift(activeId);
+        }
+      })
       .addCase(deleteProject, (state, action) => {
         const id = action.payload;
         const categoriesToDelete = Object.values(state.entities)

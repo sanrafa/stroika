@@ -78,6 +78,10 @@ export default function ColumnDndContext({ colIds, children }: Props) {
         overType = over?.data.current?.type,
         overParent = over?.data.current?.parentId;
 
+      console.log("ACTIVE ID:", activeId);
+      console.log("OVER ID:", overId);
+      console.log(over.data.current);
+
       switch (activeType) {
         case "column":
           break;
@@ -103,6 +107,26 @@ export default function ColumnDndContext({ colIds, children }: Props) {
           }
           break;
         case "feature":
+          if (overType === "feature" && overParent !== activeParent) {
+            dispatch(
+              sortFeaturesOnDragEnd({
+                activeId,
+                overId,
+                prevCatId: activeParent,
+                newCatId: overParent,
+              })
+            );
+          }
+          if (overType === "category" && overId !== activeParent) {
+            dispatch(
+              sortFeaturesOnDragEnd({
+                activeId,
+                overId,
+                prevCatId: activeParent,
+                newCatId: overId,
+              })
+            );
+          }
           break;
         default:
           break;
@@ -158,6 +182,7 @@ export default function ColumnDndContext({ colIds, children }: Props) {
               })
             );
           }
+
           break;
         default:
           break;

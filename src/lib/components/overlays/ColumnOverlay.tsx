@@ -4,6 +4,8 @@ import {
 } from "@radix-ui/react-icons";
 import { useAppSelector } from "../../store/hooks";
 import { getColumnById } from "../../store/columns";
+import { getSortedCategoriesByColumn } from "../../store/categories";
+import { CategoryOverlay } from "./index";
 
 type Props = {
   id: string;
@@ -11,6 +13,9 @@ type Props = {
 
 export default function ColumnOverlay({ id }: Props) {
   const column = useAppSelector((state) => getColumnById(state, id));
+  const categoryIds = useAppSelector((state) =>
+    getSortedCategoriesByColumn(state, id)
+  );
 
   return (
     <section className="bg-black w-full h-full rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
@@ -34,9 +39,9 @@ export default function ColumnOverlay({ id }: Props) {
       <hr className="w-[90%] bg-white" />
 
       <div className="bg-column h-full w-full mt-2 rounded overflow-y-auto hide-scroll">
-        {/* 
-      at some point, render presentational versions of column categories in here
-      */}
+        {categoryIds.map((id) => (
+          <CategoryOverlay id={id} key={id} />
+        ))}
       </div>
     </section>
   );

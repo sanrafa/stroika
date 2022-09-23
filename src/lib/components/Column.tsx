@@ -25,6 +25,9 @@ export default function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
   const column = useAppSelector((state) => getColumnById(state, id));
 
+  // for tracking during optimization stage
+  const renderCount = React.useRef(0);
+
   const {
     attributes,
     listeners,
@@ -102,6 +105,7 @@ export default function Column({ id }: ColumnProps) {
               handleSubmit();
             }}
           />
+          <span>{renderCount.current++}</span>
           <button
             type="submit"
             className="hidden"

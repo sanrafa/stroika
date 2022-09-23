@@ -34,6 +34,8 @@ const Task = ({ id }: TaskProps) => {
   const dispatch = useAppDispatch();
   const task = useAppSelector((state) => getTaskById(state, id));
 
+  const renderCount = React.useRef(0);
+
   const {
     attributes,
     listeners,
@@ -120,6 +122,7 @@ const Task = ({ id }: TaskProps) => {
           {task?.description}
         </span>
       )}
+      <span>{renderCount.current++}</span>
 
       {!completed ? (
         <>
@@ -168,6 +171,8 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
   const dispatch = useAppDispatch();
   const feature = useAppSelector((state) => getFeatureById(state, featureId));
 
+  const renderCount = React.useRef(0);
+
   const [desc, setDesc] = React.useState("");
 
   return (
@@ -191,7 +196,8 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
             </Dialog.Close>
             <Dialog.Title asChild>
               <header className="uppercase text-2xl tracking-wider w-full text-left flex flex-col font-josefin">
-                <h1 className="px-4">{feature?.name}</h1>
+                <h1 className="px-4">{feature?.name}</h1>{" "}
+                <span>{renderCount.current++}</span>
                 <hr className="mt-2 border-categoryToggleUnchecked border-1 w-11/12 self-center" />
               </header>
             </Dialog.Title>

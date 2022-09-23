@@ -74,9 +74,9 @@ export default function ColumnDndContext({ colIds, children }: Props) {
         overType = over?.data.current?.type,
         overParent = over?.data.current?.parentId;
 
-      console.log("ACTIVE ID:", activeId);
+      /* console.log("ACTIVE ID:", activeId);
       console.log("OVER ID:", overId);
-      console.log(over.data.current);
+      console.log(over.data.current); */
 
       switch (activeType) {
         case "column":
@@ -190,7 +190,7 @@ export default function ColumnDndContext({ colIds, children }: Props) {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      //collisionDetection={closestCorners}
       modifiers={
         activeComponent.type === "column"
           ? [restrictToParentElement, restrictToHorizontalAxis]

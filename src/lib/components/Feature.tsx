@@ -15,6 +15,7 @@ import { getTasksByFeature } from "../store/tasks";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { render } from "react-dom";
 
 type FeatureProps = {
   id: string;
@@ -25,6 +26,9 @@ export default function Feature({ id }: FeatureProps) {
 
   const feature = useAppSelector((state) => getFeatureById(state, id));
   const tasks = useAppSelector((state) => getTasksByFeature(state, id));
+
+  // for tracking during optimization stage
+  const renderCount = React.useRef(0);
 
   const {
     attributes,
@@ -78,6 +82,7 @@ export default function Feature({ id }: FeatureProps) {
           <CheckIcon width={25} height={25} stroke="green" className="ml-1" />
         ) : (
           <span className="text-blue-100">
+            {/* TODO: use a selector that returns boolean if all attached tasks are complete */}
             <span className="text-sm text-compText font-bold">
               {`${tasks.filter((task) => task?.completed === true).length} / ${
                 tasks.length
@@ -112,6 +117,7 @@ export default function Feature({ id }: FeatureProps) {
           onChange={(e) => setName(e.target.value)}
           onBlur={handleSubmit}
         />
+        <span>{renderCount.current++}</span>
         <button
           type="submit"
           className="hidden"

@@ -42,6 +42,9 @@ export default function CategoryBase({ id }: CategoryProps) {
     ? (features.map((feat) => feat?.id) as string[])
     : [];
 
+  // for tracking during optimization stage
+  const renderCount = React.useRef(0);
+
   const {
     attributes,
     listeners,
@@ -155,6 +158,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
+                    <span>{renderCount.current++}</span>
                     <button
                       type="submit"
                       className="hidden"

@@ -117,7 +117,7 @@ const categoriesSlice = createSlice({
           .sort((a, b) => Number(a?.order) - Number(b?.order))
           .map((cat) => cat?.id);
 
-        newColIdList.unshift(activeId);
+        newColIdList.push(activeId);
         const catsToUpdate = newColIdList.map((id, idx) => {
           if (id === activeId) {
             return {

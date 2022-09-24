@@ -3,7 +3,7 @@ import {
   WidthIcon as DragIcon,
 } from "@radix-ui/react-icons";
 import { ColumnDropdown, Category } from "./index";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useProxySelector } from "../store/hooks";
 import { updateColumn, addCategory } from "../store/actions";
 import { getColumnById } from "../store/columns";
 import { getSortedCategoriesByColumn } from "../store/categories";
@@ -21,9 +21,9 @@ type ColumnProps = {
   id: string;
 };
 
-export default function Column({ id }: ColumnProps) {
+function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
-  const column = useAppSelector((state) => getColumnById(state, id));
+  const column = useProxySelector((state) => getColumnById(state, id), [id]);
 
   // for tracking during optimization stage
   const renderCount = React.useRef(0);
@@ -47,8 +47,9 @@ export default function Column({ id }: ColumnProps) {
     transition,
   };
 
-  const categoryIds = useAppSelector((state) =>
-    getSortedCategoriesByColumn(state, id)
+  const categoryIds = useProxySelector(
+    (state) => getSortedCategoriesByColumn(state, id),
+    [id]
   );
 
   const [isEditing, setIsEditing] = React.useState(false);
@@ -101,9 +102,7 @@ export default function Column({ id }: ColumnProps) {
             onChange={(e) => setName(e.target.value)}
             disabled={!isEditing}
             className="font-manrope text-xl text-center p-1 text-black font-bold disabled:text-compText disabled:bg-slate-900 disabled:cursor-pointer tracking-widest rounded-sm"
-            onBlur={() => {
-              handleSubmit();
-            }}
+            onBlur={handleSubmit}
           />
           <span>{renderCount.current++}</span>
           <button
@@ -171,3 +170,5 @@ export default function Column({ id }: ColumnProps) {
     </section>
   );
 }
+
+export default React.memo(Column);

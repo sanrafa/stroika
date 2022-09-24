@@ -15,18 +15,19 @@ import {
   Cross1Icon as CloseIcon,
   ColumnsIcon,
 } from "@radix-ui/react-icons";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useProxySelector } from "../store/hooks";
 import { updateProject, addColumn } from "../store/actions";
 import { getProjectById } from "../store/projects";
 import { nanoid } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
 
-export default function Header() {
+function Header() {
   const dispatch = useAppDispatch();
   let match = useMatch("/projects/:id");
   const { id } = useParams();
-  const project = useAppSelector((state) =>
-    getProjectById(state, id as string)
+  const project = useProxySelector(
+    (state) => getProjectById(state, id as string),
+    [id]
   );
 
   const renderCount = React.useRef(0);
@@ -38,7 +39,7 @@ export default function Header() {
 
   React.useEffect(() => {
     setName(project?.name);
-  }, [project]);
+  }, [name !== project?.name]);
 
   React.useEffect(() => {
     if (projectNameInputRef.current) {
@@ -182,3 +183,5 @@ export default function Header() {
     </>
   );
 }
+
+export default React.memo(Header);

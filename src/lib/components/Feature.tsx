@@ -8,14 +8,13 @@ import {
   DragHandleDots1Icon as DragIcon,
 } from "@radix-ui/react-icons";
 
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useProxySelector } from "../store/hooks";
 import { updateFeature, deleteFeature } from "../store/actions";
 import { getFeatureById } from "../store/features";
 import { getTasksByFeature } from "../store/tasks";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { render } from "react-dom";
 
 type FeatureProps = {
   id: string;
@@ -24,8 +23,8 @@ type FeatureProps = {
 export default function Feature({ id }: FeatureProps) {
   const dispatch = useAppDispatch();
 
-  const feature = useAppSelector((state) => getFeatureById(state, id));
-  const tasks = useAppSelector((state) => getTasksByFeature(state, id));
+  const feature = useProxySelector((state) => getFeatureById(state, id), [id]);
+  const tasks = useProxySelector((state) => getTasksByFeature(state, id), [id]);
 
   // for tracking during optimization stage
   const renderCount = React.useRef(0);

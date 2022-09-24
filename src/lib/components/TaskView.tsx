@@ -8,7 +8,7 @@ import {
 } from "@radix-ui/react-icons";
 import React from "react";
 import { nanoid } from "@reduxjs/toolkit";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useProxySelector } from "../store/hooks";
 import {
   addTask,
   updateTask,
@@ -32,7 +32,7 @@ type TaskProps = {
 
 const Task = ({ id }: TaskProps) => {
   const dispatch = useAppDispatch();
-  const task = useAppSelector((state) => getTaskById(state, id));
+  const task = useProxySelector((state) => getTaskById(state, id), [id]);
 
   const renderCount = React.useRef(0);
 
@@ -153,8 +153,9 @@ const Task = ({ id }: TaskProps) => {
 };
 
 const TaskList = ({ taskIds }: { taskIds: string[] }) => {
-  const sortedIds = useAppSelector((state) =>
-    getSortedTaskIds(state, taskIds)
+  const sortedIds = useProxySelector(
+    (state) => getSortedTaskIds(state, taskIds),
+    [taskIds]
   ) as string[];
   return (
     <TaskDndContext taskIds={sortedIds}>
@@ -169,7 +170,10 @@ const TaskList = ({ taskIds }: { taskIds: string[] }) => {
 
 export default function TaskView({ children, featureId }: TaskViewProps) {
   const dispatch = useAppDispatch();
-  const feature = useAppSelector((state) => getFeatureById(state, featureId));
+  const feature = useProxySelector(
+    (state) => getFeatureById(state, featureId),
+    [featureId]
+  );
 
   const renderCount = React.useRef(0);
 

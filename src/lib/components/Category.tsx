@@ -12,12 +12,11 @@ import {
 } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useProxySelector } from "../store/hooks";
 import {
   updateCategory,
   addFeature,
   toggleCategorySuspended,
-  sortCategoriesOnDragEnd,
 } from "../store/actions";
 import { getCategoryById } from "../store/categories";
 import { getFeaturesByCategory } from "../store/features";
@@ -28,7 +27,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { DragEndEvent, DragOverEvent } from "@dnd-kit/core";
 
 type CategoryProps = {
   id: string;
@@ -36,8 +34,14 @@ type CategoryProps = {
 
 export default function CategoryBase({ id }: CategoryProps) {
   const dispatch = useAppDispatch();
-  const category = useAppSelector((state) => getCategoryById(state, id));
-  const features = useAppSelector((state) => getFeaturesByCategory(state, id));
+  const category = useProxySelector(
+    (state) => getCategoryById(state, id),
+    [id]
+  );
+  const features = useProxySelector(
+    (state) => getFeaturesByCategory(state, id),
+    [id]
+  );
   const categoryFeatureIds = features
     ? (features.map((feat) => feat?.id) as string[])
     : [];

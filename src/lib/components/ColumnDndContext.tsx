@@ -1,5 +1,6 @@
 import React from "react";
 import store from "../store";
+import { debounce } from "lodash";
 
 import { ColumnOverlay, CategoryOverlay, FeatureOverlay } from "./overlays";
 
@@ -74,10 +75,6 @@ export default function ColumnDndContext({ colIds, children }: Props) {
         overType = over?.data.current?.type,
         overParent = over?.data.current?.parentId;
 
-      /* console.log("ACTIVE ID:", activeId);
-      console.log("OVER ID:", overId);
-      console.log(over.data.current); */
-
       switch (activeType) {
         case "column":
           break;
@@ -129,6 +126,11 @@ export default function ColumnDndContext({ colIds, children }: Props) {
       }
     }
   }
+
+  const debouncedDragOver = debounce(
+    (event: DragOverEvent) => handleDragOver(event),
+    100
+  );
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -196,9 +198,9 @@ export default function ColumnDndContext({ colIds, children }: Props) {
           ? [restrictToParentElement, restrictToHorizontalAxis]
           : []
       }
-      onDragStart={(e) => handleDragStart(e)}
-      onDragOver={(e) => handleDragOver(e)}
-      onDragEnd={(e) => handleDragEnd(e)}
+      onDragStart={handleDragStart}
+      onDragOver={debouncedDragOver}
+      onDragEnd={handleDragEnd}
     >
       <SortableContext items={colIds} strategy={horizontalListSortingStrategy}>
         {children}

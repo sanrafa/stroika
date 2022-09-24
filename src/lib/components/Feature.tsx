@@ -26,9 +26,6 @@ export default function Feature({ id }: FeatureProps) {
   const feature = useProxySelector((state) => getFeatureById(state, id), [id]);
   const tasks = useProxySelector((state) => getTasksByFeature(state, id), [id]);
 
-  // for tracking during optimization stage
-  const renderCount = React.useRef(0);
-
   const {
     attributes,
     listeners,
@@ -116,7 +113,6 @@ export default function Feature({ id }: FeatureProps) {
           onChange={(e) => setName(e.target.value)}
           onBlur={handleSubmit}
         />
-        <span>{renderCount.current++}</span>
         <button
           type="submit"
           className="hidden"

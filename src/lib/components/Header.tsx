@@ -30,8 +30,6 @@ function Header() {
     [id]
   );
 
-  const renderCount = React.useRef(0);
-
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(project?.name);
   const addColumnDisabled = project?.columns.length === 3;
@@ -69,7 +67,6 @@ function Header() {
         <Link to="/" className="block w-1/6 p-2 ml-1">
           <img src={logo} alt="Stroika logo" className="" />
         </Link>
-        <span>{renderCount.current++}</span>
         {match ? (
           <>
             <form

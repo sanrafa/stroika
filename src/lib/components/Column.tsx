@@ -25,9 +25,6 @@ function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
   const column = useProxySelector((state) => getColumnById(state, id), [id]);
 
-  // for tracking during optimization stage
-  const renderCount = React.useRef(0);
-
   const {
     attributes,
     listeners,
@@ -104,7 +101,6 @@ function Column({ id }: ColumnProps) {
             className="font-manrope text-xl text-center p-1 text-black font-bold disabled:text-compText disabled:bg-slate-900 disabled:cursor-pointer tracking-widest rounded-sm"
             onBlur={handleSubmit}
           />
-          <span>{renderCount.current++}</span>
           <button
             type="submit"
             className="hidden"

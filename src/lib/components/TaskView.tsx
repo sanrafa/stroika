@@ -53,31 +53,34 @@ const Task = ({ id }: TaskProps) => {
 
   return (
     <li
-      className={`flex space-x-2 px-4 py-1 rounded-md hover:bg-slate-700 ${
-        completed ? "opacity-60" : null
-      }`}
+      className={`flex space-x-2 px-4 py-1 rounded-md ${
+        task?.archived ? "hover:bg-slate-800" : "hover:bg-slate-700"
+      } ${completed ? "opacity-60" : null}`}
       style={sortableStyle}
       ref={setNodeRef}
     >
-      <Checkbox
-        aria-label="mark task complete"
-        checked={completed}
-        onCheckedChange={(e) => {
-          dispatch(
-            toggleTaskComplete({
-              id,
-              completed: !completed,
-              featureId: task?.featureId as string,
-            })
-          );
-          setCompleted(!completed);
-        }}
-        className="bg-categoryToggleUnchecked w-5 h-5 flex flex-shrink-0 justify-center items-center self-center shadow-inset rounded"
-      >
-        <CheckboxIndicator>
-          <div className="bg-categoryToggleChecked w-5 h-5 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
-        </CheckboxIndicator>
-      </Checkbox>
+      {!task?.archived ? (
+        <Checkbox
+          aria-label="mark task complete"
+          checked={completed}
+          onCheckedChange={(e) => {
+            dispatch(
+              toggleTaskComplete({
+                id,
+                completed: !completed,
+                featureId: task?.featureId as string,
+              })
+            );
+            setCompleted(!completed);
+          }}
+          className="bg-categoryToggleUnchecked w-5 h-5 flex flex-shrink-0 justify-center items-center self-center shadow-inset rounded"
+        >
+          <CheckboxIndicator>
+            <div className="bg-categoryToggleChecked w-5 h-5 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
+          </CheckboxIndicator>
+        </Checkbox>
+      ) : null}
+
       {!completed ? (
         <button
           {...attributes}
@@ -96,7 +99,12 @@ const Task = ({ id }: TaskProps) => {
           className="self-baseline"
           onSubmit={(e) => {
             e.preventDefault();
-            dispatch(updateTask({ id, changes: { description: desc } }));
+            dispatch(
+              updateTask({
+                id,
+                changes: { description: desc, archived: false },
+              })
+            );
             setIsEditing(false);
           }}
         >
@@ -116,7 +124,11 @@ const Task = ({ id }: TaskProps) => {
           ></button>
         </form>
       ) : (
-        <span className="self-baseline text-center w-4/5">
+        <span
+          className={`self-baseline text-center w-4/5 ${
+            task?.archived ? "text-slate-500" : null
+          }`}
+        >
           {task?.description}
         </span>
       )}
@@ -254,7 +266,7 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
                   <div className="bg-green-800 w-4 h-4 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
                 </CheckboxIndicator>
               </Checkbox>
-              <span>View archived tasks</span>
+              <span>Show archived tasks</span>
             </div>
             <TaskList
               taskIds={feature?.tasks as string[]}

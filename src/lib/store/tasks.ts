@@ -104,10 +104,20 @@ const tasksSlice = createSlice({
       const oldIdx = idList.indexOf(activeId);
       const newIdx = idList.indexOf(overId);
       const sortedIds = arrayMove(idList, oldIdx, newIdx);
-      const tasksToUpdate = sortedIds.map((id, idx) => ({
-        ...state.entities[id],
-        order: idx + 1,
-      })) as ITask[];
+      const tasksToUpdate = sortedIds.map((id, idx) => {
+        if (id === activeId) {
+          return {
+            ...state.entities[id],
+            order: idx + 1,
+            archived: false,
+          };
+        } else {
+          return {
+            ...state.entities[id],
+            order: idx + 1,
+          };
+        }
+      }) as ITask[];
       tasksAdapter.upsertMany(state, tasksToUpdate);
     },
     updateManyTasks: tasksAdapter.upsertMany,

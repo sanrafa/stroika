@@ -47,7 +47,11 @@ function ProjectView() {
                 (task) =>
                   task?.columnId === newColId && task.categoryId === activeId
               )
-              .map((task) => ({ ...task, archived: true })) as ITask[];
+              .map((task) => ({
+                ...task,
+                archived: true,
+                order: 99,
+              })) as ITask[];
             listenerApi.dispatch(updateManyTasks(tasksToArchive));
           }
         },
@@ -67,7 +71,11 @@ function ProjectView() {
               listenerApi.getState().tasks.entities
             )
               .filter((task) => task?.featureId === activeId)
-              .map((task) => ({ ...task, archived: true })) as ITask[];
+              .map((task) => ({
+                ...task,
+                archived: true,
+                order: 99,
+              })) as ITask[];
             listenerApi.dispatch(updateManyTasks(tasksToArchive));
           }
         },

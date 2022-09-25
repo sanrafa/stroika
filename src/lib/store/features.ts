@@ -76,7 +76,7 @@ const featuresSlice = createSlice({
     ) {
       const { activeId, overId, prevCatId, newCatId, prevColId, newColId } =
         action.payload;
-      if (!newCatId && !newColId) {
+      if (!newCatId && newColId === prevColId) {
         // within the same category
         const idList = Object.values(state.entities)
           .filter((feat) => feat?.categoryId === prevCatId)
@@ -91,7 +91,7 @@ const featuresSlice = createSlice({
         })) as IFeature[];
         featuresAdapter.upsertMany(state, featsToUpdate);
       }
-      if (newCatId && !newColId) {
+      if (newCatId && newColId === prevColId) {
         // new category, same column
         const newCatFeatures = Object.values(state.entities)
           .filter((feat) => feat?.categoryId === newCatId)
@@ -103,6 +103,29 @@ const featuresSlice = createSlice({
             return {
               ...state.entities[id],
               categoryId: newCatId,
+              order: idx + 1,
+            };
+          } else {
+            return {
+              ...state.entities[id],
+              order: idx + 1,
+            };
+          }
+        }) as IFeature[];
+        featuresAdapter.upsertMany(state, featuresToUpdate);
+      } else if (newCatId && newColId !== prevColId) {
+        // new category, new column
+        const newCatFeatures = Object.values(state.entities)
+          .filter((feat) => feat?.categoryId === newCatId)
+          .sort((a, b) => Number(a?.order) - Number(b?.order))
+          .map((feat) => feat?.id)
+          .concat(activeId) as string[];
+        const featuresToUpdate = newCatFeatures.map((id, idx) => {
+          if (id === activeId) {
+            return {
+              ...state.entities[id],
+              categoryId: newCatId,
+              columnId: newColId,
               order: idx + 1,
             };
           } else {

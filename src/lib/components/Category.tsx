@@ -59,6 +59,7 @@ export default function CategoryBase({ id }: CategoryProps) {
     data: {
       type: "category",
       parentId: category?.columnId,
+      columnId: category?.columnId,
     },
   });
 

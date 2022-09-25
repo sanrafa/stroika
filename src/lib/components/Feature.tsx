@@ -70,7 +70,7 @@ export default function Feature({ id }: FeatureProps) {
     >
       {/* Task progress indicator OR checkmark if all complete */}
       <div className="text-xxs">
-        {!feature?.tasks.length ? (
+        {!tasks.length ? (
           <span className="text-compText font-bold">
             NO <br /> TASKS
           </span>

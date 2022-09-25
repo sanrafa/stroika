@@ -40,6 +40,7 @@ export interface ITask {
   order: number;
   description: string;
   completed: boolean;
+  archived: boolean;
   projectId: string;
   columnId: string;
   categoryId: string;

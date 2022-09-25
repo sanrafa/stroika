@@ -24,5 +24,6 @@ export {
   deleteTask,
   toggleTaskComplete,
   sortTasksOnDragEnd,
+  updateManyTasks,
 } from "./tasks";
 export { setUser, setCurrentProject } from "./session";

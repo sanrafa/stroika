@@ -73,7 +73,11 @@ export default function ColumnDndContext({ colIds, children }: Props) {
         activeParentColumn = active.data.current?.columnId as string,
         overId = over?.id as string,
         overType = over?.data.current?.type,
-        overParent = over?.data.current?.parentId;
+        overParent = over?.data.current?.parentId,
+        overParentColumn = over?.data.current?.columnId as string;
+
+      console.log("active column:", activeParentColumn);
+      console.log("over column", overParentColumn);
 
       switch (activeType) {
         case "column":
@@ -107,6 +111,8 @@ export default function ColumnDndContext({ colIds, children }: Props) {
                 overId,
                 prevCatId: activeParent,
                 newCatId: overParent,
+                prevColId: activeParentColumn,
+                newColId: overParentColumn,
               })
             );
           }
@@ -117,6 +123,8 @@ export default function ColumnDndContext({ colIds, children }: Props) {
                 overId,
                 prevCatId: activeParent,
                 newCatId: overId,
+                prevColId: activeParentColumn,
+                newColId: overParentColumn,
               })
             );
           }

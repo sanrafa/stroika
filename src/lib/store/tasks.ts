@@ -50,6 +50,7 @@ const tasksSlice = createSlice({
         description,
         completed: false,
         order: 1,
+        archived: false,
         featureId,
         categoryId,
         columnId,
@@ -108,6 +109,7 @@ const tasksSlice = createSlice({
       })) as ITask[];
       tasksAdapter.upsertMany(state, tasksToUpdate);
     },
+    updateManyTasks: tasksAdapter.upsertMany,
   },
   extraReducers: (builder) => {
     builder
@@ -157,6 +159,7 @@ export const {
   deleteTask,
   toggleTaskComplete,
   sortTasksOnDragEnd,
+  updateManyTasks,
 } = tasksSlice.actions;
 
 export default tasksSlice.reducer;
@@ -165,10 +168,20 @@ export const { selectById: getTaskById } = tasksAdapter.getSelectors<RootState>(
   (state) => state.tasks
 );
 
-export const getTasksByFeature = (state: RootState, featureId: string) => {
-  return Object.values(state.tasks.entities).filter(
-    (task) => task?.featureId === featureId
-  );
+export const getTasksByFeature = (
+  state: RootState,
+  featureId: string,
+  archived = false
+) => {
+  if (!archived) {
+    return Object.values(state.tasks.entities).filter(
+      (task) => task?.featureId === featureId && !task.archived
+    );
+  } else {
+    return Object.values(state.tasks.entities).filter(
+      (task) => task?.featureId === featureId
+    );
+  }
 };
 
 export const getSortedTaskIds = (state: RootState, ids: string[]) => {
@@ -182,4 +195,13 @@ export const getTasksByProject = (state: RootState, projectId: string) => {
   return Object.values(state.tasks.entities).filter(
     (task) => task?.projectId === projectId
   ) as ITask[];
+};
+
+export const getPendingTasksByProject = (
+  state: RootState,
+  projectId: string
+) => {
+  return Object.values(state.tasks.entities)
+    .filter((task) => task?.projectId === projectId && !task.completed)
+    .map((task) => task?.id) as string[];
 };

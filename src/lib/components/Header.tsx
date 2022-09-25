@@ -7,6 +7,8 @@ import {
   DropdownItem,
   DropdownSeparator,
   DropdownArrow,
+  DropdownCheckboxItem,
+  DropdownItemIndicator,
 } from "./index";
 
 import logo from "../../assets/logo-darkmode.svg";
@@ -14,6 +16,7 @@ import {
   DotsVerticalIcon as MenuIcon,
   Cross1Icon as CloseIcon,
   ColumnsIcon,
+  DotIcon,
 } from "@radix-ui/react-icons";
 import { useAppDispatch, useProxySelector } from "../store/hooks";
 import { updateProject, addColumn } from "../store/actions";
@@ -30,6 +33,7 @@ function Header() {
     [id]
   );
 
+  const archiveTasks = Boolean(project?.config.archiveTasks);
   const [isEditing, setIsEditing] = React.useState(false);
   const [name, setName] = React.useState(project?.name);
   const addColumnDisabled = project?.columns.length === 3;
@@ -61,6 +65,19 @@ function Header() {
     setIsEditing(false);
   };
 
+  function handleChecked() {
+    dispatch(
+      updateProject({
+        id: id as string,
+        changes: {
+          config: {
+            archiveTasks: !archiveTasks,
+          },
+        },
+      })
+    );
+  }
+
   return (
     <>
       <header className={match ? "project-header" : "header"}>
@@ -79,9 +96,7 @@ function Header() {
             >
               <h1>
                 <input
-                  onBlur={() => {
-                    handleSubmit();
-                  }}
+                  onBlur={handleSubmit}
                   type="text"
                   className={`text-black text-5xl text-center font-light w-11/12 disabled:bg-black disabled:text-compText disabled:cursor-pointer`}
                   defaultValue={name}
@@ -150,16 +165,27 @@ function Header() {
                   >
                     <button
                       type="button"
-                      className="hover:bg-slate-300 p-1 py-2 rounded"
+                      className="hover:bg-slate-300 p-1 py-2 rounded w-full"
                     >
                       Rename Project
                     </button>
                   </DropdownItem>
+                  <DropdownCheckboxItem
+                    className="flex items-center hover:bg-slate-300 p-1 py-2 rounded cursor-pointer"
+                    checked={archiveTasks}
+                    onCheckedChange={handleChecked}
+                  >
+                    <DropdownItemIndicator>
+                      <DotIcon width={32} height={32} />
+                    </DropdownItemIndicator>
+                    Archive tasks on column change
+                  </DropdownCheckboxItem>
                   <DropdownSeparator asChild>
                     <hr className=" bg-black my-0.5" />
                   </DropdownSeparator>
                   <DropdownItem className="p-1">Save Project</DropdownItem>
                   <DropdownItem className="p-1">Export Project</DropdownItem>
+
                   <DropdownArrow fill="white" height={8} />
                 </DropdownContent>
               </Dropdown>

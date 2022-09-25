@@ -12,6 +12,7 @@ import { Column, ColumnDndContext } from "../lib/components";
 import React from "react";
 import { addAppListener } from "../lib/store/listener";
 import type { ITask } from "../lib/types";
+import { ListenerEffect, removeListener } from "@reduxjs/toolkit";
 
 function ProjectView() {
   const dispatch = useAppDispatch();
@@ -34,54 +35,66 @@ function ProjectView() {
   }, []);
 
   React.useEffect(() => {
-    return dispatch(
-      addAppListener({
-        actionCreator: sortCategoriesOnDragEnd,
-        effect: (action, listenerApi) => {
-          const { newColId, activeId } = action.payload;
-          if (newColId) {
-            const tasksToArchive = Object.values(
-              listenerApi.getState().tasks.entities
-            )
-              .filter(
-                (task) =>
-                  task?.columnId === newColId && task.categoryId === activeId
+    const archiveTasks = project?.config.archiveTasks;
+
+    if (archiveTasks) {
+      return dispatch(
+        addAppListener({
+          actionCreator: sortCategoriesOnDragEnd,
+          effect: (action, listenerApi) => {
+            const { newColId, activeId } = action.payload;
+            if (newColId) {
+              const tasksToArchive = Object.values(
+                listenerApi.getState().tasks.entities
               )
-              .map((task) => ({
-                ...task,
-                archived: true,
-                order: 99,
-              })) as ITask[];
-            listenerApi.dispatch(updateManyTasks(tasksToArchive));
-          }
-        },
-      })
-    );
-  }, [id]);
+                .filter(
+                  (task) =>
+                    task?.columnId === newColId && task.categoryId === activeId
+                )
+                .map((task) => ({
+                  ...task,
+                  archived: true,
+                  order: 99,
+                })) as ITask[];
+              listenerApi.dispatch(updateManyTasks(tasksToArchive));
+            }
+          },
+        })
+      );
+    } else {
+      return;
+    }
+  }, [id, project?.config.archiveTasks]);
 
   React.useEffect(() => {
-    return dispatch(
-      addAppListener({
-        actionCreator: sortFeaturesOnDragEnd,
-        effect: (action, listenerApi) => {
-          const { activeId, newColId, prevColId } = action.payload;
+    const archiveTasks = project?.config.archiveTasks;
 
-          if (newColId !== prevColId) {
-            const tasksToArchive = Object.values(
-              listenerApi.getState().tasks.entities
-            )
-              .filter((task) => task?.featureId === activeId)
-              .map((task) => ({
-                ...task,
-                archived: true,
-                order: 99,
-              })) as ITask[];
-            listenerApi.dispatch(updateManyTasks(tasksToArchive));
-          }
-        },
-      })
-    );
-  }, [id]);
+    if (archiveTasks) {
+      return dispatch(
+        addAppListener({
+          actionCreator: sortFeaturesOnDragEnd,
+          effect: (action, listenerApi) => {
+            const { activeId, newColId, prevColId } = action.payload;
+
+            if (newColId !== prevColId) {
+              const tasksToArchive = Object.values(
+                listenerApi.getState().tasks.entities
+              )
+                .filter((task) => task?.featureId === activeId)
+                .map((task) => ({
+                  ...task,
+                  archived: true,
+                  order: 99,
+                })) as ITask[];
+              listenerApi.dispatch(updateManyTasks(tasksToArchive));
+            }
+          },
+        })
+      );
+    } else {
+      return;
+    }
+  }, [id, project?.config.archiveTasks]);
 
   return (
     <>

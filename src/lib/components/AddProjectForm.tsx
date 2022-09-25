@@ -22,6 +22,9 @@ const AddProjectForm = () => {
         createdAt: Date(),
         columns: [],
         updatedAt: null,
+        config: {
+          archiveTasks: true,
+        },
       })
     );
     const cols = generateDefaultColumns(id);

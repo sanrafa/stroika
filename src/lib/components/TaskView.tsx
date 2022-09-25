@@ -6,7 +6,7 @@ import {
   CircleBackslashIcon as DeleteIcon,
   CaretSortIcon as DragIcon,
 } from "@radix-ui/react-icons";
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { useAppDispatch, useProxySelector } from "../store/hooks";
 import {
@@ -126,7 +126,7 @@ const Task = ({ id }: TaskProps) => {
       ) : (
         <span
           className={`self-baseline text-center w-4/5 ${
-            task?.archived ? "text-slate-500" : null
+            task?.archived ? "text-slate-500 line-through" : null
           }`}
         >
           {task?.description}
@@ -191,6 +191,10 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
 
   const [desc, setDesc] = React.useState("");
   const [showArchived, setShowArchived] = React.useState(false);
+
+  function handleCheckedChange() {
+    return setShowArchived(!showArchived);
+  }
 
   return (
     <Dialog.Root>
@@ -260,7 +264,7 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
                 aria-label="show archived tasks"
                 className="bg-slate-400 w-4 h-4 flex flex-shrink-0 justify-center items-center self-center shadow-inset rounded"
                 defaultChecked={showArchived}
-                onCheckedChange={() => setShowArchived(!showArchived)}
+                onCheckedChange={handleCheckedChange}
               >
                 <CheckboxIndicator>
                   <div className="bg-green-800 w-4 h-4 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>

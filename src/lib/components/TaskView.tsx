@@ -149,10 +149,15 @@ const Task = ({ id }: TaskProps) => {
   );
 };
 
-const TaskList = ({ taskIds }: { taskIds: string[] }) => {
+type TaskListProps = {
+  taskIds: string[];
+  showArchived: boolean;
+};
+
+const TaskList = ({ taskIds, showArchived }: TaskListProps) => {
   const sortedIds = useProxySelector(
-    (state) => getSortedTaskIds(state, taskIds),
-    [taskIds]
+    (state) => getSortedTaskIds(state, taskIds, showArchived),
+    [taskIds, showArchived]
   ) as string[];
   return (
     <TaskDndContext taskIds={sortedIds}>
@@ -173,6 +178,7 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
   );
 
   const [desc, setDesc] = React.useState("");
+  const [showArchived, setShowArchived] = React.useState(false);
 
   return (
     <Dialog.Root>
@@ -226,7 +232,7 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
                 name="task-description"
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
-                className="bg-slate-300 text-center rounded-l-md p-0.5 focus:bg-white mb-2"
+                className="bg-slate-300 text-center rounded-l-md p-0.5 focus:bg-white"
                 placeholder="Add a new task"
               />
               <button
@@ -237,7 +243,23 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
                 ADD
               </button>
             </form>
-            <TaskList taskIds={feature?.tasks as string[]} />
+            <div className="flex space-x-4 justify-center mb-2">
+              <Checkbox
+                aria-label="show archived tasks"
+                className="bg-slate-400 w-4 h-4 flex flex-shrink-0 justify-center items-center self-center shadow-inset rounded"
+                defaultChecked={showArchived}
+                onCheckedChange={() => setShowArchived(!showArchived)}
+              >
+                <CheckboxIndicator>
+                  <div className="bg-green-800 w-4 h-4 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
+                </CheckboxIndicator>
+              </Checkbox>
+              <span>View archived tasks</span>
+            </div>
+            <TaskList
+              taskIds={feature?.tasks as string[]}
+              showArchived={showArchived}
+            />
           </section>
         </Dialog.Content>
       </Dialog.Portal>

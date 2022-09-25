@@ -12,6 +12,7 @@ import {
   deleteColumn,
   deleteCategory,
   sortCategoriesOnDragEnd,
+  sortFeaturesOnDragEnd,
 } from "./actions";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -113,9 +114,18 @@ const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(sortFeaturesOnDragEnd, (state, action) => {
+        const { activeId, prevColId, newColId } = action.payload;
+        if (newColId && newColId !== prevColId) {
+          const tasksToUpdate = Object.values(state.entities)
+            .filter((task) => task?.featureId === activeId)
+            .map((task) => ({ ...task, columnId: newColId })) as ITask[];
+          tasksAdapter.upsertMany(state, tasksToUpdate);
+        }
+      })
       .addCase(sortCategoriesOnDragEnd, (state, action) => {
-        const { activeId, newColId } = action.payload;
-        if (newColId) {
+        const { activeId, newColId, prevColId } = action.payload;
+        if (newColId && newColId !== prevColId) {
           const tasksToUpdate = Object.values(state.entities)
             .filter((task) => task?.categoryId === activeId)
             .map((task) => ({ ...task, columnId: newColId })) as ITask[];
@@ -184,11 +194,22 @@ export const getTasksByFeature = (
   }
 };
 
-export const getSortedTaskIds = (state: RootState, ids: string[]) => {
-  return Object.values(state.tasks.entities)
-    .filter((task) => ids.includes(task?.id as string))
-    .sort((a, b) => Number(a?.order) - Number(b?.order))
-    .map((task) => task?.id);
+export const getSortedTaskIds = (
+  state: RootState,
+  ids: string[],
+  showArchived = false
+) => {
+  if (!showArchived) {
+    return Object.values(state.tasks.entities)
+      .filter((task) => ids.includes(task?.id as string) && !task?.archived)
+      .sort((a, b) => Number(a?.order) - Number(b?.order))
+      .map((task) => task?.id);
+  } else {
+    return Object.values(state.tasks.entities)
+      .filter((task) => ids.includes(task?.id as string))
+      .sort((a, b) => Number(a?.order) - Number(b?.order))
+      .map((task) => task?.id);
+  }
 };
 
 export const getTasksByProject = (state: RootState, projectId: string) => {

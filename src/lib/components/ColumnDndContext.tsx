@@ -1,12 +1,10 @@
 import React from "react";
-import store from "../store";
 import { debounce } from "lodash";
 
 import { ColumnOverlay, CategoryOverlay, FeatureOverlay } from "./overlays";
 
 import {
   DndContext,
-  closestCorners,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -75,9 +73,6 @@ export default function ColumnDndContext({ colIds, children }: Props) {
         overType = over?.data.current?.type,
         overParent = over?.data.current?.parentId,
         overParentColumn = over?.data.current?.columnId as string;
-
-      console.log("active column:", activeParentColumn);
-      console.log("over column", overParentColumn);
 
       switch (activeType) {
         case "column":
@@ -150,17 +145,15 @@ export default function ColumnDndContext({ colIds, children }: Props) {
 
       switch (activeComponent.type) {
         case "category":
-          const activeCategory =
-            store.getState().categories.entities[active.id];
-          const overCategory = store.getState().categories.entities[over.id];
-          const columnsMatch =
-            activeCategory?.columnId === overCategory?.columnId;
+          const activeColumn = active.data.current?.columnId as string;
+          const overColumn = over.data.current?.columnId as string;
+          const columnsMatch = activeColumn === overColumn;
           if (columnsMatch && active.id !== over.id) {
             return dispatch(
               sortCategoriesOnDragEnd({
                 activeId: active.id as string,
                 overId: over.id as string,
-                prevColId: activeCategory?.columnId as string,
+                prevColId: activeColumn,
               })
             );
           }

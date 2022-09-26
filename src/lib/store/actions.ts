@@ -4,6 +4,7 @@ export {
   updateColumn,
   deleteColumn,
   sortColumnsOnDragEnd,
+  clearColumn,
 } from "./columns";
 export {
   addCategory,

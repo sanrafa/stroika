@@ -13,6 +13,7 @@ import {
   deleteCategory,
   sortCategoriesOnDragEnd,
   sortFeaturesOnDragEnd,
+  clearColumn,
 } from "./actions";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -124,6 +125,13 @@ const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(clearColumn, (state, action) => {
+        const { id } = action.payload;
+        const tasksToDelete = Object.values(state.entities)
+          .filter((task) => task?.columnId === id)
+          .map((task) => task?.id) as string[];
+        tasksAdapter.removeMany(state, tasksToDelete);
+      })
       .addCase(sortFeaturesOnDragEnd, (state, action) => {
         const { activeId, prevColId, newColId } = action.payload;
         if (newColId && newColId !== prevColId) {

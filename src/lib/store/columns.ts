@@ -46,6 +46,15 @@ const columnsSlice = createSlice({
   name: "columns",
   initialState,
   reducers: {
+    clearColumn(state, action: PayloadAction<{ id: string }>) {
+      const { id } = action.payload;
+      columnsAdapter.updateOne(state, {
+        id,
+        changes: {
+          categories: [],
+        },
+      });
+    },
     addColumn(
       state,
       action: PayloadAction<{
@@ -138,6 +147,7 @@ export const {
   deleteColumn,
   addManyColumns,
   sortColumnsOnDragEnd,
+  clearColumn,
 } = columnsSlice.actions;
 
 export default columnsSlice.reducer;

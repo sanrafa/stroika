@@ -8,7 +8,7 @@ import {
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import React from "react";
 
-import { deleteColumn } from "../store/actions";
+import { deleteColumn, clearColumn } from "../store/actions";
 import { useAppDispatch } from "../store/hooks";
 import { toast } from "react-hot-toast";
 
@@ -42,7 +42,7 @@ export default function ColumnDropdown({
       </DropdownTrigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="bg-white text-black text-center p-0.5"
+          className="bg-white text-black text-center p-1 font-bold rounded"
           align="center"
           sideOffset={4}
           onCloseAutoFocus={(e) => {
@@ -58,16 +58,22 @@ export default function ColumnDropdown({
               setIsEditing(true);
               inputRef?.current?.focus();
             }}
+            className="p-0.5 hover:bg-slate-800 hover:text-compText focus:bg-slate-800 focus:text-compText cursor-pointer"
           >
-            <button type="button" className="p-0.5">
-              Rename Column
-            </button>
+            Rename Column
+          </DropdownItem>
+          <DropdownItem
+            onSelect={() => {
+              dispatch(clearColumn({ id }));
+            }}
+            className="p-0.5 hover:bg-slate-800 hover:text-compText cursor-pointer w-full focus:bg-slate-800 focus:text-compText"
+          >
+            Clear Column
           </DropdownItem>
           <DropdownSeparator asChild>
             <hr color="black" />
           </DropdownSeparator>
           <DropdownItem
-            asChild
             onSelect={() => {
               dispatch(deleteColumn({ id, projectId }));
               toast.success("Column deleted.", {
@@ -79,10 +85,9 @@ export default function ColumnDropdown({
                 },
               });
             }}
+            className="p-0.5 hover:bg-slate-800 hover:text-compText cursor-pointer w-full focus:bg-slate-800 focus:text-compText"
           >
-            <button type="button" className="p-0.5">
-              Delete Column
-            </button>
+            Delete Column
           </DropdownItem>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

@@ -7,6 +7,7 @@ import {
 import type { RootState } from "./index";
 import {
   addFeature,
+  clearColumn,
   deleteColumn,
   deleteFeature,
   deleteProject,
@@ -168,6 +169,13 @@ const categoriesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(clearColumn, (state, action) => {
+        const { id } = action.payload;
+        const categoriesToDelete = Object.values(state.entities)
+          .filter((cat) => cat?.columnId === id)
+          .map((cat) => cat?.id) as string[];
+        categoriesAdapter.removeMany(state, categoriesToDelete);
+      })
       .addCase(sortFeaturesOnDragEnd, (state, action) => {
         const { activeId, prevCatId, newCatId } = action.payload;
         if (newCatId) {

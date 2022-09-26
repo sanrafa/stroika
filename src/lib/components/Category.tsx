@@ -110,7 +110,8 @@ export default function CategoryBase({ id }: CategoryProps) {
             <Accordion.Header asChild>
               <header className="flex items-center justify-between pr-4 md:space-x-8">
                 <div className="flex flex-col items-center justify-center p-4 leading-3 md:-mr-6">
-                  {features.length ? (
+                  {features.length &&
+                  !features.every((feat) => feat?.completed) ? (
                     <div className="flex flex-col sm:-mr-4 lg:-mr-0">
                       <span className="text-sm font-bold">{`${
                         features.filter((feat) => feat?.completed === true)

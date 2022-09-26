@@ -23,8 +23,9 @@ import {
   toggleTaskComplete,
   sortCategoriesOnDragEnd,
   sortFeaturesOnDragEnd,
+  copyCategoriesFromColumn,
 } from "./actions";
-import { ITask } from "../types";
+import { getSortedCategoriesByColumn } from "./categories";
 
 const listener = createListenerMiddleware();
 
@@ -50,8 +51,11 @@ startAppListening({
     deleteTask,
     updateColumn,
     updateCategory,
-    updateFeature,
-    updateTask
+    updateManyTasks,
+    updateTask,
+    sortCategoriesOnDragEnd,
+    sortFeaturesOnDragEnd,
+    copyCategoriesFromColumn
   ),
   effect: async (action, listenerApi) => {
     const id = listenerApi.getState().session.currentProjectId;
@@ -62,39 +66,25 @@ startAppListening({
   },
 });
 
-// When a category or feature is moved to a new column, archive all tasks attached to that parent
-/* startAppListening({
-  actionCreator: sortCategoriesOnDragEnd,
+// When categories are copied from one column to another, add ids to new column
+startAppListening({
+  actionCreator: copyCategoriesFromColumn,
   effect: (action, listenerApi) => {
-    const { newColId, activeId } = action.payload;
-    if (newColId) {
-      const tasksToArchive = Object.values(
-        listenerApi.getState().tasks.entities
-      )
-        .filter(
-          (task) => task?.columnId === newColId && task.categoryId === activeId
-        )
-        .map((task) => ({ ...task, archived: true })) as ITask[];
-      listenerApi.dispatch(updateManyTasks(tasksToArchive));
-    }
+    const { toId } = action.payload;
+    const columnCategories = getSortedCategoriesByColumn(
+      listenerApi.getState(),
+      toId
+    );
+    listenerApi.dispatch(
+      updateColumn({
+        id: toId,
+        changes: {
+          categories: columnCategories,
+        },
+      })
+    );
   },
 });
-
-startAppListening({
-  actionCreator: sortFeaturesOnDragEnd,
-  effect: (action, listenerApi) => {
-    const { activeId, newColId, prevColId } = action.payload;
-
-    if (newColId !== prevColId) {
-      const tasksToArchive = Object.values(
-        listenerApi.getState().tasks.entities
-      )
-        .filter((task) => task?.featureId === activeId)
-        .map((task) => ({ ...task, archived: true })) as ITask[];
-      listenerApi.dispatch(updateManyTasks(tasksToArchive));
-    }
-  },
-}); */
 
 // When a task is toggled complete, calculate whether that feature's status should be updated
 startAppListening({

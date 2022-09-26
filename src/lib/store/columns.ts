@@ -164,3 +164,14 @@ export const getSortedColumnIdsByProject = (
     .sort((a, b) => Number(a?.order) - Number(b?.order))
     .map((col) => col?.id);
 };
+
+export const getOtherColumnsByProject = (
+  state: RootState,
+  projectId: string,
+  columnId: string
+) => {
+  return Object.values(state.columns.entities)
+    .filter((col) => col?.projectId === projectId && col.id !== columnId)
+    .sort((a, b) => Number(a?.order) - Number(b?.order))
+    .map((col) => ({ id: col?.id as string, name: col?.name as string }));
+};

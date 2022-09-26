@@ -12,6 +12,7 @@ export {
   deleteCategory,
   toggleCategorySuspended,
   sortCategoriesOnDragEnd,
+  copyCategoriesFromColumn,
 } from "./categories";
 export {
   addFeature,

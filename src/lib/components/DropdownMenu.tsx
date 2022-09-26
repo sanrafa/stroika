@@ -14,6 +14,9 @@ const DropdownTrigger = DropdownMenu.Trigger;
 const DropdownGroup = DropdownMenu.Group;
 const DropdownSeparator = DropdownMenu.Separator;
 const DropdownArrow = DropdownMenu.Arrow;
+const DropdownSubmenu = DropdownMenu.Sub;
+const DropdownSubTrigger = DropdownMenu.SubTrigger;
+const DropdownSubContent = DropdownMenu.SubContent;
 
 const DropdownContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenu.Content>,
@@ -39,4 +42,7 @@ export {
   DropdownArrow,
   DropdownCheckboxItem,
   DropdownItemIndicator,
+  DropdownSubmenu,
+  DropdownSubContent,
+  DropdownSubTrigger,
 };

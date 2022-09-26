@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   createSlice,
   PayloadAction,
+  nanoid,
 } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
 import {
@@ -25,6 +26,35 @@ const categoriesSlice = createSlice({
   name: "categories",
   initialState,
   reducers: {
+    copyCategoriesFromColumn(
+      state,
+      action: PayloadAction<{
+        fromId: string;
+        toId: string;
+      }>
+    ) {
+      const { fromId, toId } = action.payload;
+      const catsToCopy = Object.values(state.entities)
+        .filter((cat) => cat?.columnId === fromId)
+        .sort((a, b) => Number(a?.order) - Number(b?.order))
+        .map((cat) => ({
+          id: nanoid(5),
+          columnId: toId,
+          projectId: cat?.projectId,
+          order: 1,
+          features: [],
+          name: cat?.name,
+          suspended: false,
+        })) as ICategory[];
+      const toCategories = Object.values(state.entities)
+        .filter((cat) => cat?.columnId === toId)
+        .sort((a, b) => Number(a?.order) - Number(b?.order));
+      const categories = [...catsToCopy, ...toCategories].map((cat, idx) => ({
+        ...cat,
+        order: idx + 1,
+      })) as ICategory[];
+      categoriesAdapter.upsertMany(state, categories);
+    },
     addCategory(
       state,
       action: PayloadAction<{
@@ -224,6 +254,7 @@ export const {
   deleteCategory,
   toggleCategorySuspended,
   sortCategoriesOnDragEnd,
+  copyCategoriesFromColumn,
 } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

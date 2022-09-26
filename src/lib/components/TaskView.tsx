@@ -1,21 +1,25 @@
-import { Checkbox, CheckboxIndicator } from "./index";
+import { Checkbox, CheckboxIndicator, TaskDndContext } from "./index";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   CrossCircledIcon as CloseIcon,
   Pencil1Icon as EditIcon,
   CircleBackslashIcon as DeleteIcon,
+  CaretSortIcon as DragIcon,
 } from "@radix-ui/react-icons";
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { nanoid } from "@reduxjs/toolkit";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useProxySelector } from "../store/hooks";
 import {
   addTask,
   updateTask,
   toggleTaskComplete,
   deleteTask,
 } from "../store/actions";
-import { getTaskById, getTasksWithIds } from "../store/tasks";
+import { getTaskById, getSortedTaskIds } from "../store/tasks";
 import { getFeatureById } from "../store/features";
+
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type TaskViewProps = {
   featureId: string;
@@ -28,43 +32,86 @@ type TaskProps = {
 
 const Task = ({ id }: TaskProps) => {
   const dispatch = useAppDispatch();
-  const task = useAppSelector((state) => getTaskById(state, id));
-  const [completed, setCompleted] = React.useState(Boolean(task?.completed));
+  const task = useProxySelector((state) => getTaskById(state, id), [id]);
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    setActivatorNodeRef,
+  } = useSortable({
+    id: id,
+    data: {
+      description: task?.description,
+      featureId: task?.featureId,
+      order: task?.order,
+    },
+  });
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const [completed, setCompleted] = React.useState(Boolean(task?.completed));
   const [isEditing, setIsEditing] = React.useState(false);
   const [desc, setDesc] = React.useState(task?.description);
 
   return (
     <li
-      className={`flex space-x-2 px-4 py-1 rounded-md hover:bg-slate-700 ${
-        completed ? "opacity-60" : null
-      }`}
+      className={`flex space-x-2 px-4 py-1 rounded-md ${
+        task?.archived ? "hover:bg-slate-800" : "hover:bg-slate-700"
+      } ${completed ? "opacity-60" : null}`}
+      style={sortableStyle}
+      ref={setNodeRef}
     >
-      <Checkbox
-        checked={completed}
-        onCheckedChange={(e) => {
-          dispatch(
-            toggleTaskComplete({
-              id,
-              completed: !completed,
-              featureId: task?.featureId as string,
-            })
-          );
-          setCompleted(!completed);
-        }}
-        className="bg-categoryToggleUnchecked w-5 h-5 flex flex-shrink-0 justify-center items-center self-center shadow-inset rounded"
-      >
-        <CheckboxIndicator>
-          <div className="bg-categoryToggleChecked w-5 h-5 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
-        </CheckboxIndicator>
-      </Checkbox>
+      {!task?.archived ? (
+        <Checkbox
+          aria-label="mark task complete"
+          checked={completed}
+          onCheckedChange={(e) => {
+            dispatch(
+              toggleTaskComplete({
+                id,
+                completed: !completed,
+                featureId: task?.featureId as string,
+              })
+            );
+            setCompleted(!completed);
+          }}
+          className="bg-categoryToggleUnchecked w-5 h-5 flex flex-shrink-0 justify-center items-center self-center shadow-inset rounded"
+        >
+          <CheckboxIndicator>
+            <div className="bg-categoryToggleChecked w-5 h-5 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
+          </CheckboxIndicator>
+        </Checkbox>
+      ) : null}
+
+      {!completed ? (
+        <button
+          {...attributes}
+          {...listeners}
+          aria-label="sort task"
+          aria-roledescription="task drag handle"
+          ref={setActivatorNodeRef}
+          className="hover:bg-slate-500 rounded cursor-grab active:cursor-grabbing"
+        >
+          <DragIcon width={24} height={24} />
+        </button>
+      ) : null}
 
       {isEditing ? (
         <form
           className="self-baseline"
           onSubmit={(e) => {
             e.preventDefault();
-            dispatch(updateTask({ id, changes: { description: desc } }));
+            dispatch(
+              updateTask({
+                id,
+                changes: { description: desc, archived: false },
+              })
+            );
             setIsEditing(false);
           }}
         >
@@ -84,7 +131,11 @@ const Task = ({ id }: TaskProps) => {
           ></button>
         </form>
       ) : (
-        <span className="self-baseline text-center w-4/5">
+        <span
+          className={`self-baseline text-center w-4/5 ${
+            task?.archived ? "text-slate-500 line-through" : null
+          }`}
+        >
           {task?.description}
         </span>
       )}
@@ -117,25 +168,40 @@ const Task = ({ id }: TaskProps) => {
   );
 };
 
-const TaskList = ({ taskIds }: { taskIds: string[] }) => {
-  const tasks = useAppSelector((state) => getTasksWithIds(state, taskIds));
-  return (
-    <ul className="space-y-1 flex flex-col min-w-[75%] overflow-y-auto hide-scroll">
-      {tasks
-        .sort((a, b) => Number(a?.order) - Number(b?.order))
+type TaskListProps = {
+  taskIds: string[];
+  showArchived: boolean;
+};
 
-        .map((task) => (
-          <Task id={task?.id as string} key={task?.id as string} />
+const TaskList = ({ taskIds, showArchived }: TaskListProps) => {
+  const sortedIds = useProxySelector(
+    (state) => getSortedTaskIds(state, taskIds, showArchived),
+    [taskIds, showArchived]
+  ) as string[];
+  return (
+    <TaskDndContext taskIds={sortedIds}>
+      <ul className="space-y-1 flex flex-col min-w-[75%] overflow-y-auto hide-scroll">
+        {sortedIds.map((id) => (
+          <Task id={id} key={id} />
         ))}
-    </ul>
+      </ul>
+    </TaskDndContext>
   );
 };
 
 export default function TaskView({ children, featureId }: TaskViewProps) {
   const dispatch = useAppDispatch();
-  const feature = useAppSelector((state) => getFeatureById(state, featureId));
+  const feature = useProxySelector(
+    (state) => getFeatureById(state, featureId),
+    [featureId]
+  );
 
   const [desc, setDesc] = React.useState("");
+  const [showArchived, setShowArchived] = React.useState(false);
+
+  function handleCheckedChange() {
+    return setShowArchived(!showArchived);
+  }
 
   return (
     <Dialog.Root>
@@ -143,7 +209,10 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-50" />
         <Dialog.Content asChild>
-          <aside className="bg-black text-compText fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg max-h-[85vh] flex flex-col items-center p-4 pb-8 border-2 border-taskView rounded-md shadow-taskView space-y-2 font-manrope">
+          <section
+            aria-label="task view"
+            className="bg-black text-compText fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg max-h-[85vh] flex flex-col items-center p-4 pb-8 border-2 border-taskView rounded-md shadow-taskView space-y-2 font-manrope"
+          >
             <Dialog.Close asChild>
               <button
                 type="button"
@@ -155,7 +224,7 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
             </Dialog.Close>
             <Dialog.Title asChild>
               <header className="uppercase text-2xl tracking-wider w-full text-left flex flex-col font-josefin">
-                <h1 className="px-4">{feature?.name}</h1>
+                <h1 className="px-4">{feature?.name}</h1>{" "}
                 <hr className="mt-2 border-categoryToggleUnchecked border-1 w-11/12 self-center" />
               </header>
             </Dialog.Title>
@@ -186,7 +255,7 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
                 name="task-description"
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
-                className="bg-slate-500 text-center rounded-l-md p-0.5 focus:bg-white mb-2"
+                className="bg-slate-300 text-center rounded-l-md p-0.5 focus:bg-white"
                 placeholder="Add a new task"
               />
               <button
@@ -197,8 +266,24 @@ export default function TaskView({ children, featureId }: TaskViewProps) {
                 ADD
               </button>
             </form>
-            <TaskList taskIds={feature?.tasks as string[]} />
-          </aside>
+            <div className="flex space-x-4 justify-center mb-2">
+              <Checkbox
+                aria-label="show archived tasks"
+                className="bg-slate-400 w-4 h-4 flex flex-shrink-0 justify-center items-center self-center shadow-inset rounded"
+                defaultChecked={showArchived}
+                onCheckedChange={handleCheckedChange}
+              >
+                <CheckboxIndicator>
+                  <div className="bg-green-800 w-4 h-4 shadow-[0px_2px_4px_rgba(0, 0, 0, 0.17)] rounded-sm"></div>
+                </CheckboxIndicator>
+              </Checkbox>
+              <span>Show archived tasks</span>
+            </div>
+            <TaskList
+              taskIds={feature?.tasks as string[]}
+              showArchived={showArchived}
+            />
+          </section>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

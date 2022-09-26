@@ -1,5 +1,9 @@
 import type { RootState, AppDispatch } from "./index";
-import { createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit";
+import {
+  createListenerMiddleware,
+  isAnyOf,
+  addListener,
+} from "@reduxjs/toolkit";
 import type { TypedStartListening, TypedAddListener } from "@reduxjs/toolkit";
 import {
   updateProject,
@@ -15,14 +19,23 @@ import {
   updateCategory,
   updateFeature,
   updateTask,
+  updateManyTasks,
   toggleTaskComplete,
+  sortCategoriesOnDragEnd,
+  sortFeaturesOnDragEnd,
 } from "./actions";
+import { ITask } from "../types";
 
 const listener = createListenerMiddleware();
 
 type AppStartListening = TypedStartListening<RootState, AppDispatch>;
 
 const startAppListening = listener.startListening as AppStartListening;
+
+export const addAppListener = addListener as TypedAddListener<
+  RootState,
+  AppDispatch
+>;
 
 // Update project.updatedAt whenever a change is dispatch
 startAppListening({
@@ -48,6 +61,40 @@ startAppListening({
       );
   },
 });
+
+// When a category or feature is moved to a new column, archive all tasks attached to that parent
+/* startAppListening({
+  actionCreator: sortCategoriesOnDragEnd,
+  effect: (action, listenerApi) => {
+    const { newColId, activeId } = action.payload;
+    if (newColId) {
+      const tasksToArchive = Object.values(
+        listenerApi.getState().tasks.entities
+      )
+        .filter(
+          (task) => task?.columnId === newColId && task.categoryId === activeId
+        )
+        .map((task) => ({ ...task, archived: true })) as ITask[];
+      listenerApi.dispatch(updateManyTasks(tasksToArchive));
+    }
+  },
+});
+
+startAppListening({
+  actionCreator: sortFeaturesOnDragEnd,
+  effect: (action, listenerApi) => {
+    const { activeId, newColId, prevColId } = action.payload;
+
+    if (newColId !== prevColId) {
+      const tasksToArchive = Object.values(
+        listenerApi.getState().tasks.entities
+      )
+        .filter((task) => task?.featureId === activeId)
+        .map((task) => ({ ...task, archived: true })) as ITask[];
+      listenerApi.dispatch(updateManyTasks(tasksToArchive));
+    }
+  },
+}); */
 
 // When a task is toggled complete, calculate whether that feature's status should be updated
 startAppListening({

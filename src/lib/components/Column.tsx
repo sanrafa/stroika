@@ -1,22 +1,53 @@
-import { CardStackPlusIcon as AddCategoryIcon } from "@radix-ui/react-icons";
+import {
+  CardStackPlusIcon as AddCategoryIcon,
+  WidthIcon as DragIcon,
+} from "@radix-ui/react-icons";
 import { ColumnDropdown, Category } from "./index";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useProxySelector } from "../store/hooks";
 import { updateColumn, addCategory } from "../store/actions";
 import { getColumnById } from "../store/columns";
 import { getSortedCategoriesByColumn } from "../store/categories";
 import { nanoid } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
 import React from "react";
+import {
+  useSortable,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type ColumnProps = {
   id: string;
 };
 
-export default function Column({ id }: ColumnProps) {
+function Column({ id }: ColumnProps) {
   const dispatch = useAppDispatch();
-  const column = useAppSelector((state) => getColumnById(state, id));
-  const categoryIds = useAppSelector((state) =>
-    getSortedCategoriesByColumn(state, id)
+  const column = useProxySelector((state) => getColumnById(state, id), [id]);
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    setActivatorNodeRef,
+    setDroppableNodeRef,
+  } = useSortable({
+    id: id,
+    data: {
+      type: "column",
+      name: column?.name,
+    },
+  });
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const categoryIds = useProxySelector(
+    (state) => getSortedCategoriesByColumn(state, id),
+    [id]
   );
 
   const [isEditing, setIsEditing] = React.useState(false);
@@ -39,8 +70,19 @@ export default function Column({ id }: ColumnProps) {
   };
 
   return (
-    <section className="bg-black md:w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder">
-      <div className="flex items-center justify-center p-0.5">
+    <section
+      className="bg-black md:w-[33%] rounded-md text-center flex flex-col items-center p-1 border border-columnBorder"
+      style={sortableStyle}
+      ref={setNodeRef}
+    >
+      <div className="flex items-center justify-around w-full p-0.5">
+        <ColumnDropdown
+          id={id}
+          projectId={column?.projectId as string}
+          setIsEditing={setIsEditing}
+          inputRef={inputRef}
+          isEditing={isEditing}
+        />
         <form
           onClick={() => {
             setIsEditing(true);
@@ -58,9 +100,7 @@ export default function Column({ id }: ColumnProps) {
             onChange={(e) => setName(e.target.value)}
             disabled={!isEditing}
             className="font-manrope text-xl text-center p-1 text-black font-bold disabled:text-compText disabled:bg-slate-900 disabled:cursor-pointer tracking-widest rounded-sm"
-            onBlur={() => {
-              handleSubmit();
-            }}
+            onBlur={handleSubmit}
           />
           <button
             type="submit"
@@ -69,22 +109,34 @@ export default function Column({ id }: ColumnProps) {
           ></button>
         </form>
 
-        <div className={`${isEditing ? "hidden" : "pl-4"}`}>
-          <ColumnDropdown
-            id={id}
-            projectId={column?.projectId as string}
-            setIsEditing={setIsEditing}
-            inputRef={inputRef}
-            isEditing={isEditing}
-          />
-        </div>
+        <button
+          {...attributes}
+          {...listeners}
+          className=" hover:bg-blue-300 hover:text-black p-0.5 rounded cursor-grab"
+          ref={setActivatorNodeRef}
+          aria-label="column drag handle"
+          aria-roledescription="column drag handle"
+        >
+          <DragIcon width={24} height={24} />
+        </button>
       </div>
       <hr className="w-[90%] bg-white" />
-      <div className="bg-column h-full w-full mt-2 rounded overflow-y-auto hide-scroll">
-        {categoryIds.map((id) => (
-          <Category id={id} key={id} />
-        ))}
+
+      <div
+        className="bg-column h-full w-full mt-2 rounded overflow-y-auto hide-scroll"
+        ref={setDroppableNodeRef}
+      >
+        <SortableContext
+          id={id}
+          items={categoryIds}
+          strategy={verticalListSortingStrategy}
+        >
+          {categoryIds.map((id) => (
+            <Category id={id} key={id} />
+          ))}
+        </SortableContext>
       </div>
+
       <button
         aria-label="add new category"
         type="button"
@@ -116,3 +168,5 @@ export default function Column({ id }: ColumnProps) {
     </section>
   );
 }
+
+export default React.memo(Column);

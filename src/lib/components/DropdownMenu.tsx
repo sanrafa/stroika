@@ -8,6 +8,8 @@ interface Props {
 const Dropdown = DropdownMenu.Root;
 const DropdownLabel = DropdownMenu.Label;
 const DropdownItem = DropdownMenu.Item;
+const DropdownCheckboxItem = DropdownMenu.CheckboxItem;
+const DropdownItemIndicator = DropdownMenu.DropdownMenuItemIndicator;
 const DropdownTrigger = DropdownMenu.Trigger;
 const DropdownGroup = DropdownMenu.Group;
 const DropdownSeparator = DropdownMenu.Separator;
@@ -35,4 +37,6 @@ export {
   DropdownSeparator,
   DropdownContent,
   DropdownArrow,
+  DropdownCheckboxItem,
+  DropdownItemIndicator,
 };

@@ -12,7 +12,9 @@ import {
   deleteColumn,
   deleteProject,
   deleteTask,
+  sortCategoriesOnDragEnd,
 } from "./actions";
+import { arrayMove } from "@dnd-kit/sortable";
 
 const featuresAdapter = createEntityAdapter<IFeature>({
   sortComparer: (a, b) => a.order - b.order,
@@ -61,9 +63,93 @@ const featuresSlice = createSlice({
       const { id } = action.payload;
       featuresAdapter.removeOne(state, id);
     },
+    sortFeaturesOnDragEnd(
+      state,
+      action: PayloadAction<{
+        activeId: string;
+        overId: string;
+        prevCatId: string;
+        newCatId?: string;
+        prevColId?: string;
+        newColId?: string;
+      }>
+    ) {
+      const { activeId, overId, prevCatId, newCatId, prevColId, newColId } =
+        action.payload;
+      if (!newCatId && newColId === prevColId) {
+        // within the same category
+        const idList = Object.values(state.entities)
+          .filter((feat) => feat?.categoryId === prevCatId)
+          .sort((a, b) => Number(a?.order) - Number(b?.order))
+          .map((feat) => feat?.id);
+        const oldIdx = idList.indexOf(activeId);
+        const newIdx = idList.indexOf(overId);
+        const sortedIds = arrayMove(idList, oldIdx, newIdx);
+        const featsToUpdate = sortedIds.map((id, idx) => ({
+          ...state.entities[id as string],
+          order: idx + 1,
+        })) as IFeature[];
+        featuresAdapter.upsertMany(state, featsToUpdate);
+      }
+      if (newCatId && newColId === prevColId) {
+        // new category, same column
+        const newCatFeatures = Object.values(state.entities)
+          .filter((feat) => feat?.categoryId === newCatId)
+          .sort((a, b) => Number(a?.order) - Number(b?.order))
+          .map((feat) => feat?.id)
+          .concat(activeId) as string[];
+        const featuresToUpdate = newCatFeatures.map((id, idx) => {
+          if (id === activeId) {
+            return {
+              ...state.entities[id],
+              categoryId: newCatId,
+              order: idx + 1,
+            };
+          } else {
+            return {
+              ...state.entities[id],
+              order: idx + 1,
+            };
+          }
+        }) as IFeature[];
+        featuresAdapter.upsertMany(state, featuresToUpdate);
+      } else if (newCatId && newColId !== prevColId) {
+        // new category, new column
+        const newCatFeatures = Object.values(state.entities)
+          .filter((feat) => feat?.categoryId === newCatId)
+          .sort((a, b) => Number(a?.order) - Number(b?.order))
+          .map((feat) => feat?.id)
+          .concat(activeId) as string[];
+        const featuresToUpdate = newCatFeatures.map((id, idx) => {
+          if (id === activeId) {
+            return {
+              ...state.entities[id],
+              categoryId: newCatId,
+              columnId: newColId,
+              order: idx + 1,
+            };
+          } else {
+            return {
+              ...state.entities[id],
+              order: idx + 1,
+            };
+          }
+        }) as IFeature[];
+        featuresAdapter.upsertMany(state, featuresToUpdate);
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(sortCategoriesOnDragEnd, (state, action) => {
+        const { activeId, newColId } = action.payload;
+        if (newColId) {
+          const featsToUpdate = Object.values(state.entities)
+            .filter((feat) => feat?.categoryId === activeId)
+            .map((feat) => ({ ...feat, columnId: newColId })) as IFeature[];
+          featuresAdapter.upsertMany(state, featsToUpdate);
+        }
+      })
       .addCase(addTask, (state, action) => {
         const { id, featureId } = action.payload;
         state.entities[featureId]?.tasks.unshift(id);
@@ -102,8 +188,12 @@ const featuresSlice = createSlice({
   },
 });
 
-export const { addFeature, updateFeature, deleteFeature } =
-  featuresSlice.actions;
+export const {
+  addFeature,
+  updateFeature,
+  deleteFeature,
+  sortFeaturesOnDragEnd,
+} = featuresSlice.actions;
 
 export default featuresSlice.reducer;
 

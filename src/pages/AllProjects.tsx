@@ -20,7 +20,7 @@ function ProjectsPage() {
       </h1>
       <AddProjectForm />
       {projects.length ? (
-        <ul className="grid grid-cols-1 md:grid-cols-3 gap-2 p-2">
+        <ul className="grid grid-cols-1 md:grid-cols-3 gap-2 p-6">
           {projects.map((project) => (
             <ProjectCard project={project} key={project.id} />
           ))}

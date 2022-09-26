@@ -1,14 +1,9 @@
 import type { IProject } from "../types";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { deleteProject } from "../store/actions";
+import { useAppSelector } from "../store/hooks";
 import { Link } from "react-router-dom";
-import {
-  TrashIcon as DeleteIcon,
-  CheckboxIcon,
-  ListBulletIcon,
-} from "@radix-ui/react-icons";
+import { TrashIcon as DeleteIcon, ListBulletIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import { getTasksByProject } from "../store/tasks";
+import { getPendingTasksByProject } from "../store/tasks";
 import { DeleteProjectDialog } from "./index";
 
 type Props = {
@@ -16,9 +11,8 @@ type Props = {
 };
 
 const ProjectCard = ({ project }: Props) => {
-  const dispatch = useAppDispatch();
   const projectTasks = useAppSelector((state) =>
-    getTasksByProject(state, project.id).filter((task) => !task.completed)
+    getPendingTasksByProject(state, project.id)
   );
 
   return (

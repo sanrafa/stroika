@@ -6,7 +6,9 @@ module.exports = {
       colors: {
         compText: "#FDFDFC",
         category: "rgba(13, 65, 73, 0.6)",
+        categoryDrag: "rgba(13, 65, 73, 1)",
         feature: "rgba(28, 132, 151, 0.5)",
+        featureDrag: "rgba(28, 132, 151, 1)",
         categoryToggleUnchecked: "rgba(130, 213, 232, 1)",
         categoryToggleChecked: "rgba(13, 65, 73, 1)",
         line: "rgba(130, 213, 232, 0.5)",

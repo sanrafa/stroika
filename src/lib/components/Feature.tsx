@@ -5,12 +5,16 @@ import {
   CheckCircledIcon as CheckIcon,
   ListBulletIcon as TasksIcon,
   Cross1Icon as DeleteIcon,
+  DragHandleDots1Icon as DragIcon,
 } from "@radix-ui/react-icons";
 
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useProxySelector } from "../store/hooks";
 import { updateFeature, deleteFeature } from "../store/actions";
 import { getFeatureById } from "../store/features";
 import { getTasksByFeature } from "../store/tasks";
+
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type FeatureProps = {
   id: string;
@@ -19,8 +23,30 @@ type FeatureProps = {
 export default function Feature({ id }: FeatureProps) {
   const dispatch = useAppDispatch();
 
-  const feature = useAppSelector((state) => getFeatureById(state, id));
-  const tasks = useAppSelector((state) => getTasksByFeature(state, id));
+  const feature = useProxySelector((state) => getFeatureById(state, id), [id]);
+  const tasks = useProxySelector((state) => getTasksByFeature(state, id), [id]);
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    setActivatorNodeRef,
+  } = useSortable({
+    id,
+    data: {
+      type: "feature",
+      name: feature?.name,
+      parentId: feature?.categoryId,
+      columnId: feature?.columnId,
+    },
+  });
+
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const [name, setName] = React.useState(feature?.name);
   const menuButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -38,10 +64,14 @@ export default function Feature({ id }: FeatureProps) {
   };
 
   return (
-    <div className="flex justify-between items-center bg-feature leading-none p-2 rounded shadow-md">
+    <div
+      ref={setNodeRef}
+      style={sortableStyle}
+      className="flex justify-around items-center bg-feature leading-none p-2 rounded shadow-md"
+    >
       {/* Task progress indicator OR checkmark if all complete */}
-      <div className="text-xxs mr-1">
-        {!feature?.tasks.length ? (
+      <div className="text-xxs">
+        {!tasks.length ? (
           <span className="text-compText font-bold">
             NO <br /> TASKS
           </span>
@@ -49,6 +79,7 @@ export default function Feature({ id }: FeatureProps) {
           <CheckIcon width={25} height={25} stroke="green" className="ml-1" />
         ) : (
           <span className="text-blue-100">
+            {/* TODO: use a selector that returns boolean if all attached tasks are complete */}
             <span className="text-sm text-compText font-bold">
               {`${tasks.filter((task) => task?.completed === true).length} / ${
                 tasks.length
@@ -58,6 +89,16 @@ export default function Feature({ id }: FeatureProps) {
           </span>
         )}
       </div>
+
+      <button
+        className="text-slate-500 hover:text-compText cursor-grab"
+        ref={setActivatorNodeRef}
+        {...attributes}
+        {...listeners}
+        aria-roledescription="feature drag handle"
+      >
+        <DragIcon width={24} height={24} />
+      </button>
 
       <form
         onSubmit={(e) => {

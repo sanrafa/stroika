@@ -1,11 +1,29 @@
 export { addProject, deleteProject, updateProject } from "./projects";
-export { addColumn, updateColumn, deleteColumn } from "./columns";
+export {
+  addColumn,
+  updateColumn,
+  deleteColumn,
+  sortColumnsOnDragEnd,
+} from "./columns";
 export {
   addCategory,
   updateCategory,
   deleteCategory,
   toggleCategorySuspended,
+  sortCategoriesOnDragEnd,
 } from "./categories";
-export { addFeature, updateFeature, deleteFeature } from "./features";
-export { addTask, updateTask, deleteTask, toggleTaskComplete } from "./tasks";
+export {
+  addFeature,
+  updateFeature,
+  deleteFeature,
+  sortFeaturesOnDragEnd,
+} from "./features";
+export {
+  addTask,
+  updateTask,
+  deleteTask,
+  toggleTaskComplete,
+  sortTasksOnDragEnd,
+  updateManyTasks,
+} from "./tasks";
 export { setUser, setCurrentProject } from "./session";

@@ -34,17 +34,16 @@ export default function ColumnDropdown({
       <DropdownTrigger asChild>
         <button
           type="button"
-          className="hover:bg-gray-700"
+          className="hover:bg-gray-700 p-0.5 rounded"
           aria-label="open column menu"
         >
-          <MenuIcon />
+          <MenuIcon width={24} height={24} />
         </button>
       </DropdownTrigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           className="bg-white text-black text-center p-0.5"
-          align="start"
-          alignOffset={15}
+          align="center"
           sideOffset={4}
           onCloseAutoFocus={(e) => {
             e.preventDefault();

@@ -8,10 +8,11 @@ import {
   ChevronDownIcon as Chevron,
   PlusCircledIcon as AddIcon,
   TrashIcon as DeleteIcon,
+  DragHandleDots2Icon as DragIcon,
 } from "@radix-ui/react-icons";
 import * as Accordion from "@radix-ui/react-accordion";
 import React from "react";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useProxySelector } from "../store/hooks";
 import {
   updateCategory,
   addFeature,
@@ -20,6 +21,12 @@ import {
 import { getCategoryById } from "../store/categories";
 import { getFeaturesByCategory } from "../store/features";
 import { nanoid } from "@reduxjs/toolkit";
+import {
+  useSortable,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type CategoryProps = {
   id: string;
@@ -27,12 +34,44 @@ type CategoryProps = {
 
 export default function CategoryBase({ id }: CategoryProps) {
   const dispatch = useAppDispatch();
-  const category = useAppSelector((state) => getCategoryById(state, id));
-  const features = useAppSelector((state) => getFeaturesByCategory(state, id));
-  const [suspended, setSuspended] = React.useState(category?.suspended);
+  const category = useProxySelector(
+    (state) => getCategoryById(state, id),
+    [id]
+  );
+  const features = useProxySelector(
+    (state) => getFeaturesByCategory(state, id),
+    [id]
+  );
+  const categoryFeatureIds = features
+    ? (features.map((feat) => feat?.id) as string[])
+    : [];
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    setActivatorNodeRef,
+    setDroppableNodeRef,
+  } = useSortable({
+    id,
+    data: {
+      type: "category",
+      name: category?.name,
+      parentId: category?.columnId,
+      columnId: category?.columnId,
+    },
+  });
+
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const [suspended, setSuspended] = React.useState(category?.suspended);
   const [name, setName] = React.useState(category?.name || "");
-  const divRef = React.useRef<HTMLDivElement>(null);
+
   const triggerRef = React.useRef<HTMLButtonElement>(null);
 
   const handleSubmit = () => {
@@ -50,8 +89,8 @@ export default function CategoryBase({ id }: CategoryProps) {
   return (
     <Accordion.Root type="single" asChild collapsible>
       <div
-        tabIndex={-1}
-        ref={divRef}
+        style={sortableStyle}
+        ref={setNodeRef}
         className={`flex flex-col bg-category justify-between m-1 pb-2 font-manrope text-compText rounded-md shadow-md max-h-[75%] max-w-11/12 opacity-90 hover:opacity-100 focus-within:opacity-100  ${
           suspended ? "opacity-50" : null
         }`}
@@ -105,28 +144,45 @@ export default function CategoryBase({ id }: CategoryProps) {
                   </Accordion.Trigger>
                 </div>
 
-                <form
-                  className="mr-4"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmit();
-                    divRef?.current?.focus();
-                  }}
-                >
-                  <input
-                    type="text"
-                    aria-label="category name"
-                    onBlur={handleSubmit}
-                    className="text-compText focus:text-black bg-category focus:bg-compText cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md focus:cursor-text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <button
-                    type="submit"
-                    className="hidden"
-                    aria-label="update category name"
-                  ></button>
-                </form>
+                <div className="mr-4 flex flex-col justify-evenly">
+                  <form
+                    className="mt-2 mb-1"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSubmit();
+                      triggerRef?.current?.focus();
+                    }}
+                  >
+                    <input
+                      type="text"
+                      aria-label="category name"
+                      onBlur={handleSubmit}
+                      className="text-compText focus:text-black bg-category focus:bg-compText cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md focus:cursor-text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                    <button
+                      type="submit"
+                      className="hidden"
+                      aria-label="update category name"
+                    ></button>
+                  </form>
+                  <div className="flex items-center justify-center ">
+                    <button
+                      ref={setActivatorNodeRef}
+                      {...attributes}
+                      {...listeners}
+                      className="cursor-grab"
+                      aria-roledescription="category drag handle"
+                    >
+                      <DragIcon
+                        className="block text-slate-500 hover:text-compText rotate-90"
+                        width={24}
+                        height={24}
+                      />
+                    </button>
+                  </div>
+                </div>
 
                 <div className="flex flex-col space-y-4 mt-2">
                   <button
@@ -178,10 +234,18 @@ export default function CategoryBase({ id }: CategoryProps) {
               id={`${category?.id}-category-slider`}
               aria-label={`${category?.name} features`}
             >
-              <div className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm overflow-y-auto space-y-2 p-2 hide-scroll">
-                {features.map((feat) => (
-                  <FeatureComponent id={feat?.id as string} key={feat?.id} />
-                ))}
+              <div
+                ref={setDroppableNodeRef}
+                className="bg-featureContainer shadow-category text-white w-[97%] self-center min-h-[100px] mb-1.5 rounded-sm overflow-y-auto space-y-2 p-2 hide-scroll"
+              >
+                <SortableContext
+                  items={categoryFeatureIds}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {categoryFeatureIds.map((featId) => (
+                    <FeatureComponent id={featId as string} key={featId} />
+                  ))}
+                </SortableContext>
               </div>
             </Accordion.Content>
           </>

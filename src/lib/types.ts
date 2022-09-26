@@ -4,6 +4,9 @@ export interface IProject {
   createdAt: string;
   updatedAt: string | null;
   columns: string[];
+  config: {
+    archiveTasks: boolean;
+  };
 }
 
 export interface IColumn {
@@ -40,6 +43,7 @@ export interface ITask {
   order: number;
   description: string;
   completed: boolean;
+  archived: boolean;
   projectId: string;
   columnId: string;
   categoryId: string;

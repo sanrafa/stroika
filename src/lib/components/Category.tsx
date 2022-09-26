@@ -17,6 +17,7 @@ import {
   updateCategory,
   addFeature,
   toggleCategorySuspended,
+  deleteCategory,
 } from "../store/actions";
 import { getCategoryById } from "../store/categories";
 import { getFeaturesByCategory } from "../store/features";
@@ -84,6 +85,15 @@ export default function CategoryBase({ id }: CategoryProps) {
       })
     );
     setName(name.trim());
+  };
+
+  const handleDelete = () => {
+    dispatch(
+      deleteCategory({
+        id,
+        columnId: category?.columnId as string,
+      })
+    );
   };
 
   return (
@@ -173,7 +183,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                       {...attributes}
                       {...listeners}
                       className="cursor-grab"
-                      aria-roledescription="category drag handle"
+                      aria-label="category drag handle"
                     >
                       <DragIcon
                         className="block text-slate-500 hover:text-compText rotate-90"
@@ -208,13 +218,29 @@ export default function CategoryBase({ id }: CategoryProps) {
                   >
                     <AddIcon width={24} height={24} />
                   </button>
-                  <DeleteCategoryDialog
-                    categoryId={id}
-                    columnId={category?.columnId as string}
-                    categoryName={category?.name as string}
-                  >
+                  {category?.features.length ? (
+                    <DeleteCategoryDialog
+                      categoryId={id}
+                      columnId={category?.columnId as string}
+                      categoryName={category?.name as string}
+                    >
+                      <button
+                        aria-label="delete category"
+                        type="button"
+                        disabled={suspended}
+                        className={
+                          suspended
+                            ? "opacity-50"
+                            : "hover:text-red-600 focus:text-red-600"
+                        }
+                      >
+                        <DeleteIcon width={24} height={24} />
+                      </button>
+                    </DeleteCategoryDialog>
+                  ) : (
                     <button
                       aria-label="delete category"
+                      onClick={handleDelete}
                       type="button"
                       disabled={suspended}
                       className={
@@ -225,7 +251,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                     >
                       <DeleteIcon width={24} height={24} />
                     </button>
-                  </DeleteCategoryDialog>
+                  )}
                 </div>
               </header>
             </Accordion.Header>

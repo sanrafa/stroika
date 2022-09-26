@@ -33,6 +33,8 @@ import {
   sortFeaturesOnDragEnd,
 } from "../store/actions";
 
+import { columnInstructions, columnAnnouncements } from "../a11y";
+
 type Props = {
   colIds: string[];
   children: React.ReactNode;
@@ -193,7 +195,12 @@ export default function ColumnDndContext({ colIds, children }: Props) {
   return (
     <DndContext
       sensors={sensors}
-      //collisionDetection={closestCorners}
+      accessibility={{
+        announcements: columnAnnouncements,
+        screenReaderInstructions: {
+          draggable: columnInstructions,
+        },
+      }}
       modifiers={
         activeComponent.type === "column"
           ? [restrictToParentElement, restrictToHorizontalAxis]

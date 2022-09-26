@@ -37,6 +37,7 @@ function Column({ id }: ColumnProps) {
     id: id,
     data: {
       type: "column",
+      name: column?.name,
     },
   });
   const sortableStyle = {
@@ -114,6 +115,7 @@ function Column({ id }: ColumnProps) {
           className=" hover:bg-blue-300 hover:text-black p-0.5 rounded cursor-grab"
           ref={setActivatorNodeRef}
           aria-label="column drag handle"
+          aria-roledescription="column drag handle"
         >
           <DragIcon width={24} height={24} />
         </button>

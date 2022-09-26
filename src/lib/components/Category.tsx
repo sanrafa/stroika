@@ -58,6 +58,7 @@ export default function CategoryBase({ id }: CategoryProps) {
     id,
     data: {
       type: "category",
+      name: category?.name,
       parentId: category?.columnId,
       columnId: category?.columnId,
     },
@@ -172,6 +173,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                       {...attributes}
                       {...listeners}
                       className="cursor-grab"
+                      aria-roledescription="category drag handle"
                     >
                       <DragIcon
                         className="block text-slate-500 hover:text-compText rotate-90"

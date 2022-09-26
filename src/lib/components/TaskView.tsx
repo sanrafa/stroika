@@ -41,7 +41,14 @@ const Task = ({ id }: TaskProps) => {
     transform,
     transition,
     setActivatorNodeRef,
-  } = useSortable({ id: id });
+  } = useSortable({
+    id: id,
+    data: {
+      description: task?.description,
+      featureId: task?.featureId,
+      order: task?.order,
+    },
+  });
   const sortableStyle = {
     transform: CSS.Transform.toString(transform),
     transition,

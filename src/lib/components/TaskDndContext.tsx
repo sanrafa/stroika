@@ -24,6 +24,8 @@ import {
 import { useAppDispatch } from "../store/hooks";
 import { sortTasksOnDragEnd } from "../store/actions";
 
+import { taskAnnouncements, taskInstructions } from "../a11y";
+
 type Props = {
   taskIds: string[];
   children: React.ReactNode;
@@ -58,6 +60,12 @@ export default function TaskDndContext({ taskIds, children }: Props) {
       collisionDetection={closestCenter}
       onDragEnd={(e) => handleDragEnd(e, taskIds)}
       modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
+      accessibility={{
+        announcements: taskAnnouncements,
+        screenReaderInstructions: {
+          draggable: taskInstructions,
+        },
+      }}
     >
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
         {children}

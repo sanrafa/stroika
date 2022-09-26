@@ -37,6 +37,7 @@ export default function Feature({ id }: FeatureProps) {
     id,
     data: {
       type: "feature",
+      name: feature?.name,
       parentId: feature?.categoryId,
       columnId: feature?.columnId,
     },
@@ -94,6 +95,7 @@ export default function Feature({ id }: FeatureProps) {
         ref={setActivatorNodeRef}
         {...attributes}
         {...listeners}
+        aria-roledescription="feature drag handle"
       >
         <DragIcon width={24} height={24} />
       </button>

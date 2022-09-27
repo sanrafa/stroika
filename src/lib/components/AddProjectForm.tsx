@@ -17,7 +17,7 @@ const AddProjectForm = () => {
       payload: { id },
     } = dispatch(
       addProject({
-        id: nanoid(3),
+        id: nanoid(),
         name,
         createdAt: Date(),
         columns: [],

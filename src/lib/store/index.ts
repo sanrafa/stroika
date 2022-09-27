@@ -6,6 +6,7 @@ import featuresSlice from "./features";
 import taskSlice from "./tasks";
 import sessionSlice from "./session";
 import listener from "./listener";
+import { loadState } from "../storage";
 
 const rootReducer = combineReducers({
   session: sessionSlice,
@@ -17,8 +18,10 @@ const rootReducer = combineReducers({
 });
 
 const store = configureStore({
+  devTools: import.meta.env.DEV,
   reducer: rootReducer,
   middleware: (middleware) => middleware().prepend(listener.middleware),
+  preloadedState: loadState(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

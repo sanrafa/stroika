@@ -96,9 +96,11 @@ export const DeleteProjectDialog = ({
         <Alert.Content className="alert-content">
           <Alert.Title asChild>
             <h1 className="text-4xl">
-              Delete
+              Remove
               <br />
-              <span className="text-blue-300 underline">{projectName}</span> ?
+              <span className="text-blue-300 underline text-5xl">
+                {projectName}
+              </span>
             </h1>
           </Alert.Title>
           <Alert.Description asChild>

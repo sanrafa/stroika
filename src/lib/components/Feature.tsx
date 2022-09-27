@@ -1,4 +1,4 @@
-import { TaskView } from "./index";
+import { TaskView, Tooltip } from "./index";
 import React from "react";
 
 import {
@@ -133,7 +133,9 @@ export default function Feature({ id }: FeatureProps) {
             )
           }
         >
-          <DeleteIcon />
+          <Tooltip content="Delete Feature" side="bottom" align="center">
+            <DeleteIcon />
+          </Tooltip>
         </button>
         {/* Wrap with TaskView component to serve as trigger */}
         <TaskView featureId={id as string}>
@@ -143,7 +145,9 @@ export default function Feature({ id }: FeatureProps) {
             type="button"
             className="self-start p-0.5 ml-2 mr-1 border border-solid border-white rounded-sm bg-category hover:bg-categoryToggleUnchecked focus:bg-categoryToggleUnchecked"
           >
-            <TasksIcon />
+            <Tooltip content="View Tasks" side="bottom" align="center">
+              <TasksIcon />
+            </Tooltip>
           </button>
         </TaskView>
       </div>

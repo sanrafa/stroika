@@ -3,6 +3,7 @@ import {
   CheckboxIndicator,
   Feature as FeatureComponent,
   DeleteCategoryDialog,
+  Tooltip,
 } from "./index";
 import {
   ChevronDownIcon as Chevron,
@@ -149,7 +150,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                       type="button"
                       className="-mb-4 focus:outline-1"
                       ref={triggerRef}
-                      aria-label="view features"
+                      aria-label="show features"
                     >
                       <Chevron width={32} height={32} color="black" />
                     </button>
@@ -219,9 +220,11 @@ export default function CategoryBase({ id }: CategoryProps) {
                       triggerRef?.current?.focus();
                     }}
                   >
-                    <AddIcon width={24} height={24} />
+                    <Tooltip content="Add Feature" side="right" align="end">
+                      <AddIcon width={24} height={24} />
+                    </Tooltip>
                   </button>
-                  {category?.features.length ? (
+                  {category?.features.length && category.features.length > 1 ? (
                     <DeleteCategoryDialog
                       categoryId={id}
                       columnId={category?.columnId as string}
@@ -237,7 +240,13 @@ export default function CategoryBase({ id }: CategoryProps) {
                             : "hover:text-red-600 focus:text-red-600"
                         }
                       >
-                        <DeleteIcon width={24} height={24} />
+                        <Tooltip
+                          content="Delete Category"
+                          side="left"
+                          align="center"
+                        >
+                          <DeleteIcon width={24} height={24} />
+                        </Tooltip>
                       </button>
                     </DeleteCategoryDialog>
                   ) : (
@@ -252,7 +261,13 @@ export default function CategoryBase({ id }: CategoryProps) {
                           : "hover:text-red-600 focus:text-red-600"
                       }
                     >
-                      <DeleteIcon width={24} height={24} />
+                      <Tooltip
+                        content="Delete Category"
+                        side="left"
+                        align="center"
+                      >
+                        <DeleteIcon width={24} height={24} />
+                      </Tooltip>
                     </button>
                   )}
                 </div>

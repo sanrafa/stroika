@@ -11,3 +11,4 @@ export { default as ProjectCard } from "./ProjectCard";
 export * from "./AlertDialog";
 export { default as TaskDndContext } from "./TaskDndContext";
 export { default as ColumnDndContext } from "./ColumnDndContext";
+export { default as Tooltip } from "./Tooltip";

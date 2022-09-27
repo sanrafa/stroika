@@ -9,6 +9,7 @@ import {
   DropdownArrow,
   DropdownCheckboxItem,
   DropdownItemIndicator,
+  Tooltip,
 } from "./index";
 
 import logo from "../../assets/logo-darkmode.svg";
@@ -81,8 +82,12 @@ function Header() {
   return (
     <>
       <header className={match ? "project-header" : "header"}>
-        <Link to="/" className="block w-1/6 p-2 ml-1">
-          <img src={logo} alt="Stroika logo" className="" />
+        <Link
+          to="/"
+          className="block w-1/6 p-2 ml-1"
+          aria-label="Go to homepage"
+        >
+          <img src={logo} alt="Stroika logo" />
         </Link>
         {match ? (
           <>
@@ -131,7 +136,9 @@ function Header() {
                   );
                 }}
               >
-                <ColumnsIcon width={32} height={32} color="white" />
+                <Tooltip content="Add New Column" side="bottom" align="center">
+                  <ColumnsIcon width={32} height={32} color="white" />
+                </Tooltip>
               </button>
               <Dropdown>
                 <DropdownTrigger asChild>
@@ -140,15 +147,23 @@ function Header() {
                     className="hover:bg-gray-800 p-4 rounded-full m-1"
                     aria-label="open project menu"
                   >
-                    <MenuIcon
-                      width={32}
-                      height={32}
-                      color="white"
-                      id="menu-icon"
-                    />
+                    <Tooltip
+                      content="Project Menu"
+                      side="bottom"
+                      align="center"
+                    >
+                      <MenuIcon
+                        width={32}
+                        height={32}
+                        color="white"
+                        id="menu-icon"
+                      />
+                    </Tooltip>
                   </button>
                 </DropdownTrigger>
                 <DropdownContent
+                  loop
+                  sideOffset={4}
                   onCloseAutoFocus={(e) => {
                     e.preventDefault();
                     if (isEditing) {
@@ -183,20 +198,20 @@ function Header() {
                   <DropdownSeparator asChild>
                     <hr className=" bg-black my-0.5" />
                   </DropdownSeparator>
-                  <DropdownItem className="p-1">Save Project</DropdownItem>
-                  <DropdownItem className="p-1">Export Project</DropdownItem>
-
-                  <DropdownArrow fill="white" height={8} />
+                  <DropdownItem className="p-1">
+                    <span className="line-through">Export Project</span> TBA
+                  </DropdownItem>
                 </DropdownContent>
               </Dropdown>
-
               <Link to="projects" className="text-xl p-5 hover:bg-gray-800">
-                <CloseIcon
-                  width={32}
-                  height={32}
-                  color="white"
-                  aria-label="view all projects"
-                />
+                <Tooltip content="Exit" side="bottom" align="center">
+                  <CloseIcon
+                    width={32}
+                    height={32}
+                    color="white"
+                    aria-label="view all projects"
+                  />
+                </Tooltip>
               </Link>
             </div>
           </>

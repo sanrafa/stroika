@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxIndicator, TaskDndContext } from "./index";
+import { Checkbox, CheckboxIndicator, TaskDndContext, Tooltip } from "./index";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   CrossCircledIcon as CloseIcon,
@@ -149,7 +149,9 @@ const Task = ({ id }: TaskProps) => {
             onClick={() => setIsEditing(true)}
             disabled={isEditing}
           >
-            <EditIcon />
+            <Tooltip content="Edit task" side="top" align="center">
+              <EditIcon />
+            </Tooltip>
           </button>
           <button
             aria-label="delete task"
@@ -160,7 +162,9 @@ const Task = ({ id }: TaskProps) => {
             }
             disabled={isEditing}
           >
-            <DeleteIcon />
+            <Tooltip content="Delete task" side="top" align="center">
+              <DeleteIcon />
+            </Tooltip>
           </button>
         </>
       ) : null}

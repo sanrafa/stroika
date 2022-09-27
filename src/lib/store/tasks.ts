@@ -241,6 +241,9 @@ export const getPendingTasksByProject = (
   projectId: string
 ) => {
   return Object.values(state.tasks.entities)
-    .filter((task) => task?.projectId === projectId && !task.completed)
+    .filter(
+      (task) =>
+        task?.projectId === projectId && !task.completed && !task.archived
+    )
     .map((task) => task?.id) as string[];
 };

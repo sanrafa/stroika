@@ -2,7 +2,7 @@ import {
   CardStackPlusIcon as AddCategoryIcon,
   WidthIcon as DragIcon,
 } from "@radix-ui/react-icons";
-import { ColumnDropdown, Category } from "./index";
+import { ColumnDropdown, Category, Tooltip } from "./index";
 import { useAppDispatch, useProxySelector } from "../store/hooks";
 import { updateColumn, addCategory } from "../store/actions";
 import { getColumnById } from "../store/columns";
@@ -136,7 +136,6 @@ function Column({ id }: ColumnProps) {
           ))}
         </SortableContext>
       </div>
-
       <button
         aria-label="add new category"
         type="button"
@@ -163,7 +162,9 @@ function Column({ id }: ColumnProps) {
           }
         }}
       >
-        <AddCategoryIcon width={24} height={24} />
+        <Tooltip content="Add Category" side="top" align="center">
+          <AddCategoryIcon width={24} height={24} />
+        </Tooltip>
       </button>
     </section>
   );

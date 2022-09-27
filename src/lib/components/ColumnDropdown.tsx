@@ -7,6 +7,7 @@ import {
   DropdownSubmenu,
   DropdownSubTrigger,
   DropdownSubContent,
+  Tooltip,
 } from "./index";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import React from "react";
@@ -49,7 +50,9 @@ export default function ColumnDropdown({
           className="hover:bg-gray-700 p-0.5 rounded"
           aria-label="open column menu"
         >
-          <MenuIcon width={24} height={24} />
+          <Tooltip content="Column Options" side="top" align="center">
+            <MenuIcon width={24} height={24} />
+          </Tooltip>
         </button>
       </DropdownTrigger>
       <DropdownMenu.Portal>

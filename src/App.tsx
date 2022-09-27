@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { useMatch } from "react-router-dom";
 import { debounce } from "lodash";
 import { saveState } from "./lib/storage";
+import { Provider as TooltipProvider } from "@radix-ui/react-tooltip";
 
 store.subscribe(
   debounce(() => {
@@ -17,18 +18,20 @@ function App() {
   const match = useMatch("/projects/:id");
 
   return (
-    <Provider store={store}>
-      <main
-        className={`bg-black text-compText ${
-          match ? "h-screen" : "min-h-screen"
-        }`}
-      >
-        <Header />
+    <TooltipProvider delayDuration={500}>
+      <Provider store={store}>
+        <main
+          className={`bg-black text-compText ${
+            match ? "h-screen" : "min-h-screen"
+          }`}
+        >
+          <Header />
 
-        <Outlet />
-      </main>
-      <Toaster position="top-right" />
-    </Provider>
+          <Outlet />
+        </main>
+        <Toaster position="top-right" />
+      </Provider>
+    </TooltipProvider>
   );
 }
 

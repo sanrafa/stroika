@@ -24,7 +24,7 @@ const DropdownContent = React.forwardRef<
 >(({ children, ...props }, ref) => {
   return (
     <DropdownMenu.Portal>
-      <DropdownMenu.Content ref={ref} {...props} sideOffset={8}>
+      <DropdownMenu.Content ref={ref} {...props}>
         {children}
       </DropdownMenu.Content>
     </DropdownMenu.Portal>

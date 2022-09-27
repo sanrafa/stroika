@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { TrashIcon as DeleteIcon, ListBulletIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { getPendingTasksByProject } from "../store/tasks";
-import { DeleteProjectDialog } from "./index";
+import { DeleteProjectDialog, Tooltip } from "./index";
 
 type Props = {
   project: IProject;
@@ -52,11 +52,13 @@ const ProjectCard = ({ project }: Props) => {
           </button>
         </DeleteProjectDialog>
         <p className="flex text-3xl items-center p-1 m-1 space-x-1">
-          <ListBulletIcon
-            width={24}
-            height={24}
-            className="text-green-700 mr-1"
-          />
+          <Tooltip content="Tasks remaining ->" side="left" align="center">
+            <ListBulletIcon
+              width={24}
+              height={24}
+              className="text-green-700 mr-1"
+            />
+          </Tooltip>
           {projectTasks.length}
         </p>
       </div>

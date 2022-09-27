@@ -74,6 +74,7 @@ export default function CategoryBase({ id }: CategoryProps) {
   const [name, setName] = React.useState(category?.name || "");
 
   const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const addRef = React.useRef<HTMLButtonElement>(null);
 
   const handleSubmit = () => {
     dispatch(
@@ -161,7 +162,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                     onSubmit={(e) => {
                       e.preventDefault();
                       handleSubmit();
-                      triggerRef?.current?.focus();
+                      addRef?.current?.focus();
                     }}
                   >
                     <input
@@ -199,6 +200,7 @@ export default function CategoryBase({ id }: CategoryProps) {
                   <button
                     aria-label="add new feature"
                     type="button"
+                    ref={addRef}
                     disabled={suspended}
                     className={
                       suspended

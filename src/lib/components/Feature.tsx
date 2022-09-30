@@ -11,7 +11,7 @@ import {
 import { useAppDispatch, useProxySelector } from "../store/hooks";
 import { updateFeature, deleteFeature } from "../store/actions";
 import { getFeatureById } from "../store/features";
-import { getTasksByFeature } from "../store/tasks";
+import { getTaskStatsByFeature } from "../store/tasks";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -24,7 +24,10 @@ export default function Feature({ id }: FeatureProps) {
   const dispatch = useAppDispatch();
 
   const feature = useProxySelector((state) => getFeatureById(state, id), [id]);
-  const tasks = useProxySelector((state) => getTasksByFeature(state, id), [id]);
+  const taskStats = useProxySelector(
+    (state) => getTaskStatsByFeature(state, id),
+    [id]
+  );
 
   const {
     attributes,
@@ -71,21 +74,19 @@ export default function Feature({ id }: FeatureProps) {
     >
       {/* Task progress indicator OR checkmark if all complete */}
       <div className="text-xxs">
-        {!tasks.length ? (
+        {taskStats.isEmpty ? (
           <span className="text-compText font-bold">
             NO <br /> TASKS
           </span>
-        ) : tasks.every((task) => task?.completed === true) ? (
+        ) : taskStats.allComplete ? (
           <CheckIcon width={25} height={25} stroke="green" className="ml-1" />
         ) : (
           <span className="text-blue-100">
-            {/* TODO: use a selector that returns boolean if all attached tasks are complete */}
-            <span className="text-sm text-compText font-bold">
-              {`${tasks.filter((task) => task?.completed === true).length} / ${
-                tasks.length
-              }`}
+            <span className="text-xxs font-bold">
+              {taskStats.progressIndicator}
             </span>
-            <br /> tasks <br /> complete
+            <br />
+            tasks
           </span>
         )}
       </div>

@@ -140,19 +140,21 @@ const Task = ({ id }: TaskProps) => {
         </span>
       )}
 
-      {!completed ? (
+      {!completed || task?.archived ? (
         <>
-          <button
-            aria-label="edit description"
-            type="button"
-            className="text-feature rounded-full px-2 hover:text-categoryToggleUnchecked hover:bg-slate-600"
-            onClick={() => setIsEditing(true)}
-            disabled={isEditing}
-          >
-            <Tooltip content="Edit task" side="top" align="center">
-              <EditIcon />
-            </Tooltip>
-          </button>
+          {!task?.archived ? (
+            <button
+              aria-label="edit description"
+              type="button"
+              className="text-feature rounded-full px-2 hover:text-categoryToggleUnchecked hover:bg-slate-600"
+              onClick={() => setIsEditing(true)}
+              disabled={isEditing}
+            >
+              <Tooltip content="Edit task" side="top" align="center">
+                <EditIcon />
+              </Tooltip>
+            </button>
+          ) : null}
           <button
             aria-label="delete task"
             type="button"

@@ -212,6 +212,36 @@ export const getTasksByFeature = (
   }
 };
 
+export const getTaskStatsByFeature = (
+  state: RootState,
+  featureId: string,
+  archived = false
+) => {
+  if (!archived) {
+    const tasks = Object.values(state.tasks.entities).filter(
+      (task) => task?.featureId === featureId && !task.archived
+    );
+    const total = tasks.length;
+    const numOfCompleted = tasks.filter((task) => task?.completed).length;
+    return {
+      isEmpty: tasks.length ? false : true,
+      progressIndicator: `${numOfCompleted} / ${total}`,
+      allComplete: tasks.every((task) => task?.completed),
+    };
+  } else {
+    const tasks = Object.values(state.tasks.entities).filter(
+      (task) => task?.featureId === featureId
+    );
+    const total = tasks.length;
+    const numOfCompleted = tasks.filter((task) => task?.completed).length;
+    return {
+      isEmpty: tasks.length ? false : true,
+      progressIndicator: `${numOfCompleted} / ${total}`,
+      allComplete: tasks.every((task) => task?.completed),
+    };
+  }
+};
+
 export const getSortedTaskIds = (
   state: RootState,
   ids: string[],

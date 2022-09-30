@@ -5,8 +5,9 @@ import {
   Pencil1Icon as EditIcon,
   CircleBackslashIcon as DeleteIcon,
   CaretSortIcon as DragIcon,
+  Half1Icon as UnarchiveIcon,
 } from "@radix-ui/react-icons";
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { useAppDispatch, useProxySelector } from "../store/hooks";
 import {
@@ -60,7 +61,7 @@ const Task = ({ id }: TaskProps) => {
 
   return (
     <li
-      className={`flex space-x-2 px-4 py-1 rounded-md ${
+      className={`flex space-x-2 justify-around px-4 py-1 rounded-md ${
         task?.archived ? "hover:bg-slate-800" : "hover:bg-slate-700"
       } ${completed ? "opacity-60" : null}`}
       style={sortableStyle}
@@ -132,8 +133,8 @@ const Task = ({ id }: TaskProps) => {
         </form>
       ) : (
         <span
-          className={`self-baseline text-center w-4/5 ${
-            task?.archived ? "text-slate-500 line-through" : null
+          className={`self-baseline w-4/5 ${
+            task?.archived ? "text-slate-500 line-through" : "text-center"
           }`}
         >
           {task?.description}
@@ -153,6 +154,7 @@ const Task = ({ id }: TaskProps) => {
               <EditIcon />
             </Tooltip>
           </button>
+
           <button
             aria-label="delete task"
             type="button"
@@ -167,6 +169,27 @@ const Task = ({ id }: TaskProps) => {
             </Tooltip>
           </button>
         </>
+      ) : null}
+      {task?.archived ? (
+        <button
+          aria-label="unarchive task"
+          type="button"
+          className="text-blue-500 px-2 rounded-full hover:text-blue-600 hover:bg-slate-600"
+          onClick={() =>
+            dispatch(
+              updateTask({
+                id,
+                changes: {
+                  archived: false,
+                },
+              })
+            )
+          }
+        >
+          <Tooltip content="Unarchive task" side="top" align="center">
+            <UnarchiveIcon />
+          </Tooltip>
+        </button>
       ) : null}
     </li>
   );

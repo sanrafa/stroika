@@ -31,7 +31,6 @@ function Homepage() {
           </Link>
           <button
             type="button"
-            aria-label="clear local storage"
             className="mt-10 hover:text-red-500 border border-red-500 p-1.5 rounded"
             onClick={handleClearHistory}
           >

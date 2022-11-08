@@ -104,7 +104,7 @@ export default function CategoryBase({ id }: CategoryProps) {
         style={sortableStyle}
         ref={setNodeRef}
         className={`flex flex-col bg-category justify-between m-1 pb-2 font-manrope text-compText rounded-md shadow-md max-h-[75%] max-w-11/12 opacity-90 hover:opacity-100 focus-within:opacity-100  ${
-          suspended ? "opacity-50" : null
+          suspended ? "bg-slate-900" : null
         }`}
       >
         <Accordion.Item value={category?.name as string} asChild>
@@ -170,9 +170,14 @@ export default function CategoryBase({ id }: CategoryProps) {
                       type="text"
                       aria-label="category name"
                       onBlur={handleSubmit}
-                      className="text-compText focus:text-black bg-category focus:bg-compText cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md focus:cursor-text"
+                      className={`text-compText focus:text-black bg-category focus:bg-compText cursor-pointer text-center p-1 text-lg lg:text-2xl w-full rounded-md focus:cursor-text ${
+                        suspended
+                          ? "bg-slate-800 text-slate-500 cursor-default"
+                          : null
+                      }`}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
+                      disabled={suspended}
                     />
                     <button
                       type="submit"

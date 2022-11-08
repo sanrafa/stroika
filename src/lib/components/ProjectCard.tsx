@@ -46,9 +46,10 @@ const ProjectCard = ({ project }: Props) => {
           <button
             type="button"
             id="delete-project-icon"
-            className="text-red-900 hover:text-red-700 hover:bg-red-200 rounded-full p-1 m-1"
+            className="text-red-900 hover:text-red-700 hover:bg-red-200 rounded-sm font-semibold p-1.5 m-1"
           >
-            <DeleteIcon width={32} height={32} />
+            DELETE PROJECT
+            {/* <DeleteIcon width={32} height={32} /> */}
           </button>
         </DeleteProjectDialog>
         <p className="flex text-3xl items-center p-1 m-1 space-x-1">

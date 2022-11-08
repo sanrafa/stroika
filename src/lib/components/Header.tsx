@@ -144,10 +144,10 @@ function Header() {
                 <DropdownTrigger asChild>
                   <button
                     type="button"
-                    className="text-xl p-5 hover:bg-gray-800"
+                    className="text-xl p-4 hover:bg-gray-800"
                     aria-label="open project menu"
                   >
-                    PROJECT MENU
+                    OPTIONS
                   </button>
                 </DropdownTrigger>
                 <DropdownContent

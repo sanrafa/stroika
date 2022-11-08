@@ -19,6 +19,9 @@ function ProjectsPage() {
         PROJECTS
       </h1>
       <AddProjectForm />
+      <p className="text-center p-8 text-2xl">
+        Click on a project title below to visit an existing project:
+      </p>
       {projects.length ? (
         <ul className="grid grid-cols-1 md:grid-cols-3 gap-2 p-6">
           {projects.map((project) => (

@@ -144,21 +144,10 @@ function Header() {
                 <DropdownTrigger asChild>
                   <button
                     type="button"
-                    className="hover:bg-gray-800 p-4 rounded-full m-1"
+                    className="text-xl p-5 hover:bg-gray-800"
                     aria-label="open project menu"
                   >
-                    <Tooltip
-                      content="Project Menu"
-                      side="bottom"
-                      align="center"
-                    >
-                      <MenuIcon
-                        width={32}
-                        height={32}
-                        color="white"
-                        id="menu-icon"
-                      />
-                    </Tooltip>
+                    PROJECT MENU
                   </button>
                 </DropdownTrigger>
                 <DropdownContent
@@ -204,14 +193,7 @@ function Header() {
                 </DropdownContent>
               </Dropdown>
               <Link to="projects" className="text-xl p-5 hover:bg-gray-800">
-                <Tooltip content="Exit" side="bottom" align="center">
-                  <CloseIcon
-                    width={32}
-                    height={32}
-                    color="white"
-                    aria-label="view all projects"
-                  />
-                </Tooltip>
+                CLOSE
               </Link>
             </div>
           </>

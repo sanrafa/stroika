@@ -56,13 +56,14 @@ const AddProjectForm = () => {
         }
       }}
     >
-      <label htmlFor="new-project" className="text-xl">
+      <label htmlFor="create-project" className="text-xl">
         Create a new project:
       </label>
       <input
         className="text-black p-1 text-2xl text-center rounded-md bg-slate-600 focus:bg-slate-200"
         type="text"
-        name="new-project"
+        name="create-project"
+        id="create-project"
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Project Name"

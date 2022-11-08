@@ -137,9 +137,8 @@ function Column({ id }: ColumnProps) {
         </SortableContext>
       </div>
       <button
-        aria-label="add new category"
         type="button"
-        className="static inset-x-0 bottom-0 bg-green-700 w-full rounded-b-sm opacity-30 flex justify-center hover:opacity-100 focus:opacity-100"
+        className="static inset-x-0 bottom-0 bg-green-900 w-full h-10 rounded-b-sm flex justify-center items-center font-bold hover:bg-green-700 focus:bg-green-700"
         onMouseDown={(e) => {
           e.preventDefault();
           dispatch(
@@ -162,9 +161,7 @@ function Column({ id }: ColumnProps) {
           }
         }}
       >
-        <Tooltip content="Add Category" side="top" align="center">
-          <AddCategoryIcon width={24} height={24} />
-        </Tooltip>
+        ADD CATEGORY
       </button>
     </section>
   );

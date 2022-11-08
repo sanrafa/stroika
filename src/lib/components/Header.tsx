@@ -99,22 +99,27 @@ function Header() {
               }}
               className="ml-4"
             >
-              <h1>
+              <h1 tabIndex={0}>
                 <input
                   onBlur={handleSubmit}
                   type="text"
                   className={`text-black text-5xl text-center font-light w-11/12 disabled:bg-black disabled:text-compText disabled:cursor-pointer`}
                   defaultValue={name}
                   onChange={(e) => setName(e.target.value)}
-                  aria-label="project name"
+                  aria-describedby="rename-project"
                   disabled={!isEditing}
                   ref={projectNameInputRef}
                 />
               </h1>
               <button
                 type="submit"
+                id="rename-project"
                 className="hidden"
-                aria-label="update project name"
+                aria-label={`${
+                  isEditing
+                    ? "rename project"
+                    : "click or go to options to rename project"
+                }`}
               ></button>
             </form>
 
@@ -145,7 +150,6 @@ function Header() {
                   <button
                     type="button"
                     className="text-xl p-4 hover:bg-gray-800"
-                    aria-label="open project menu"
                   >
                     OPTIONS
                   </button>
@@ -169,13 +173,13 @@ function Header() {
                   >
                     <button
                       type="button"
-                      className="hover:bg-slate-300 p-1 py-2 rounded w-full"
+                      className="hover:bg-slate-300 focus:bg-slate-300 p-1 py-2 rounded w-full"
                     >
                       Rename Project
                     </button>
                   </DropdownItem>
                   <DropdownCheckboxItem
-                    className="flex items-center hover:bg-slate-300 p-1 py-2 rounded cursor-pointer"
+                    className="flex items-center hover:bg-slate-300 focus:bg-slate-300 p-1 py-2 rounded cursor-pointer"
                     checked={archiveTasks}
                     onCheckedChange={handleChecked}
                   >
@@ -187,12 +191,16 @@ function Header() {
                   <DropdownSeparator asChild>
                     <hr className=" bg-black my-0.5" />
                   </DropdownSeparator>
-                  <DropdownItem className="p-1">
+                  {/*  <DropdownItem className="p-1">
                     <span className="line-through">Export Project</span> TBA
-                  </DropdownItem>
+                  </DropdownItem> */}
                 </DropdownContent>
               </Dropdown>
-              <Link to="projects" className="text-xl p-5 hover:bg-gray-800">
+              <Link
+                to="projects"
+                className="text-xl p-5 hover:bg-gray-800"
+                aria-label="view all projects" /* should there be a separate aria label? */
+              >
                 CLOSE
               </Link>
             </div>

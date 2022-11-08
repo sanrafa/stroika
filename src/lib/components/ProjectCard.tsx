@@ -30,14 +30,14 @@ const ProjectCard = ({ project }: Props) => {
         <p>
           <strong>Created on:</strong>
           <br />
-          {format(Date.parse(project.createdAt), "PPP '|' pp")}
+          {format(Date.parse(project.createdAt), "PPP '|' p")}
         </p>
 
         <p>
           <strong>Last edited on:</strong>
           <br />
           {project.updatedAt
-            ? format(Date.parse(project.updatedAt), "PPP '|' pp")
+            ? format(Date.parse(project.updatedAt), "PPP '|' p")
             : null}
         </p>
       </div>
@@ -49,7 +49,6 @@ const ProjectCard = ({ project }: Props) => {
             className="text-red-900 hover:text-red-700 hover:bg-red-200 rounded-sm font-semibold p-1.5 m-1"
           >
             DELETE PROJECT
-            {/* <DeleteIcon width={32} height={32} /> */}
           </button>
         </DeleteProjectDialog>
         <p className="flex text-3xl items-center p-1 m-1 space-x-1">
